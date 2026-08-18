@@ -1,0 +1,1107 @@
+ESTRUTURA DO SITE — OPERAÇÃO DE UNIFORMES ESCOLARES
+
+> **AVISO (2026-08-08):** este PRD está **parcialmente desatualizado**.  
+> Fonte de verdade de negócio: [`modelo-de-negocio.md`](./modelo-de-negocio.md).  
+> Recompensas: [`recompensas.md`](./recompensas.md). Fase voucher: [`fase-voucher.md`](./fase-voucher.md).  
+> Fonte de verdade de etiqueta/QR/doação: [`etiquetas-qr-decisoes.md`](./etiquetas-qr-decisoes.md).  
+>  
+> **Supersedido neste arquivo (não implementar como está):**  
+> - Etiquetas gratuitas como gancho principal de lead  
+> - Pontos parceiros como peça central do MVP (viram “em breve”)  
+> - Ausência do marketplace de doação (tipo OLX)  
+> - Qualquer menção a bazar/troca com crédito como produto ativo  
+>  
+> **Vigente:** venda virtual no site + doação P2P (cadastro por celular) como motor pré-voucher.  
+> Reescrever menus/home/FAQ deste PRD na próxima revisão de páginas.
+
+1. VISÃO GERAL DO SITE
+
+O site será exclusivo para a operação de uniformes escolares da rede municipal da cidade.
+
+Ele não será misturado com os demais produtos e serviços da confecção Espaço Livre.
+
+Todas as escolas municipais utilizam o mesmo uniforme. Por isso, haverá apenas um catálogo de produtos para toda a cidade.
+
+A escola do aluno será informada somente no cadastro, com os seguintes objetivos:
+
+* conhecer a distribuição dos clientes;
+* medir a demanda por escola;
+* planejar campanhas;
+* identificar possíveis representantes;
+* organizar pontos de retirada;
+* planejar rotas;
+* analisar vendas e tamanhos por região.
+
+O site terá dois objetivos antes da liberação do voucher:
+
+Objetivo principal:
+
+Captar pais e responsáveis por meio do brinde de etiquetas personalizadas.
+
+Objetivo secundário:
+
+Vender uniformes normalmente para apresentar a marca, testar a operação e formar uma base de clientes satisfeitos.
+
+Quando o voucher for liberado, o principal objetivo do site passará a ser a venda dos uniformes utilizando o benefício.
+
+2. POSICIONAMENTO
+
+O site deverá apresentar a operação como uma iniciativa da Espaço Livre, mas com identidade própria para o segmento escolar.
+
+Sugestão de apresentação:
+
+“Uma iniciativa da Espaço Livre Uniformes.”
+
+A comunicação não poderá dar a entender que o site pertence à prefeitura, à Secretaria de Educação ou às escolas.
+
+Não utilizar sem autorização:
+
+* brasão do município;
+* logotipo das escolas;
+* expressão “site oficial da prefeitura”;
+* expressão “fornecedor oficial”;
+* expressão “parceiro oficial da escola”;
+* qualquer informação que ainda não tenha sido confirmada pelo município.
+
+3. ESTRATÉGIA EM DUAS FASES
+
+FASE 1 — ANTES DO VOUCHER
+
+O principal destaque será:
+
+“Solicite gratuitamente suas etiquetas personalizadas.”
+
+O site será utilizado para:
+
+* captar famílias;
+* cadastrar a escola do aluno;
+* divulgar o projeto;
+* entregar o brinde;
+* testar pontos de retirada;
+* realizar vendas normais;
+* coletar dados de demanda;
+* encontrar possíveis representantes;
+* medir tamanhos mais procurados;
+* testar encomendas;
+* testar trocas e logística.
+
+FASE 2 — DEPOIS DA LIBERAÇÃO DO VOUCHER
+
+O principal destaque será:
+
+“Compre os uniformes escolares com seu voucher.”
+
+O site será utilizado para:
+
+* venda com voucher;
+* compra normal, caso seja permitida;
+* escolha entre pronta-entrega e encomenda;
+* retirada em pontos parceiros;
+* entrega em domicílio, quando disponível;
+* acompanhamento do pedido;
+* solicitação de troca;
+* consulta de prazos.
+
+4. MENU PRINCIPAL DO SITE
+
+O menu poderá ser composto por:
+
+* Início;
+* Etiquetas gratuitas;
+* Comprar uniformes;
+* Guia de tamanhos;
+* Pontos de retirada e troca;
+* Acompanhar pedido;
+* Pais Pioneiros;
+* Como funciona;
+* Dúvidas frequentes;
+* Falar no WhatsApp.
+
+5. PÁGINA INICIAL
+
+A página inicial deverá apresentar o brinde como ação principal.
+
+PRIMEIRA SEÇÃO
+
+Título:
+
+“Ganhe etiquetas personalizadas para identificar os uniformes escolares.”
+
+Texto complementar:
+
+“Uma ação gratuita para pais e responsáveis de alunos da rede municipal de [nome da cidade].”
+
+Botão principal:
+
+“Solicitar meu kit gratuito.”
+
+Botão secundário:
+
+“Comprar uniformes.”
+
+SEGUNDA SEÇÃO — COMO FUNCIONA O BRINDE
+
+Apresentar o processo em quatro etapas:
+
+1. Faça seu cadastro.
+2. Informe a escola do aluno.
+3. Personalize as etiquetas.
+4. Aguarde o aviso de retirada pelo WhatsApp.
+
+Informar:
+
+* quantidade de etiquetas incluídas;
+* aplicação com ferro doméstico;
+* possibilidade de usar nome ou iniciais;
+* turma opcional;
+* prazo de produção;
+* quantidade limitada por família;
+* retirada nos locais disponíveis.
+
+TERCEIRA SEÇÃO — COMPRA ANTES DO VOUCHER
+
+Texto sugerido:
+
+“Já precisa do uniforme? Você também pode comprar normalmente antes da liberação do voucher.”
+
+Botão:
+
+“Ver uniformes disponíveis.”
+
+QUARTA SEÇÃO — PRINCIPAIS DIFERENCIAIS
+
+* fabricação própria;
+* compra online;
+* atendimento pelo WhatsApp;
+* retirada próxima;
+* possibilidade de troca;
+* pronta-entrega e encomenda;
+* acompanhamento do pedido;
+* guia de tamanhos;
+* pontos distribuídos pela cidade.
+
+QUINTA SEÇÃO — PONTOS DE RETIRADA
+
+Apresentar alguns pontos em destaque e um botão:
+
+“Ver todos os pontos.”
+
+SEXTA SEÇÃO — CONHEÇA O PROJETO
+
+Explicar que a Espaço Livre está testando uma nova forma de distribuir uniformes escolares com mais conveniência, menos filas e maior facilidade para as famílias.
+
+SÉTIMA SEÇÃO — PAIS PIONEIROS
+
+Apresentar brevemente o programa de representantes.
+
+Botão:
+
+“Conhecer o programa.”
+
+6. LANDING PAGE DO BRINDE
+
+A landing page será uma página específica dentro do site.
+
+Exemplo de endereço:
+
+[www.nomedaoperacao.com.br/etiquetas](http://www.nomedaoperacao.com.br/etiquetas)
+
+Ela será utilizada em:
+
+* anúncios do Instagram;
+* anúncios do Facebook;
+* panfletos;
+* QR Codes por escola;
+* indicações;
+* campanhas de parceiros;
+* divulgação de representantes.
+
+A página deverá ter apenas um objetivo:
+
+Fazer o responsável solicitar o kit gratuito.
+
+CONTEÚDO DA LANDING PAGE
+
+Título:
+
+“Etiquetas personalizadas gratuitas para o uniforme escolar.”
+
+Texto:
+
+“Cadastre-se para receber etiquetas termocolantes com o nome ou as iniciais do aluno.”
+
+Informações:
+
+* aplicação com ferro doméstico;
+* uso na parte interna da roupa;
+* quantidade limitada;
+* ação destinada a responsáveis da rede municipal;
+* retirada conforme disponibilidade;
+* uma solicitação por família ou conforme a regra definida.
+
+Botão:
+
+“Solicitar minhas etiquetas.”
+
+7. FORMULÁRIO DO BRINDE
+
+O formulário poderá ser dividido em etapas.
+
+ETAPA 1 — VALIDAÇÃO
+
+* Você é pai, mãe ou responsável por um aluno?
+* O aluno estuda atualmente na rede municipal de [cidade]?
+* Em qual escola o aluno estuda?
+
+A escola deverá ser selecionada em uma lista fechada.
+
+ETAPA 2 — DADOS DO RESPONSÁVEL
+
+* nome completo;
+* WhatsApp;
+* e-mail, opcional;
+* bairro;
+* autorização para receber comunicações.
+
+ETAPA 3 — PERSONALIZAÇÃO
+
+* nome ou iniciais do aluno;
+* turma, opcional;
+* quantidade de etiquetas;
+* ponto de retirada preferido.
+
+ETAPA 4 — INFORMAÇÕES COMPLEMENTARES
+
+* ano ou série;
+* tamanho atualmente utilizado;
+* preferência entre retirada e entrega;
+* dificuldade para encontrar uniformes;
+* interesse em conhecer o Programa Pais Pioneiros.
+
+O formulário deverá ser simples. Informações adicionais poderão ser coletadas posteriormente pelo WhatsApp.
+
+8. PÁGINA DE CONFIRMAÇÃO
+
+Após concluir o cadastro, o responsável verá:
+
+“Solicitação recebida com sucesso.”
+
+Informações:
+
+* confirmação pelo WhatsApp;
+* prazo estimado de produção;
+* ponto de retirada escolhido;
+* instruções para acompanhar;
+* aviso de que será comunicado quando o kit estiver pronto.
+
+A página poderá apresentar duas ações secundárias:
+
+“Conhecer os uniformes disponíveis.”
+
+“Conhecer o Programa Pais Pioneiros.”
+
+9. PÁGINA DE COMPRA DOS UNIFORMES
+
+Como todas as escolas utilizam o mesmo uniforme, haverá um único catálogo para toda a cidade.
+
+O catálogo poderá ser organizado por categorias:
+
+* camisetas;
+* bermudas;
+* calças;
+* agasalhos;
+* jaquetas;
+* kits;
+* outros itens permitidos pelo programa.
+
+Cada produto deverá apresentar:
+
+* fotos;
+* descrição;
+* tecido;
+* tamanhos;
+* medidas;
+* preço;
+* disponibilidade;
+* prazo;
+* opções de retirada;
+* possibilidade de entrega;
+* instruções de conservação.
+
+SITUAÇÃO DO PRODUTO
+
+Cada item deverá ser classificado como:
+
+Pronta-entrega:
+
+Produto disponível para separação rápida.
+
+Em reposição:
+
+Produto em produção ou com chegada prevista.
+
+Sob encomenda:
+
+Produto produzido após a confirmação do pedido.
+
+Os produtos sob encomenda deverão mostrar:
+
+* prazo estimado;
+* data-limite;
+* etapa de produção;
+* previsão de disponibilização.
+
+10. PROCESSO DE COMPRA ANTES DO VOUCHER
+
+O cliente poderá:
+
+1. Escolher os produtos.
+2. Selecionar o tamanho.
+3. Adicionar ao carrinho.
+4. Informar os dados do responsável.
+5. Informar a escola do aluno.
+6. Escolher retirada ou entrega.
+7. Escolher o ponto de retirada.
+8. Pagar por Pix, cartão ou outra forma disponível.
+9. Receber a confirmação.
+10. Acompanhar o pedido.
+
+A escola será solicitada apenas para cadastro e análise, não para alterar os produtos exibidos.
+
+11. PROCESSO DE COMPRA COM VOUCHER
+
+Quando o voucher for liberado, o processo poderá ser:
+
+1. Identificação do responsável.
+2. Validação do benefício.
+3. Escolha dos produtos.
+4. Escolha dos tamanhos.
+5. Consulta de estoque.
+6. Escolha entre pronta-entrega ou encomenda.
+7. Escolha do ponto de retirada ou entrega.
+8. Confirmação do pagamento com voucher.
+9. Separação ou produção.
+10. Acompanhamento.
+11. Retirada mediante QR Code ou validação definida.
+12. Registro da entrega.
+
+A operação deverá ser adaptada conforme as regras oficiais do município.
+
+12. GUIA DE TAMANHOS
+
+O guia de tamanhos deverá ajudar a reduzir erros e trocas.
+
+A página poderá incluir:
+
+* tabela de medidas;
+* medidas da camiseta;
+* medidas da calça;
+* medidas do agasalho;
+* vídeo mostrando como medir;
+* orientação para crianças entre dois tamanhos;
+* explicação sobre o caimento;
+* botão para falar com um atendente;
+* indicação de pontos com peças para experimentação, caso exista.
+
+No futuro, o sistema poderá recomendar o tamanho com base em:
+
+* altura;
+* medidas;
+* idade aproximada;
+* tamanho atual;
+* histórico de compras e trocas.
+
+13. PÁGINA DE PONTOS DE RETIRADA E TROCA
+
+Essa será uma das páginas mais importantes do site.
+
+Ela deverá apresentar um mapa e uma lista dos pontos disponíveis.
+
+Cada ponto deverá mostrar:
+
+* nome do estabelecimento;
+* endereço;
+* bairro;
+* horário de funcionamento;
+* dias de atendimento;
+* telefone, quando necessário;
+* estacionamento;
+* acessibilidade;
+* foto externa;
+* serviços disponíveis;
+* distância aproximada;
+* botão para abrir a rota.
+
+SERVIÇOS POSSÍVEIS
+
+* retirada;
+* troca;
+* devolução;
+* experimentação, quando disponível;
+* retirada do kit de etiquetas.
+
+FILTROS DA PÁGINA
+
+O responsável poderá pesquisar por:
+
+* bairro;
+* localização atual;
+* escola do aluno;
+* ponto mais próximo;
+* retirada;
+* troca;
+* funcionamento aos sábados;
+* horário de atendimento.
+
+A escola poderá ser usada apenas como referência geográfica para sugerir pontos próximos.
+
+SITUAÇÃO DO PONTO
+
+Cada estabelecimento poderá aparecer como:
+
+* ativo;
+* temporariamente indisponível;
+* somente retirada;
+* retirada e troca;
+* retirada de brindes;
+* capacidade limitada;
+* horário especial.
+
+Botão:
+
+“Escolher este ponto.”
+
+14. PÁGINA INDIVIDUAL DO PONTO
+
+Cada parceiro poderá ter uma página própria.
+
+Exemplo:
+
+[www.nomedaoperacao.com.br/pontos/papelaria-central](http://www.nomedaoperacao.com.br/pontos/papelaria-central)
+
+Informações:
+
+* nome;
+* endereço;
+* mapa;
+* fotos;
+* horário;
+* serviços;
+* instruções para retirada;
+* regras para troca;
+* escolas próximas;
+* botão para abrir rota;
+* botão para selecionar o ponto.
+
+O ponto parceiro não realizará vendas. Ele funcionará apenas como local de retirada, troca ou devolução.
+
+15. ACOMPANHAMENTO DO PEDIDO
+
+O responsável poderá consultar o pedido utilizando:
+
+* número do pedido;
+* telefone;
+* CPF, se necessário e permitido;
+* login;
+* link enviado pelo WhatsApp.
+
+ETAPAS DO PEDIDO
+
+* pedido recebido;
+* pagamento confirmado;
+* aguardando separação;
+* em separação;
+* em produção;
+* em conferência;
+* embalado;
+* enviado ao ponto;
+* recebido pelo ponto;
+* disponível para retirada;
+* retirado;
+* troca solicitada;
+* troca concluída.
+
+Nos pedidos sob encomenda, mostrar:
+
+* data da compra;
+* prazo estimado;
+* data-limite;
+* etapa atual;
+* previsão atualizada.
+
+16. TROCAS E DEVOLUÇÕES
+
+O cliente poderá solicitar uma troca pelo site.
+
+Fluxo:
+
+1. Informar o pedido.
+2. Selecionar a peça.
+3. Escolher o motivo.
+4. Informar o tamanho desejado.
+5. Consultar disponibilidade.
+6. Escolher o ponto de troca.
+7. Receber as instruções.
+8. Acompanhar a solicitação.
+
+O novo tamanho deverá ser reservado antes da devolução, quando possível.
+
+17. PÁGINA DO PROGRAMA PAIS PIONEIROS
+
+A página deverá explicar:
+
+* objetivo do programa;
+* quem pode participar;
+* como funciona;
+* atividades do representante;
+* atividades proibidas;
+* benefícios;
+* período de teste;
+* critérios de aprovação;
+* ausência de vínculo com a escola ou a prefeitura.
+
+O formulário de interesse poderá solicitar:
+
+* nome;
+* WhatsApp;
+* escola;
+* ano ou série;
+* bairro;
+* participação em grupos de responsáveis;
+* disponibilidade;
+* motivo do interesse;
+* experiência com a Espaço Livre.
+
+A prioridade será convidar:
+
+* clientes satisfeitos;
+* pessoas que retiraram o brinde;
+* pais que participaram dos testes;
+* responsáveis que indicaram outras famílias.
+
+18. PÁGINA “COMO FUNCIONA”
+
+Explicar o modelo operacional:
+
+1. O cliente compra pelo site ou WhatsApp.
+2. Escolhe retirada ou entrega.
+3. A Espaço Livre separa ou produz o pedido.
+4. O pedido é enviado ao ponto selecionado.
+5. O cliente recebe um aviso.
+6. A retirada ocorre mediante confirmação ou QR Code.
+7. Trocas podem ser solicitadas pelo site.
+
+Antes do voucher, informar que a compra será realizada pelas formas de pagamento normais.
+
+Depois da liberação, explicar o uso do voucher conforme as regras oficiais.
+
+19. DÚVIDAS FREQUENTES
+
+Perguntas sugeridas:
+
+* Quem pode solicitar as etiquetas?
+* As etiquetas são gratuitas?
+* Como aplicar as etiquetas?
+* Onde retirar o kit?
+* Todos os uniformes são iguais?
+* Posso comprar antes do voucher?
+* Quais formas de pagamento estão disponíveis?
+* O produto está disponível para pronta-entrega?
+* Como funciona a encomenda?
+* Qual é o prazo?
+* Como escolher o tamanho?
+* Onde posso retirar?
+* Posso trocar no ponto parceiro?
+* O parceiro realiza vendas?
+* Como acompanhar o pedido?
+* Como funcionará o voucher?
+* A Espaço Livre é ligada à prefeitura?
+* Como participar do Programa Pais Pioneiros?
+
+20. ÁREA DE CONTEÚDOS
+
+O site poderá publicar conteúdos para manter o relacionamento com as famílias.
+
+Temas:
+
+* como aplicar as etiquetas;
+* como medir a criança;
+* como escolher o tamanho;
+* cuidados de lavagem;
+* como evitar trocas;
+* quantidade recomendada de uniformes;
+* funcionamento da retirada;
+* funcionamento das encomendas;
+* bastidores da produção;
+* apresentação dos pontos;
+* atualizações oficiais sobre o voucher;
+* dúvidas frequentes das famílias.
+
+Os conteúdos poderão ser reaproveitados no Instagram, Facebook e WhatsApp.
+
+21. INTEGRAÇÃO COM INSTAGRAM E FACEBOOK
+
+As redes sociais serão exclusivas para o escolar da cidade.
+
+Os conteúdos deverão direcionar para:
+
+* solicitação do brinde;
+* compra de uniformes;
+* guia de tamanhos;
+* pontos de retirada;
+* WhatsApp;
+* Programa Pais Pioneiros.
+
+LINK DA BIO
+
+* Solicitar etiquetas;
+* Comprar uniformes;
+* Guia de tamanhos;
+* Pontos de retirada;
+* Falar no WhatsApp;
+* Pais Pioneiros.
+
+22. WHATSAPP EXCLUSIVO
+
+O WhatsApp deverá ser utilizado somente para a operação escolar.
+
+Funções:
+
+* confirmação do cadastro;
+* confirmação do brinde;
+* aviso de produção;
+* aviso de retirada;
+* venda;
+* recomendação de tamanho;
+* acompanhamento;
+* troca;
+* suporte;
+* convite para representantes;
+* avisos futuros sobre o voucher.
+
+AUTOMAÇÕES POSSÍVEIS
+
+Após o cadastro:
+
+“Recebemos sua solicitação.”
+
+Quando o kit estiver pronto:
+
+“Seu kit está disponível para retirada.”
+
+Após a retirada:
+
+“Você conseguiu aplicar as etiquetas?”
+
+Após uma avaliação positiva:
+
+“Gostaria de conhecer o Programa Pais Pioneiros?”
+
+Próximo ao voucher:
+
+“As vendas com voucher serão abertas em breve. Confirme seus dados.”
+
+23. CADASTRO DO RESPONSÁVEL
+
+A conta do responsável poderá armazenar:
+
+* nome;
+* telefone;
+* e-mail;
+* bairro;
+* escola do aluno;
+* ano ou série;
+* tamanho;
+* histórico de compras;
+* pedidos;
+* ponto preferido;
+* brindes;
+* trocas;
+* preferências de comunicação.
+
+A escola será utilizada apenas para inteligência comercial, representantes e logística.
+
+24. CRM ESCOLAR
+
+O CRM deverá organizar:
+
+* leads;
+* responsáveis;
+* clientes;
+* escolas;
+* bairros;
+* representantes;
+* parceiros;
+* compras;
+* brindes;
+* trocas;
+* campanhas;
+* origem do lead;
+* preferência de retirada;
+* tamanhos;
+* satisfação.
+
+CLASSIFICAÇÃO DO CONTATO
+
+* visitante;
+* lead;
+* lead qualificado;
+* brinde solicitado;
+* brinde retirado;
+* cliente;
+* cliente satisfeito;
+* candidato a representante;
+* representante em teste;
+* representante aprovado.
+
+25. ORIGEM DOS LEADS
+
+Cada campanha deverá utilizar um link ou QR Code específico.
+
+Origens possíveis:
+
+* Meta Ads;
+* Instagram;
+* Facebook;
+* panfleto da Escola A;
+* panfleto da Escola B;
+* parceiro;
+* indicação;
+* representante;
+* loja;
+* evento de medidas.
+
+Exemplo:
+
+[www.nomedaoperacao.com.br/etiquetas?origem=escola-central](http://www.nomedaoperacao.com.br/etiquetas?origem=escola-central)
+
+26. FERRAMENTAS DE MEDIÇÃO
+
+Instalar:
+
+* Meta Pixel;
+* Conversions API;
+* Google Analytics;
+* parâmetros UTM;
+* integração com CRM;
+* rastreamento dos QR Codes.
+
+EVENTOS ACOMPANHADOS
+
+* visitou o site;
+* visitou a landing page;
+* iniciou o cadastro;
+* concluiu o cadastro;
+* solicitou o brinde;
+* abriu o WhatsApp;
+* escolheu um ponto;
+* retirou o kit;
+* visualizou produtos;
+* adicionou ao carrinho;
+* comprou;
+* solicitou troca;
+* demonstrou interesse em ser representante;
+* tornou-se representante aprovado.
+
+27. ÁREA ADMINISTRATIVA
+
+A equipe deverá controlar:
+
+* produtos;
+* preços;
+* tamanhos;
+* estoque;
+* encomendas;
+* pedidos;
+* prazos;
+* clientes;
+* escolas;
+* representantes;
+* parceiros;
+* pontos de retirada;
+* brindes;
+* trocas;
+* rotas;
+* campanhas;
+* origem dos leads.
+
+O painel deverá emitir alertas sobre:
+
+* pedidos atrasados;
+* pedidos próximos do prazo;
+* tamanho em falta;
+* aumento de demanda;
+* ponto sobrecarregado;
+* brinde não retirado;
+* troca pendente;
+* escola com muitos cadastros;
+* escola com pouca cobertura.
+
+28. PRIMEIRA VERSÃO DO SITE
+
+A primeira versão deverá conter:
+
+* página inicial;
+* landing page das etiquetas;
+* página de confirmação;
+* catálogo de uniformes;
+* carrinho e compra normal;
+* guia de tamanhos;
+* página de pontos de retirada e troca;
+* página do Programa Pais Pioneiros;
+* página “Como funciona”;
+* dúvidas frequentes;
+* WhatsApp;
+* política de privacidade;
+* CRM;
+* rastreamento.
+
+29. SEGUNDA VERSÃO
+
+Após os primeiros testes:
+
+* área do cliente;
+* acompanhamento detalhado;
+* recomendação de tamanho;
+* solicitação de troca;
+* mapa inteligente;
+* páginas individuais dos pontos;
+* automações;
+* painel administrativo mais completo;
+* QR Code de retirada;
+* integração logística.
+
+30. VERSÃO PARA O VOUCHER
+
+Quando as regras forem confirmadas:
+
+* pagamento com voucher;
+* validação do responsável;
+* conciliação financeira;
+* controle de saldo;
+* comprovante de entrega;
+* assinatura ou confirmação;
+* rastreabilidade;
+* controle do prazo de 30 dias;
+* cancelamento;
+* troca;
+* estorno, conforme as regras;
+* relatórios para o município.
+
+31. JORNADA ANTES DO VOUCHER
+
+Anúncio, panfleto ou indicação
+
+↓
+
+Landing page do brinde
+
+↓
+
+Confirmação da rede municipal
+
+↓
+
+Cadastro da escola
+
+↓
+
+Solicitação das etiquetas
+
+↓
+
+Confirmação pelo WhatsApp
+
+↓
+
+Retirada do kit
+
+↓
+
+Pesquisa de satisfação
+
+↓
+
+Apresentação dos uniformes
+
+↓
+
+Compra normal
+
+↓
+
+Convite para o Programa Pais Pioneiros
+
+↓
+
+Relacionamento até o lançamento do voucher
+
+32. JORNADA DE COMPRA ANTES DO VOUCHER
+
+Instagram, Facebook, site ou WhatsApp
+
+↓
+
+Catálogo único
+
+↓
+
+Escolha dos produtos
+
+↓
+
+Seleção de tamanho
+
+↓
+
+Pagamento normal
+
+↓
+
+Escolha do ponto
+
+↓
+
+Separação ou produção
+
+↓
+
+Aviso pelo WhatsApp
+
+↓
+
+Retirada ou entrega
+
+↓
+
+Pesquisa de satisfação
+
+33. JORNADA APÓS O VOUCHER
+
+Anúncio, WhatsApp ou acesso direto
+
+↓
+
+Catálogo único
+
+↓
+
+Seleção dos produtos
+
+↓
+
+Pagamento com voucher
+
+↓
+
+Pronta-entrega ou encomenda
+
+↓
+
+Escolha do ponto
+
+↓
+
+Separação ou produção
+
+↓
+
+Acompanhamento
+
+↓
+
+Retirada com validação
+
+↓
+
+Registro da entrega
+
+34. INDICADORES DO SITE
+
+Durante o teste:
+
+* visitantes;
+* cadastros;
+* taxa de conversão;
+* leads por escola;
+* leads por bairro;
+* origem dos leads;
+* custo por lead;
+* kits solicitados;
+* kits retirados;
+* vendas;
+* ticket médio;
+* tamanho mais procurado;
+* ponto mais escolhido;
+* candidatos a representantes;
+* representantes aprovados.
+
+Depois do voucher:
+
+* vendas por dia;
+* conversão;
+* abandono de carrinho;
+* vendas por escola;
+* vendas por bairro;
+* pronta-entrega;
+* encomendas;
+* prazo médio;
+* retiradas;
+* entregas;
+* trocas;
+* satisfação;
+* pedidos próximos de 30 dias.
+
+35. PRIORIDADE DE DESENVOLVIMENTO
+
+PRIMEIRA ETAPA
+
+* definir nome;
+* registrar domínio;
+* criar identidade visual;
+* criar landing page;
+* criar formulário;
+* cadastrar as escolas;
+* estruturar CRM;
+* configurar WhatsApp;
+* criar QR Codes;
+* instalar medição.
+
+SEGUNDA ETAPA
+
+* catálogo;
+* compra normal;
+* guia de tamanhos;
+* pontos de retirada;
+* acompanhamento simples;
+* Pais Pioneiros;
+* conteúdos.
+
+TERCEIRA ETAPA
+
+* área do cliente;
+* automações;
+* troca online;
+* logística;
+* QR Code de retirada;
+* integração com produção.
+
+QUARTA ETAPA
+
+* integração com voucher;
+* validações oficiais;
+* rastreabilidade completa;
+* controle financeiro;
+* relatórios.
+
+36. RESUMO FINAL
+
+O site deverá funcionar como uma plataforma exclusiva para os uniformes escolares da rede municipal da cidade.
+
+Antes do voucher, o principal objetivo será captar famílias por meio das etiquetas gratuitas. A venda normal estará disponível como objetivo secundário para apresentar a qualidade dos produtos, testar a operação e criar clientes satisfeitos.
+
+Todas as escolas utilizarão o mesmo catálogo. A escola será informada apenas no cadastro para planejamento comercial, representantes, campanhas e logística.
+
+A página de pontos de retirada e troca será um dos principais diferenciais do site, permitindo que as famílias localizem locais próximos para retirar pedidos, brindes e realizar trocas.
+
+Quando o voucher for liberado, o site passará a priorizar a compra digital, mantendo a estrutura de atendimento, encomenda, retirada, entrega, troca e acompanhamento já validada durante o primeiro semestre.

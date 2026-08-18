@@ -1,0 +1,86 @@
+.entrar-page {
+  padding: 1.5rem 1rem 2rem;
+}
+
+.entrar-title {
+  margin: 0.5rem 0 0.4rem;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.entrar-lead {
+  margin: 0 0 1.4rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.entrar-form {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.1rem;
+  border: 1px solid #cfe0f5;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(16, 42, 74, 0.05);
+}
+
+.entrar-code {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-align: center;
+}
+
+.entrar-sent {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.entrar-sent b {
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.entrar-erro {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  background: #fdecea;
+  border: 1px solid #f5c2bd;
+  font-size: 0.85rem;
+  color: #a5271b;
+}
+
+.entrar-nota {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.entrar-voltar {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.entrar-privacidade {
+  margin: 1.1rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.entrar-privacidade a {
+  color: var(--accent);
+  text-decoration: underline;
+}

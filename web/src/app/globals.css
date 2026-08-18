@@ -1,0 +1,47 @@
+/* Manifesto de estilos. A ordem abaixo é a ordem da cascata:
+   base → primitivas de app → estilos por seção. */
+@import "tailwindcss";
+@import "./styles/base.css";
+@import "./styles/ui.css";
+@import "./styles/feedback.css";
+@import "./styles/landing.css";
+@import "./styles/home.css";
+@import "./styles/pedido.css";
+@import "./styles/catalogo.css";
+@import "./styles/resumo.css";
+@import "./styles/doacao.css";
+@import "./styles/etiquetas-hero.css";
+@import "./styles/etiquetas-secoes.css";
+@import "./styles/etiquetas-form.css";
+@import "./styles/entrar.css";
+@import "./styles/conta.css";
+@import "./styles/prova-social.css";
+
+:root {
+  --ink: #14283f;
+  --muted: #5c7189;
+  --bg: #ffffff;
+  --bg-alt: #eef4fb;
+  --surface: #ffffff;
+  --accent: #1e6fd6;
+  --accent-dark: #1558b0;
+  --green: #1e6fd6;
+  --yellow: #cfe3fa;
+  --line: #d9e4f0;
+  --warn: #9a3412;
+  --wa: #128c7e;
+  --shadow: 0 18px 50px rgba(20, 40, 63, 0.08);
+  --pop-orange: #f26522;
+  --pop-yellow: #ffc425;
+  --pop-purple: #8e3aa8;
+  --pop-red: #e8503a;
+  --pop-green: #3d9b4f;
+  --pop-cyan: #2a9fd8;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}

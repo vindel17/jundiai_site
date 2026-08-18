@@ -1,0 +1,191 @@
+/* Home — hero de doação, caminhos doar/receber e bloco de compra. */
+
+.home-page {
+  padding: 0 0 2rem;
+}
+
+/* ---------- Hero ---------- */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.6rem 1rem 1.75rem;
+  border-bottom: 1px solid #cfe0f5;
+}
+
+.home-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(112, 168, 235, 0.32) 0 10%, transparent 34%),
+    radial-gradient(circle at 90% 20%, rgba(242, 101, 34, 0.12) 0 12%, transparent 36%),
+    linear-gradient(135deg, #e8f1fc 0%, #ffffff 58%, #eef5fd 100%);
+}
+
+.home-hero-inner {
+  position: relative;
+}
+
+.home-title {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.8rem, 7.6vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.home-title span {
+  color: var(--pop-orange);
+}
+
+.home-lead {
+  margin: 0.85rem 0 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ---------- Caminhos (doar / receber) ---------- */
+.home-paths {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.4rem;
+}
+
+.home-path {
+  position: relative;
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1rem 1.05rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(20, 40, 63, 0.05);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.home-path:hover {
+  border-color: #a9cbf2;
+  box-shadow: 0 10px 28px rgba(30, 111, 214, 0.14);
+}
+
+.home-path strong {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.08rem;
+  letter-spacing: -0.02em;
+}
+
+.home-path span {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.home-path-arrow {
+  margin-left: auto;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.home-path-primary {
+  border-color: var(--accent);
+  background: #e8f1fc;
+}
+
+.home-tag {
+  display: inline-flex;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--pop-yellow);
+  color: #6b4a00;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* ---------- Como funciona ---------- */
+.home-steps {
+  display: grid;
+  gap: 0.7rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-step {
+  display: grid;
+  grid-template-columns: 1.9rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.home-step-num {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.home-step-text strong {
+  display: block;
+  font-size: 0.98rem;
+  line-height: 1.3;
+}
+
+.home-step-text span {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ---------- Bloco de compra (CTA forte, abaixo da doação) ---------- */
+.home-buy {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.1rem 1rem 1.2rem;
+  border: 1px solid #a9cbf2;
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgba(30, 111, 214, 0.12);
+}
+
+.home-buy-values {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  line-height: 1.1;
+}
+
+.home-buy-old {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.home-buy-new {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.home-buy-note {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.home-buy-cta {
+  width: 100%;
+}

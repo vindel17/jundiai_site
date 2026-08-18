@@ -1,0 +1,267 @@
+/* Etiquetas — convite para a loja, passos e benefícios. */
+
+/* ---------- Convite para a loja ---------- */
+.store-invitation {
+  background: white;
+}
+
+.store-invitation-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.store-invitation-btn {
+  width: 100%;
+}
+
+.store-category-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.store-category-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--bg-alt);
+}
+
+.store-category-card > span {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: white;
+  font-size: 1.3rem;
+}
+
+.store-category-card h3,
+.store-category-card p {
+  margin: 0;
+}
+
+.store-category-card h3 {
+  font-size: 0.95rem;
+}
+
+.store-category-card p {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.store-category-card:nth-child(1) > span {
+  background: color-mix(in oklab, var(--pop-cyan) 18%, white);
+}
+
+.store-category-card:nth-child(2) > span {
+  background: color-mix(in oklab, var(--pop-yellow) 30%, white);
+}
+
+.store-category-card:nth-child(3) > span {
+  background: color-mix(in oklab, var(--pop-purple) 15%, white);
+}
+
+/* ---------- Passos e benefícios ---------- */
+.how-step {
+  position: relative;
+  display: flex;
+  min-height: auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 1.35rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: var(--surface);
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(30, 111, 214, 0.07);
+}
+
+.how-step-num {
+  position: absolute;
+  left: 0.85rem;
+  top: 0.85rem;
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--green);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.how-step:nth-child(1) .how-step-num {
+  background: var(--pop-cyan);
+}
+
+.how-step:nth-child(2) .how-step-num {
+  background: var(--pop-orange);
+}
+
+.how-step:nth-child(3) .how-step-num {
+  background: var(--pop-green);
+}
+
+.how-step:nth-child(1) {
+  border-bottom: 3px solid var(--pop-cyan);
+}
+
+.how-step:nth-child(2) {
+  border-bottom: 3px solid var(--pop-orange);
+}
+
+.how-step:nth-child(3) {
+  border-bottom: 3px solid var(--pop-green);
+}
+
+.how-step-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.how-step-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.benefit-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 1rem;
+}
+
+.benefit-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: #e3eefc;
+  font-size: 1.35rem;
+}
+
+.benefit-card:nth-child(1) .benefit-icon {
+  background: color-mix(in oklab, var(--pop-cyan) 18%, white);
+}
+
+.benefit-card:nth-child(2) .benefit-icon {
+  background: color-mix(in oklab, var(--pop-orange) 18%, white);
+}
+
+.benefit-card:nth-child(3) .benefit-icon {
+  background: color-mix(in oklab, var(--pop-purple) 15%, white);
+}
+
+.benefit-card:nth-child(4) .benefit-icon {
+  background: color-mix(in oklab, var(--pop-green) 18%, white);
+}
+
+.benefit-card:nth-child(1) {
+  border-top: 3px solid var(--pop-cyan);
+}
+
+.benefit-card:nth-child(2) {
+  border-top: 3px solid var(--pop-orange);
+}
+
+.benefit-card:nth-child(3) {
+  border-top: 3px solid var(--pop-purple);
+}
+
+.benefit-card:nth-child(4) {
+  border-top: 3px solid var(--pop-green);
+}
+
+.benefit-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.benefit-card p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.gift-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding: 1.4rem;
+  border-radius: 1.2rem;
+  background: #dcebfc;
+}
+
+.gift-cta strong {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.25rem;
+}
+
+.gift-cta p {
+  margin: 0.3rem 0 0;
+  color: #2c4a73;
+  font-size: 0.9rem;
+}
+
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 639px) {
+  .gift-cta-btn {
+    width: 100%;
+  }
+
+  .gift-cta {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 1.15rem;
+  }
+
+  .gift-cta strong {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .how-step {
+    min-height: 13rem;
+    padding: 1.6rem 1.25rem;
+  }
+
+  .store-invitation-head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .store-invitation-head > div {
+    max-width: 38rem;
+  }
+
+  .store-invitation-btn {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .store-category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

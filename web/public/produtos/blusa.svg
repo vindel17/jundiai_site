@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Blusa de moletom">
+  <rect width="120" height="120" fill="#eef4fb"/>
+  <path d="M46 16 30 24 8 62l16 10 14-26v56a4 4 0 0 0 4 4h36a4 4 0 0 0 4-4V46l14 26 16-10-22-38-16-8-14 14Z" fill="#fff" stroke="#14283f" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M46 16l14 14 14-14" fill="none" stroke="#1e6fd6" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M60 30v76" stroke="#1e6fd6" stroke-width="3" stroke-linecap="round"/>
+  <path d="M44 78h12M64 78h12" stroke="#9fc0e8" stroke-width="3" stroke-linecap="round"/>
+</svg>

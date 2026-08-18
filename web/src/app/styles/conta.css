@@ -1,0 +1,137 @@
+/* Conta unificada — Rede Circular · Compartilhe e Ganhe · Meu Kit */
+
+.conta-blocos {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+}
+
+.conta-card {
+  padding: 1.05rem 1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(20, 40, 63, 0.05);
+}
+
+.conta-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.conta-card h2 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.conta-card-lead {
+  margin: 0.4rem 0 0;
+  font-size: 0.87rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.conta-soon {
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--bg-alt);
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.conta-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.conta-acoes a {
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #a9cbf2;
+  background: #e8f1fc;
+  color: var(--accent);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.conta-lista {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+
+.conta-lista li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 0.7rem;
+  background: var(--bg-alt);
+  font-size: 0.9rem;
+}
+
+.conta-lista b {
+  font-weight: 600;
+}
+
+.conta-lista span {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.conta-lista .conta-falta {
+  color: var(--pop-orange);
+  font-weight: 600;
+}
+
+.conta-sair {
+  margin-top: 1.5rem;
+}
+
+.indicacao-link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.75rem;
+  background: var(--bg-alt);
+}
+
+.indicacao-link code {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.78rem;
+  color: var(--ink);
+}
+
+.indicacao-barra {
+  height: 0.45rem;
+  margin-top: 0.55rem;
+  border-radius: 999px;
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+
+.indicacao-barra i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
