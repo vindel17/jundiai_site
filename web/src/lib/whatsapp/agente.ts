@@ -59,7 +59,9 @@ async function despachar(
 
   if (escolheuDoar(escolha, texto)) return responderDoarEmBreve(sessao);
   if (escolheuProcurar(escolha, texto)) return iniciarProcuro(sessao);
-  if (escolheuComprar(escolha, texto)) return iniciarCompra(sessao);
+  if (escolheuComprar(escolha, texto)) {
+    return iniciarCompra(sessao, detectarModelo(escolha, texto));
+  }
   if (escolheuBeneficios(escolha, texto)) return mostrarBeneficios(sessao);
 
   const modelo = detectarModelo(escolha, texto);

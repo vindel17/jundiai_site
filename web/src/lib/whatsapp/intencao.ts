@@ -10,6 +10,7 @@ export const ID = {
   avisar: "procuro.avisar",
   comprar: "procuro.comprar",
   compraSite: "compra.site",
+  compraOutra: "compra.outra",
   verTodas: "procuro.ver_todas",
   verWa: "procuro.ver_wa",
   pedirPrefixo: "pedir.",

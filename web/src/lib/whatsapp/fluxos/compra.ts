@@ -1,9 +1,9 @@
 /**
- * Compra no WhatsApp — híbrido: foto por link + pedido no site.
+ * Compra no WhatsApp — híbrido: escolhe a peça, vê a foto, monta no site.
  * Sem checkout no chat (não há pagamento online ainda).
  */
 import { CATALOGO, formatBRL, PROMO_HERO } from "@/data/catalogo";
-import { enviarBotoes, enviarImagem, enviarTexto } from "../enviar";
+import { enviarBotoes, enviarImagem, enviarLista, enviarTexto } from "../enviar";
 import {
   detectarModelo,
   escolheuDoar,
@@ -17,58 +17,39 @@ import { urlSite } from "../site";
 import type { EntradaUsuario } from "../tipos";
 import { iniciarProcuro } from "./procuro";
 
-const FOTOS_NO_CHAT = 3;
-
-function pecasComFoto() {
-  return CATALOGO.filter((item) => item.image.endsWith(".jpg"));
-}
-
 function urlFotoCatalogo(caminho: string) {
   return urlSite(caminho);
 }
 
-export async function iniciarCompra(sessao: Sessao): Promise<ResultadoTurno> {
-  const comFoto = pecasComFoto();
-  const vitrine = comFoto.slice(0, FOTOS_NO_CHAT);
-  const precoDe = formatBRL(PROMO_HERO.priceToCents);
+export async function iniciarCompra(
+  sessao: Sessao,
+  modelo?: string | null,
+): Promise<ResultadoTurno> {
+  if (modelo) return mostrarPecaCatalogo(sessao, modelo);
 
-  await enviarTexto(
+  const precoDe = formatBRL(PROMO_HERO.priceToCents);
+  await enviarLista(
     sessao.waId,
     [
-      "Ótimo! 🛍️ Uniforme novo, preço de inauguração.",
+      "Ótimo! 🛍️ Qual peça você quer ver?",
       "",
-      `A partir de ${precoDe} por peça — você escolhe só o que precisa.`,
-      "Pedido e entrega fecham no site (ainda não tem pagamento aqui no Zap).",
+      `A partir de ${precoDe} por peça. Pedido e entrega fecham no site.`,
     ].join("\n"),
+    "Escolher peça",
+    [
+      ...CATALOGO.map((item) => ({
+        id: `${ID.pecaPrefixo}${item.id}`,
+        titulo: item.name,
+        descricao: `${formatBRL(item.priceCents)} · ${item.hint}`,
+      })),
+      {
+        id: ID.compraSite,
+        titulo: "Montar kit no site",
+        descricao: "Várias peças e tamanhos de uma vez",
+      },
+    ],
   );
-
-  for (const peca of vitrine) {
-    await enviarImagem(
-      sessao.waId,
-      urlFotoCatalogo(peca.image),
-      `${peca.name} · ${formatBRL(peca.priceCents)}`,
-    );
-  }
-
-  const resto = CATALOGO.filter((item) => !vitrine.some((v) => v.id === item.id))
-    .map((item) => `• ${item.name} · ${formatBRL(item.priceCents)}`)
-    .join("\n");
-
-  await enviarTexto(
-    sessao.waId,
-    ["As outras peças:", resto, "", "Montar o pedido:", urlSite("/comprar")].join(
-      "\n",
-    ),
-    { preview: true },
-  );
-
-  await enviarBotoes(sessao.waId, "Como prefere seguir?", [
-    { id: ID.compraSite, titulo: "Montar no site" },
-    { id: ID.menuProcurar, titulo: "Procurar doação" },
-    { id: "menu", titulo: "Menu" },
-  ]);
-
-  return { passo: "compra_vitrine", dados: {} };
+  return { passo: "compra_peca", dados: {} };
 }
 
 export async function continuarCompra(
@@ -80,6 +61,7 @@ export async function continuarCompra(
   if (querMenu(escolha, texto)) return mostrarMenu(sessao);
   if (escolheuDoar(escolha, texto)) return responderDoarEmBreve(sessao);
   if (escolheuProcurar(escolha, texto)) return iniciarProcuro(sessao);
+  if (escolha === ID.compraOutra) return iniciarCompra(sessao);
   if (escolha === ID.compraSite) return enviarLinkCompra(sessao);
 
   const modelo = detectarModelo(escolha, texto);
@@ -96,7 +78,7 @@ async function enviarLinkCompra(sessao: Sessao): Promise<ResultadoTurno> {
     ),
     { preview: true },
   );
-  return { passo: "compra_vitrine", dados: sessao.dados };
+  return { passo: "compra_peca", dados: sessao.dados };
 }
 
 async function mostrarPecaCatalogo(
@@ -120,6 +102,12 @@ async function mostrarPecaCatalogo(
     ["Para pedir esta peça, monte no site:", urlSite("/comprar")].join("\n"),
     { preview: true },
   );
+
+  await enviarBotoes(sessao.waId, "Como prefere seguir?", [
+    { id: ID.compraSite, titulo: "Montar no site" },
+    { id: ID.compraOutra, titulo: "Outra peça" },
+    { id: ID.menuProcurar, titulo: "Procurar doação" },
+  ]);
 
   return { passo: "compra_vitrine", dados: { modelo: modeloId } };
 }

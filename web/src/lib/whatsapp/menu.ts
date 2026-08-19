@@ -13,7 +13,7 @@ export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
       {
         id: ID.menuComprar,
         titulo: "Comprar",
-        descricao: "Ver fotos e montar o pedido no site",
+        descricao: "Escolher a peça, ver a foto e ir ao site",
       },
       {
         id: ID.menuProcurar,
