@@ -7,11 +7,13 @@
 
 import { carregarConversa, mensagemNova, salvarConversa } from "./conversa";
 import { mostrarBeneficios } from "./fluxos/beneficios";
+import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarProcuro, iniciarProcuro } from "./fluxos/procuro";
 import { perfilPorWaId } from "./identidade";
 import {
   detectarModelo,
   escolheuBeneficios,
+  escolheuComprar,
   escolheuDoar,
   escolheuProcurar,
   querMenu,
@@ -51,8 +53,13 @@ async function despachar(
     return continuarProcuro(sessao, entrada);
   }
 
+  if (sessao.passo.startsWith("compra_")) {
+    return continuarCompra(sessao, entrada);
+  }
+
   if (escolheuDoar(escolha, texto)) return responderDoarEmBreve(sessao);
   if (escolheuProcurar(escolha, texto)) return iniciarProcuro(sessao);
+  if (escolheuComprar(escolha, texto)) return iniciarCompra(sessao);
   if (escolheuBeneficios(escolha, texto)) return mostrarBeneficios(sessao);
 
   const modelo = detectarModelo(escolha, texto);

@@ -3,11 +3,13 @@ import { CATALOGO, TAMANHOS } from "@/data/catalogo";
 export const ID = {
   menuProcurar: "menu.procurar",
   menuDoar: "menu.doar",
+  menuComprar: "menu.comprar",
   menuBeneficios: "menu.beneficios",
   pecaPrefixo: "peca.",
   tamPrefixo: "tam.",
   avisar: "procuro.avisar",
   comprar: "procuro.comprar",
+  compraSite: "compra.site",
   verTodas: "procuro.ver_todas",
   verWa: "procuro.ver_wa",
   pedirPrefixo: "pedir.",
@@ -27,6 +29,19 @@ export function querMenu(escolha: string | null, texto: string) {
   const t = textoLimpo(texto);
   return /^(oi|ola|olaa|hey|eae|e ai|menu|inicio|voltar|oi,?\s*tudo bem\??)$/.test(
     t,
+  );
+}
+
+export function escolheuComprar(escolha: string | null, texto: string) {
+  if (escolha === ID.menuComprar || escolha === ID.compraSite) return true;
+  const t = textoLimpo(texto);
+  return (
+    t === "comprar" ||
+    t.startsWith("comprar ") ||
+    t.startsWith("quero comprar") ||
+    t.includes("uniforme novo") ||
+    t.includes("montar pedido") ||
+    t.includes("montar meu pedido")
   );
 }
 
