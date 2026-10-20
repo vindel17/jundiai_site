@@ -5,6 +5,7 @@ export const ID = {
   menuDoar: "menu.doar",
   menuComprar: "menu.comprar",
   menuBeneficios: "menu.beneficios",
+  menuReservar: "menu.reservar",
   pecaPrefixo: "peca.",
   tamPrefixo: "tam.",
   avisar: "procuro.avisar",
@@ -62,6 +63,12 @@ export function escolheuDoar(escolha: string | null, texto: string) {
   if (escolha === ID.menuDoar) return true;
   const t = textoLimpo(texto);
   return t === "doar" || t.startsWith("doar ") || t.startsWith("quero doar");
+}
+
+export function escolheuReservar(escolha: string | null, texto: string) {
+  if (escolha === ID.menuReservar) return true;
+  const t = textoLimpo(texto);
+  return t === "reservar" || t.startsWith("quero reservar") || t.startsWith("reservar uniforme");
 }
 
 export function escolheuBeneficios(escolha: string | null, texto: string) {

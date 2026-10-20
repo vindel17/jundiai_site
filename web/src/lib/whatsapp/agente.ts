@@ -5,10 +5,13 @@
  * continua em `lib/comandos/*` — daqui só sai conversa.
  */
 
+import { lerOrigem, origemDireta } from "@/lib/reserva/origem";
 import { carregarConversa, mensagemNova, salvarConversa } from "./conversa";
 import { mostrarBeneficios } from "./fluxos/beneficios";
 import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarProcuro, iniciarProcuro } from "./fluxos/procuro";
+import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
+import { manterRascunho } from "./fluxos/reserva-estado";
 import { perfilPorWaId } from "./identidade";
 import {
   detectarModelo,
@@ -16,6 +19,7 @@ import {
   escolheuComprar,
   escolheuDoar,
   escolheuProcurar,
+  escolheuReservar,
   querMenu,
 } from "./intencao";
 import { mostrarMenu, responderDoarEmBreve } from "./menu";
@@ -33,7 +37,7 @@ export async function processarEntrada(entrada: EntradaUsuario) {
     dados: gravada.dados,
   };
 
-  const turno = await despachar(sessao, entrada);
+  const turno = manterRascunho(sessao, await despachar(sessao, entrada));
   await salvarConversa(entrada.waId, {
     perfilId: turno.perfilId !== undefined ? turno.perfilId : sessao.perfilId,
     passo: turno.passo,
@@ -48,6 +52,22 @@ async function despachar(
   const { escolha, texto } = entrada;
 
   if (querMenu(escolha, texto)) return mostrarMenu(sessao);
+
+  if (
+    escolheuReservar(escolha, texto) &&
+    !sessao.passo.startsWith("reserva_")
+  ) {
+    return iniciarReserva(sessao, lerOrigem(texto) ?? origemDireta());
+  }
+
+  if (sessao.passo.startsWith("reserva_")) {
+    return continuarReserva(sessao, entrada);
+  }
+
+  const origem = lerOrigem(texto);
+  if (origem && (sessao.passo === "inicio" || sessao.passo === "menu")) {
+    return iniciarReserva(sessao, origem);
+  }
 
   if (sessao.passo.startsWith("procuro_")) {
     return continuarProcuro(sessao, entrada);

@@ -11,6 +11,11 @@ export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
     "Ver opções",
     [
       {
+        id: ID.menuReservar,
+        titulo: "Reservar uniforme",
+        descricao: "Escolher tamanhos, sem pagar agora",
+      },
+      {
         id: ID.menuComprar,
         titulo: "Comprar",
         descricao: "Escolher a peça, ver a foto e ir ao site",

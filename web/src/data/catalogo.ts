@@ -34,8 +34,7 @@ export const CATALOGO: CatalogoItem[] = [
     name: "Blusa",
     hint: "Blusa de frio para usar por cima",
     priceCents: 11000,
-    /** Ainda sem foto na pasta — troque quando tiver o arquivo */
-    image: "/produtos/blusa.svg",
+    image: "/produtos/blusa.jpg",
   },
   {
     id: "calca",
