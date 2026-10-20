@@ -140,9 +140,10 @@ export async function obterReserva(id: string) {
   return data ? paraLinha(data as LinhaBanco) : null;
 }
 
-export async function atualizarReserva(id: string, tamanhos: TamanhosKit, entrega: Entrega) {
+/** `entrega` nula mantém reservas antigas, feitas antes da pergunta de entrega. */
+export async function atualizarReserva(id: string, tamanhos: TamanhosKit, entrega: Entrega | null) {
   if (!reservaAberta()) return { erro: "O prazo para mudar tamanho terminou em 31 de dezembro." };
-  if (!tamanhosValidos(tamanhos) || !eEntrega(entrega)) {
+  if (!tamanhosValidos(tamanhos) || (entrega !== null && !eEntrega(entrega))) {
     return { erro: "Escolha ao menos uma peça, com tamanho da grade." };
   }
 

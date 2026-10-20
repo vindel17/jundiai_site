@@ -32,7 +32,7 @@ import {
 
 type Dados = Record<string, unknown>;
 
-function tamanhoDaEntrada(entrada: EntradaUsuario) {
+export function tamanhoDaEntrada(entrada: EntradaUsuario) {
   const bruto = entrada.escolha?.startsWith(ID.tamPrefixo)
     ? entrada.escolha.slice(ID.tamPrefixo.length)
     : entrada.texto;
@@ -72,7 +72,7 @@ export async function passoTamanhoUnico(
   return revisar(sessao.waId, mesmoTamanho(sessao.dados, tamanho));
 }
 
-function semEstaPeca(entrada: EntradaUsuario) {
+export function semEstaPeca(entrada: EntradaUsuario) {
   return entrada.escolha === SEM || /n[aã]o quero|sem (essa|esta)|pular/i.test(entrada.texto);
 }
 
@@ -112,7 +112,7 @@ export async function passoAjuda(sessao: Sessao, entrada: EntradaUsuario): Promi
   return perguntarAjuda(sessao.waId, sessao.dados);
 }
 
-function entregaEscolhida(entrada: EntradaUsuario) {
+export function entregaEscolhida(entrada: EntradaUsuario) {
   const texto = entrada.texto.toLowerCase();
   if (entrada.escolha === ENTREGA_CASA || /casa|entreg/.test(texto)) return "casa";
   if (entrada.escolha === ENTREGA_LOJA || /loja|retir/.test(texto)) return "loja";

@@ -119,7 +119,7 @@ export async function passoOutro(sessao: Sessao, entrada: EntradaUsuario): Promi
   if (entrada.escolha === OUTRO_NAO) {
     await enviarTexto(
       sessao.waId,
-      "Combinado! Quando o kit estiver disponível, avisamos nesta conversa.",
+      "Combinado! Quando o kit estiver disponível, avisamos nesta conversa. Para ver ou ajustar, toque em *Minhas reservas* no menu.",
     );
     return mostrarMenu(sessao);
   }

@@ -121,8 +121,8 @@ export async function perguntarTamanhoUnico(waId: string, dados: Dados): Promise
   return { passo: "reserva_tamanho_unico", dados };
 }
 
-export async function perguntarPeca(waId: string, dados: Dados): Promise<ResultadoTurno> {
-  const peca = pecaAtual(dados);
+/** Foto da peça e lista de tamanhos com "Não quero esta peça". Usada também em "Minhas reservas". */
+export async function enviarPerguntaPeca(waId: string, peca: PecaKit, nomeAluno: string) {
   const quantidade =
     peca.quantidade > 1 ? `${peca.quantidade} peças, no mesmo tamanho` : "1 peça";
   const titulo = `${peca.nome} (${quantidade})`;
@@ -130,13 +130,18 @@ export async function perguntarPeca(waId: string, dados: Dados): Promise<Resulta
   if (foto) await enviarImagem(waId, urlSite(foto), titulo);
   await enviarLista(
     waId,
-    `${foto ? "" : `${titulo}\n`}Qual tamanho para ${aluno(dados)}?`,
+    `${foto ? "" : `${titulo}\n`}Qual tamanho para ${nomeAluno}?`,
     "Escolher tamanho",
     [
       ...itensTamanho(peca),
       { id: SEM, titulo: "Não quero esta peça", descricao: "Reservar o kit sem ela" },
     ],
   );
+}
+
+export async function perguntarPeca(waId: string, dados: Dados): Promise<ResultadoTurno> {
+  const peca = pecaAtual(dados);
+  await enviarPerguntaPeca(waId, peca, aluno(dados));
   return { passo: "reserva_tamanho", dados: { ...dados, peca: peca.chave } };
 }
 
@@ -155,7 +160,12 @@ export async function perguntarAjuda(waId: string, dados: Dados): Promise<Result
 
 export async function perguntarEntrega(waId: string, dados: Dados): Promise<ResultadoTurno> {
   const tamanhos = tamanhosDosDados(dados);
-  const completo = tamanhos ? kitCompleto(tamanhos) : true;
+  await enviarPerguntaEntrega(waId, tamanhos ? kitCompleto(tamanhos) : true);
+  return { passo: "reserva_entrega", dados };
+}
+
+/** Botões de casa ou loja, com a regra do frete. Usada também em "Minhas reservas". */
+export async function enviarPerguntaEntrega(waId: string, completo: boolean) {
   await enviarBotoes(
     waId,
     [
@@ -172,7 +182,6 @@ export async function perguntarEntrega(waId: string, dados: Dados): Promise<Resu
       { id: ENTREGA_LOJA, titulo: "Retirar na loja" },
     ],
   );
-  return { passo: "reserva_entrega", dados };
 }
 
 /** Resumo para confirmar. Antes dele, garante ao menos uma peça e a forma de receber. */

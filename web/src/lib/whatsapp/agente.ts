@@ -9,6 +9,7 @@ import { lerOrigem, origemDireta } from "@/lib/reserva/origem";
 import { carregarConversa, mensagemNova, salvarConversa } from "./conversa";
 import { mostrarBeneficios } from "./fluxos/beneficios";
 import { continuarCompra, iniciarCompra } from "./fluxos/compra";
+import { continuarMinhasReservas, iniciarMinhasReservas } from "./fluxos/minhas-reservas";
 import { continuarProcuro, iniciarProcuro } from "./fluxos/procuro";
 import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
 import { manterRascunho } from "./fluxos/reserva-estado";
@@ -18,6 +19,7 @@ import {
   escolheuBeneficios,
   escolheuComprar,
   escolheuDoar,
+  escolheuMinhasReservas,
   escolheuProcurar,
   escolheuReservar,
   querMenu,
@@ -52,6 +54,11 @@ async function despachar(
   const { escolha, texto } = entrada;
 
   if (querMenu(escolha, texto)) return mostrarMenu(sessao);
+
+  if (escolheuMinhasReservas(escolha, texto) && !sessao.passo.startsWith("reserva_")) {
+    return iniciarMinhasReservas(sessao);
+  }
+  if (sessao.passo.startsWith("minhas_")) return continuarMinhasReservas(sessao, entrada);
 
   if (
     escolheuReservar(escolha, texto) &&

@@ -16,6 +16,11 @@ export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
         descricao: "Escolher tamanhos, sem pagar agora",
       },
       {
+        id: ID.menuMinhasReservas,
+        titulo: "Minhas reservas",
+        descricao: "Ver e ajustar o que você reservou",
+      },
+      {
         id: ID.menuComprar,
         titulo: "Comprar",
         descricao: "Escolher a peça, ver a foto e ir ao site",

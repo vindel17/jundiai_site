@@ -6,6 +6,7 @@ export const ID = {
   menuComprar: "menu.comprar",
   menuBeneficios: "menu.beneficios",
   menuReservar: "menu.reservar",
+  menuMinhasReservas: "menu.minhas_reservas",
   pecaPrefixo: "peca.",
   tamPrefixo: "tam.",
   avisar: "procuro.avisar",
@@ -69,6 +70,12 @@ export function escolheuReservar(escolha: string | null, texto: string) {
   if (escolha === ID.menuReservar) return true;
   const t = textoLimpo(texto);
   return t === "reservar" || t.startsWith("quero reservar") || t.startsWith("reservar uniforme");
+}
+
+export function escolheuMinhasReservas(escolha: string | null, texto: string) {
+  if (escolha === ID.menuMinhasReservas) return true;
+  const t = textoLimpo(texto);
+  return /^(ver )?(minhas? reservas?|minha pre-?reserva)$/.test(t) || t.startsWith("ver minha reserva");
 }
 
 export function escolheuBeneficios(escolha: string | null, texto: string) {
