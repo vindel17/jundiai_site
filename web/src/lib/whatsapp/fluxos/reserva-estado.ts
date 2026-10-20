@@ -1,4 +1,5 @@
-import { eTamanhoKit, pecasDoKit, type KitGenero, type PecaKit, type TamanhosKit } from "@/lib/reserva/kit";
+import { eEntrega, type Entrega } from "@/lib/reserva/entrega";
+import { pecasDoKit, tamanhoOuSem, type KitGenero, type PecaKit, type TamanhosKit } from "@/lib/reserva/kit";
 import { origemDireta, type Origem } from "@/lib/reserva/origem";
 import { dadoTexto, type ResultadoTurno, type Sessao } from "../sessao";
 
@@ -20,9 +21,12 @@ export const MESMA_ESCOLA = "reserva.escola.mesma";
 export const OUTRA_ESCOLA = "reserva.escola.outra";
 export const RETOMAR = "reserva.retomar";
 export const RECOMECAR = "reserva.recomecar";
+export const SEM = "reserva.sem";
+export const ENTREGA_CASA = "reserva.entrega.casa";
+export const ENTREGA_LOJA = "reserva.entrega.loja";
 
 /** Campo em correção: depois de respondido, a conversa volta ao resumo. */
-export type CampoCorrecao = "escola" | "aluno" | "kit" | "peca";
+export type CampoCorrecao = "escola" | "aluno" | "kit" | "peca" | "entrega";
 
 const RASCUNHO = "reservaRascunho";
 const PASSOS_CONCLUIDOS = ["reserva_retomar", "reserva_outro", "reserva_outra_escola"];
@@ -66,15 +70,20 @@ export function kitDosDados(dados: Record<string, unknown>): KitGenero {
   return dadoTexto(dados, "kit") === "feminino" ? "feminino" : "masculino";
 }
 
-/** `null` enquanto faltar o tamanho de alguma peça. */
+/** `null` enquanto faltar responder alguma peça, com tamanho ou "Não quero". */
 export function tamanhosDosDados(dados: Record<string, unknown>): TamanhosKit | null {
   const tamanhos: Partial<TamanhosKit> = {};
   for (const peca of pecasDoKit(kitDosDados(dados))) {
-    const valor = dadoTexto(dados, peca.chave);
-    if (!eTamanhoKit(valor)) return null;
+    const valor = tamanhoOuSem(dadoTexto(dados, peca.chave));
+    if (valor === undefined) return null;
     tamanhos[peca.chave] = valor;
   }
   return tamanhos as TamanhosKit;
+}
+
+export function entregaDosDados(dados: Record<string, unknown>): Entrega | null {
+  const valor = dadoTexto(dados, "entrega");
+  return eEntrega(valor) ? valor : null;
 }
 
 export function pecaAtual(dados: Record<string, unknown>): PecaKit {

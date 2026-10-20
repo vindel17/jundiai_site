@@ -35,7 +35,13 @@ import {
   seguir,
 } from "./reserva-perguntas";
 import { passoConfirma, passoCorrigir, passoOutraEscola, passoOutro } from "./reserva-revisao";
-import { passoAjuda, passoModo, passoTamanho, passoTamanhoUnico } from "./reserva-tamanhos";
+import {
+  passoAjuda,
+  passoEntrega,
+  passoModo,
+  passoTamanho,
+  passoTamanhoUnico,
+} from "./reserva-tamanhos";
 
 type Passo = (sessao: Sessao, entrada: EntradaUsuario) => Promise<ResultadoTurno>;
 
@@ -48,6 +54,7 @@ const PASSOS: Record<string, Passo> = {
   reserva_tamanho_unico: passoTamanhoUnico,
   reserva_tamanho: passoTamanho,
   reserva_ajuda: passoAjuda,
+  reserva_entrega: passoEntrega,
   reserva_confirma: passoConfirma,
   reserva_corrigir: passoCorrigir,
   reserva_outro: passoOutro,
@@ -83,9 +90,11 @@ export async function iniciarReserva(
   await enviarTexto(
     sessao.waId,
     [
-      "Aqui você faz a pré-reserva gratuita do kit de uniforme 2027. Não tem pagamento agora e não obriga a compra.",
+      "Com a pré-reserva, você garante que vai encontrar o uniforme no tamanho certo antes de começar as aulas. 🎒",
       "",
-      "O kit tem 6 peças: 2 camisetas manga curta no mesmo tamanho, 1 camiseta manga longa, 1 bermuda ou short-saia, 1 calça e 1 blusa de frio.",
+      "É gratuita: não tem pagamento agora e não obriga a compra.",
+      "",
+      "O kit tem 6 peças: 2 camisetas manga curta no mesmo tamanho, 1 camiseta manga longa, 1 bermuda ou short-saia, 1 calça e 1 blusa de frio. Se não precisar de alguma, é só deixar de fora.",
       "",
       "Quando seu kit estiver pronto, avisamos nesta conversa e você decide se deseja finalizar a compra.",
     ].join("\n"),

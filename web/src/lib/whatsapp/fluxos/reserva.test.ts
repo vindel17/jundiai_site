@@ -91,8 +91,11 @@ async function ateOModo() {
 async function ateORevisar() {
   await ateOModo();
   await enviar({ escolha: "reserva.modo.unico" });
-  return enviar({ escolha: "tam.8" });
+  await enviar({ escolha: "tam.8" });
+  return enviar({ escolha: "reserva.entrega.loja" });
 }
+
+const TAMANHOS_DA_LISTA = ["tam.4", "tam.6", "tam.8", "tam.10", "tam.12", "tam.14", "tam.P", "tam.M", "tam.G"];
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"] });
@@ -109,7 +112,9 @@ afterEach(() => {
 describe("pré-reserva pelo WhatsApp", () => {
   it("pede escola e nome, mostra os kits e usa o nome informado", async () => {
     const inicio = await enviar({ texto: "reservar" });
+    expect(inicio[0].texto.split("\n")[0]).toContain("antes de começar as aulas");
     expect(inicio[0].texto).toContain("não obriga a compra");
+    expect(inicio[0].texto).toContain("é só deixar de fora");
     expect(ultima(inicio).texto).toContain("nome da escola do(a) aluno(a)");
 
     const lista = ultima(await enviar({ texto: ESCOLA }));
@@ -124,17 +129,14 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(textos).toContain("cada uma com 6 peças");
     expect(textos).toContain("Kit com bermuda");
     expect(textos).toContain("1 short-saia, 1 calça e 1 blusa de frio");
-    const fotos = kits.filter((mensagem) => mensagem.tipo === "imagem").map((mensagem) => mensagem.texto);
-    expect(fotos.join("\n")).toContain("/produtos/camiseta-manga-curta.jpg");
-    expect(fotos.join("\n")).toContain("/produtos/bermuda.jpg");
-    expect(fotos.join("\n")).toContain("/produtos/short-saia.jpg");
-    expect(fotos.join("\n")).toContain("/produtos/blusa.jpg");
-    expect(fotos).toHaveLength(6);
+    expect(textos).not.toContain("/produtos/camiseta-manga-curta.jpg");
+    expect(kits).toHaveLength(4);
     expect(ultima(kits).texto).toContain("Qual opção você deseja para Lucas?");
     expect(titulos(ultima(kits))).toEqual(["Com bermuda", "Com short-saia"]);
 
     const modo = ultima(await enviar({ escolha: "reserva.kit.masculino" }));
-    expect(modo.texto).toBe("Como prefere escolher os tamanhos?");
+    expect(modo.texto).toContain("Como prefere escolher os tamanhos?");
+    expect(modo.texto).toContain("deixar de fora");
     expect(titulos(modo)).toEqual(["Um tamanho para tudo", "Escolher por peça", "Ajuda com medidas"]);
   });
 
@@ -143,6 +145,7 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(resumo.texto).toContain("Confira a pré-reserva de Lucas");
     expect(resumo.texto).toContain("Camiseta manga curta (2 peças): 8");
     expect(resumo.texto).toContain("Bermuda: 8");
+    expect(resumo.texto).toContain("Como receber: Retirar na loja");
     expect(resumo.texto).toContain("não tem pagamento agora e não obriga a compra");
 
     const fim = await enviar({ escolha: "reserva.confirma" });
@@ -152,9 +155,11 @@ describe("pré-reserva pelo WhatsApp", () => {
         escola: ESCOLA,
         kit: "masculino",
         tamanhos: { curta: "8", longa: "8", inferior: "8", calca: "8", blusa: "8" },
+        entrega: "loja",
       }),
     );
     expect(fim[0].texto).toContain("Pré-reserva de Lucas confirmada");
+    expect(fim[0].texto).toContain("garantido para o começo das aulas");
     expect(fim[0].texto).toContain("/i/abcd1234");
     expect(titulos(ultima(fim))).toEqual(["Adicionar aluno(a)", "Concluir"]);
   });
@@ -180,12 +185,11 @@ describe("pré-reserva pelo WhatsApp", () => {
     const curta = ultima(await enviar({ escolha: "reserva.modo.peca" }));
     const descricao = (tamanho: string) =>
       curta.opcoes.find((opcao) => opcao.id === `tam.${tamanho}`)?.descricao;
-    expect(ids(curta)).toEqual([
-      "tam.4", "tam.6", "tam.8", "tam.10", "tam.12", "tam.14", "tam.P", "tam.M", "tam.G", "tam.GG",
-    ]);
+    expect(ids(curta)).toEqual([...TAMANHOS_DA_LISTA, "reserva.sem"]);
+    expect(titulos(curta)).toContain("Não quero esta peça");
     expect(descricao("4")).toBe("Comprimento 45 cm, largura do corpo 35 cm");
     expect(descricao("10")).toBe("Comprimento 57 cm, largura do corpo 41 cm");
-    expect(descricao("GG")).toBe("Comprimento 81 cm, largura do corpo 61 cm");
+    expect(descricao("G")).toBe("Comprimento 77 cm, largura do corpo 57 cm");
 
     const longa = ultima(await enviar({ escolha: "tam.6" }));
     expect(longa.opcoes.find((opcao) => opcao.id === "tam.14")?.descricao).toBe(
@@ -197,14 +201,20 @@ describe("pré-reserva pelo WhatsApp", () => {
       "Cintura com elástico relaxado 22 cm, quadril 34 cm",
     );
     const calca = ultima(await enviar({ escolha: "tam.8" }));
-    expect(calca.opcoes.find((opcao) => opcao.id === "tam.GG")?.descricao).toBe(
-      "Cintura com elástico relaxado 40 cm, quadril 60 cm",
+    expect(calca.opcoes.find((opcao) => opcao.id === "tam.G")?.descricao).toBe(
+      "Cintura com elástico relaxado 38 cm, quadril 56 cm",
     );
     const blusa = ultima(await enviar({ escolha: "tam.10" }));
     expect(blusa.opcoes.find((opcao) => opcao.id === "tam.P")?.descricao).toBe(
       "Comprimento da frente 70 cm, largura do corpo 50 cm",
     );
-    const resumo = ultima(await enviar({ escolha: "tam.12" }));
+    const entrega = ultima(await enviar({ escolha: "tam.12" }));
+    expect(entrega.texto).toContain("O kit completo tem entrega grátis em casa.");
+    expect(entrega.texto).toContain("dá para mudar depois");
+    expect(titulos(entrega)).toEqual(["Receber em casa", "Retirar na loja"]);
+
+    const resumo = ultima(await enviar({ escolha: "reserva.entrega.casa" }));
+    expect(resumo.texto).toContain("Como receber: Receber em casa, com entrega grátis");
     expect(resumo.texto).toContain("Camiseta manga curta (2 peças): 6");
     expect(resumo.texto).toContain("Blusa de frio: 12");
   });
@@ -216,7 +226,8 @@ describe("pré-reserva pelo WhatsApp", () => {
 
     const curta = (await enviar({ escolha: "reserva.ajuda.curta" })).find((m) => m.tipo === "texto")!;
     expect(curta.texto).toContain("Tamanho 6: comprimento 49 cm, largura do corpo 37 cm");
-    expect(curta.texto).toContain("Tamanho GG: comprimento 81 cm, largura do corpo 61 cm");
+    expect(curta.texto).toContain("Tamanho G: comprimento 77 cm, largura do corpo 57 cm");
+    expect(curta.texto).not.toContain("GG");
     expect(curta.texto).not.toContain("conferência");
 
     await enviar({ escolha: "reserva.ajuda_outra" });
@@ -229,7 +240,7 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(saia).not.toMatch(/\d+ cm/);
 
     const modo = ultima(await enviar({ escolha: "reserva.ajuda_fim" }));
-    expect(modo.texto).toBe("Como prefere escolher os tamanhos?");
+    expect(modo.texto).toContain("Como prefere escolher os tamanhos?");
   });
 
   it("corrige só o campo escolhido e volta ao resumo", async () => {
@@ -262,10 +273,57 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(titulos(pergunta)).toEqual(["Continuar", "Começar de novo"]);
 
     const retomada = ultima(await enviar({ escolha: "reserva.retomar" }));
-    expect(retomada.texto).toBe("Como prefere escolher os tamanhos?");
+    expect(retomada.texto).toContain("Como prefere escolher os tamanhos?");
     await enviar({ escolha: "reserva.modo.unico" });
-    const resumo = ultima(await enviar({ escolha: "tam.4" }));
+    await enviar({ escolha: "tam.4" });
+    expect(passo()).toBe("reserva_entrega");
+    const resumo = ultima(await enviar({ escolha: "reserva.entrega.loja" }));
     expect(resumo.texto).toContain(`Escola: ${ESCOLA}`);
+  });
+
+  it("deixa a calça de fora e avisa que a entrega em casa deixa de ser grátis", async () => {
+    await ateOModo();
+    await enviar({ escolha: "reserva.modo.peca" });
+    await enviar({ escolha: "tam.8" });
+    await enviar({ escolha: "tam.8" });
+    await enviar({ escolha: "tam.8" });
+    await enviar({ escolha: "reserva.sem" });
+    const entrega = ultima(await enviar({ escolha: "tam.10" }));
+    expect(entrega.texto).toContain("Sem alguma peça do kit, a entrega em casa custa R$");
+    expect(entrega.texto).toContain("15,00");
+
+    const resumo = ultima(await enviar({ escolha: "reserva.entrega.casa" }));
+    expect(resumo.texto).toContain("Calça: sem esta peça");
+    expect(resumo.texto).toContain("Receber em casa, com entrega de R$");
+
+    await enviar({ escolha: "reserva.confirma" });
+    expect(simulado.gravar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tamanhos: { curta: "8", longa: "8", inferior: "8", calca: null, blusa: "10" },
+        entrega: "casa",
+      }),
+    );
+  });
+
+  it("não deixa reservar sem nenhuma peça", async () => {
+    await ateOModo();
+    await enviar({ escolha: "reserva.modo.peca" });
+    for (let i = 0; i < 4; i += 1) await enviar({ texto: "não quero" });
+    const fim = await enviar({ escolha: "reserva.sem" });
+    expect(fim[0].texto).toBe("Escolha ao menos uma peça para reservar.");
+    expect(passo()).toBe("reserva_modo");
+  });
+
+  it("corrige a forma de receber pelo resumo", async () => {
+    await ateORevisar();
+    const campos = ultima(await enviar({ escolha: "reserva.corrigir" }));
+    expect(campos.opcoes).toHaveLength(10);
+    expect(ids(campos)).toContain("reserva.cor.entrega");
+
+    await enviar({ escolha: "reserva.cor.entrega" });
+    const resumo = ultima(await enviar({ escolha: "reserva.entrega.casa" }));
+    expect(passo()).toBe("reserva_confirma");
+    expect(resumo.texto).toContain("Receber em casa, com entrega grátis");
   });
 
   it("adiciona outro(a) aluno(a) na mesma escola sem repetir o link", async () => {

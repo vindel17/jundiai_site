@@ -1,5 +1,5 @@
 import { fotoDaPeca } from "@/lib/reserva/fotos";
-import { pecasDoKit, proximaPeca, tamanhoKit } from "@/lib/reserva/kit";
+import { SEM_PECA, pecasDoKit, proximaPeca, tamanhoKit } from "@/lib/reserva/kit";
 import { textoMedidas } from "@/lib/reserva/medidas";
 import { enviarBotoes, enviarImagem, enviarTexto } from "../enviar";
 import { ID } from "../intencao";
@@ -10,14 +10,19 @@ import {
   AJUDA,
   AJUDA_FIM,
   AJUDA_OUTRA,
+  ENTREGA_CASA,
+  ENTREGA_LOJA,
   MODO_AJUDA,
   MODO_PECA,
   MODO_UNICO,
+  SEM,
   kitDosDados,
   pecaAtual,
+  semCorrecao,
 } from "./reserva-estado";
 import {
   perguntarAjuda,
+  perguntarEntrega,
   perguntarModo,
   perguntarPeca,
   perguntarTamanhoUnico,
@@ -67,9 +72,13 @@ export async function passoTamanhoUnico(
   return revisar(sessao.waId, mesmoTamanho(sessao.dados, tamanho));
 }
 
+function semEstaPeca(entrada: EntradaUsuario) {
+  return entrada.escolha === SEM || /n[aã]o quero|sem (essa|esta)|pular/i.test(entrada.texto);
+}
+
 export async function passoTamanho(sessao: Sessao, entrada: EntradaUsuario): Promise<ResultadoTurno> {
   const peca = pecaAtual(sessao.dados);
-  const tamanho = tamanhoDaEntrada(entrada);
+  const tamanho = semEstaPeca(entrada) ? SEM_PECA : tamanhoDaEntrada(entrada);
   if (!tamanho) return perguntarPeca(sessao.waId, sessao.dados);
 
   const dados = { ...sessao.dados, [peca.chave]: tamanho };
@@ -101,4 +110,17 @@ export async function passoAjuda(sessao: Sessao, entrada: EntradaUsuario): Promi
   }
   if (escolha === AJUDA_FIM) return perguntarModo(sessao.waId, sessao.dados);
   return perguntarAjuda(sessao.waId, sessao.dados);
+}
+
+function entregaEscolhida(entrada: EntradaUsuario) {
+  const texto = entrada.texto.toLowerCase();
+  if (entrada.escolha === ENTREGA_CASA || /casa|entreg/.test(texto)) return "casa";
+  if (entrada.escolha === ENTREGA_LOJA || /loja|retir/.test(texto)) return "loja";
+  return null;
+}
+
+export async function passoEntrega(sessao: Sessao, entrada: EntradaUsuario): Promise<ResultadoTurno> {
+  const entrega = entregaEscolhida(entrada);
+  if (!entrega) return perguntarEntrega(sessao.waId, sessao.dados);
+  return revisar(sessao.waId, semCorrecao({ ...sessao.dados, entrega }));
 }

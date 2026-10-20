@@ -1,7 +1,9 @@
 import { randomBytes } from "node:crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { eEntrega, type Entrega } from "./entrega";
 import { escolaValida } from "./escolas";
-import { eTamanhoKit, pecasDoKit, type KitGenero, type TamanhosKit } from "./kit";
+import { tamanhosValidos, type KitGenero, type TamanhosKit } from "./kit";
+import { colunasTamanho } from "./consultas";
 import { type CanalOrigem, type Origem } from "./origem";
 
 const DUPLICADO = "23505";
@@ -13,6 +15,7 @@ export type ReservaNova = {
   aluno: string;
   kit: KitGenero;
   tamanhos: TamanhosKit;
+  entrega: Entrega;
 };
 
 export type ReservaGravada = {
@@ -91,25 +94,24 @@ export async function gravarReserva(entrada: ReservaNova): Promise<ReservaGravad
   const aluno = entrada.aluno.trim().slice(0, 40);
   if (!numero || aluno.length < 2) throw new Error("Reserva incompleta.");
   if (!escolaValida(entrada.escola)) throw new Error("Escola fora da lista.");
-  if (pecasDoKit(entrada.kit).some((peca) => !eTamanhoKit(entrada.tamanhos[peca.chave]))) {
-    throw new Error("Tamanho inválido.");
-  }
+  if (!tamanhosValidos(entrada.tamanhos)) throw new Error("Tamanho inválido.");
+  if (!eEntrega(entrada.entrega)) throw new Error("Entrega inválida.");
 
   const db = createSupabaseAdminClient();
   const codigo = await garantirFamilia(numero);
   const desde = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-  const recente = await db
+  let consulta = db
     .from("reserva")
     .select("id")
     .eq("telefone", numero)
     .eq("escola", entrada.escola)
     .eq("aluno_nome", aluno)
     .eq("kit", entrada.kit)
-    .eq("tamanho_curta", entrada.tamanhos.curta)
-    .eq("tamanho_longa", entrada.tamanhos.longa)
-    .eq("tamanho_inferior", entrada.tamanhos.inferior)
-    .eq("tamanho_calca", entrada.tamanhos.calca)
-    .eq("tamanho_blusa", entrada.tamanhos.blusa)
+    .eq("entrega", entrada.entrega);
+  for (const [coluna, tamanho] of Object.entries(colunasTamanho(entrada.tamanhos))) {
+    consulta = tamanho === null ? consulta.is(coluna, null) : consulta.eq(coluna, tamanho);
+  }
+  const recente = await consulta
     .gte("criado_em", desde)
     .order("criado_em", { ascending: false })
     .limit(1)
@@ -131,11 +133,8 @@ export async function gravarReserva(entrada: ReservaNova): Promise<ReservaGravad
       escola: entrada.escola,
       aluno_nome: aluno,
       kit: entrada.kit,
-      tamanho_curta: entrada.tamanhos.curta,
-      tamanho_longa: entrada.tamanhos.longa,
-      tamanho_inferior: entrada.tamanhos.inferior,
-      tamanho_calca: entrada.tamanhos.calca,
-      tamanho_blusa: entrada.tamanhos.blusa,
+      ...colunasTamanho(entrada.tamanhos),
+      entrega: entrada.entrega,
     })
     .select("id")
     .single();

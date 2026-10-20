@@ -14,6 +14,7 @@ import {
   OUTRA_ESCOLA,
   OUTRO_NAO,
   OUTRO_SIM,
+  entregaDosDados,
   guardarOrigem,
   kitDosDados,
   origemDosDados,
@@ -24,6 +25,7 @@ import {
 import {
   mostrarKits,
   perguntarCorrecao,
+  perguntarEntrega,
   perguntarEscola,
   perguntarModo,
   perguntarNome,
@@ -41,6 +43,8 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
 
   const tamanhos = tamanhosDosDados(sessao.dados);
   if (!tamanhos) return perguntarModo(sessao.waId, sessao.dados);
+  const entrega = entregaDosDados(sessao.dados);
+  if (!entrega) return perguntarEntrega(sessao.waId, sessao.dados);
   const aluno = dadoTexto(sessao.dados, "aluno");
 
   let codigoIndicacao: string;
@@ -52,6 +56,7 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
       aluno,
       kit: kitDosDados(sessao.dados),
       tamanhos,
+      entrega,
     });
     codigoIndicacao = gravada.codigoIndicacao;
   } catch (erro) {
@@ -62,6 +67,8 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
 
   const linhas = [
     `Pré-reserva de ${aluno} confirmada! ✅`,
+    "",
+    `O uniforme de ${aluno} fica garantido para o começo das aulas.`,
     "",
     "Não tem pagamento agora e não obriga a compra. Quando o kit estiver disponível, avisamos nesta conversa.",
   ];
@@ -79,6 +86,7 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
   return perguntarOutro(sessao.waId, {
     ...guardarOrigem(origemDosDados(sessao.dados)),
     escola: dadoTexto(sessao.dados, "escola"),
+    entrega,
     linkEnviado: true,
   });
 }
@@ -99,6 +107,7 @@ export async function passoCorrigir(sessao: Sessao, entrada: EntradaUsuario): Pr
   if (campo === "aluno") return perguntarNome(sessao.waId, marcar("aluno"));
   if (campo === "kit") return mostrarKits(sessao.waId, marcar("kit"));
   if (campo === "tamanhos") return perguntarModo(sessao.waId, sessao.dados);
+  if (campo === "entrega") return perguntarEntrega(sessao.waId, marcar("entrega"));
 
   const peca = pecasDoKit(kitDosDados(sessao.dados)).find((item) => item.chave === campo);
   if (peca) return perguntarPeca(sessao.waId, marcar("peca", { peca: peca.chave }));

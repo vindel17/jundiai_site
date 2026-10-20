@@ -3,9 +3,19 @@
  * Quem volta à conversa recebe a mesma pergunta do passo em que parou.
  */
 
-import { fotoDaPeca } from "@/lib/reserva/fotos";
-import { TAMANHOS_KIT } from "@/lib/reserva/kit";
-import { descricaoKit, pecasDoKit, resumoTamanhos, rotuloKit, type PecaKit } from "@/lib/reserva/kit";
+import { freteKitIncompleto, rotuloEntrega } from "@/lib/reserva/entrega";
+import { fotoDaPeca, fotoDoKit } from "@/lib/reserva/fotos";
+import {
+  TAMANHOS_KIT,
+  descricaoKit,
+  kitCompleto,
+  pecasDoKit,
+  resumoTamanhos,
+  rotuloKit,
+  temAlgumaPeca,
+  type KitGenero,
+  type PecaKit,
+} from "@/lib/reserva/kit";
 import { rotuloMedida } from "@/lib/reserva/medidas";
 import { enviarBotoes, enviarImagem, enviarLista, enviarTexto } from "../enviar";
 import { dadoTexto, type ResultadoTurno } from "../sessao";
@@ -15,6 +25,8 @@ import {
   CONFIRMA,
   COR,
   CORRIGIR,
+  ENTREGA_CASA,
+  ENTREGA_LOJA,
   KIT_F,
   KIT_M,
   MESMA_ESCOLA,
@@ -24,7 +36,9 @@ import {
   OUTRA_ESCOLA,
   OUTRO_NAO,
   OUTRO_SIM,
+  SEM,
   corrigindo,
+  entregaDosDados,
   kitDosDados,
   pecaAtual,
   semCorrecao,
@@ -57,45 +71,35 @@ export async function botoesKit(waId: string, texto: string) {
   ]);
 }
 
-async function enviarPeca(waId: string, peca: PecaKit, legenda: string) {
-  const foto = fotoDaPeca(peca);
+async function enviarKit(waId: string, kit: KitGenero) {
+  const legenda = `Kit ${rotuloKit(kit).toLowerCase()}\n${descricaoKit(kit)}`;
+  const foto = fotoDoKit(kit);
   if (foto) await enviarImagem(waId, urlSite(foto), legenda);
   else await enviarTexto(waId, legenda);
 }
 
 export async function mostrarKits(waId: string, dados: Dados): Promise<ResultadoTurno> {
   await enviarTexto(waId, "Veja as duas opções de kit, cada uma com 6 peças. 😊");
-  const kit = pecasDoKit("masculino");
-  const saia = pecasDoKit("feminino").find((peca) => peca.chave === "inferior");
-  for (const peca of kit) {
-    if (peca.chave === "inferior") {
-      await enviarPeca(
-        waId,
-        peca,
-        `Kit ${rotuloKit("masculino").toLowerCase()}\n${descricaoKit("masculino")}`,
-      );
-      if (saia) {
-        await enviarPeca(
-          waId,
-          saia,
-          `Kit ${rotuloKit("feminino").toLowerCase()}\n${descricaoKit("feminino")}`,
-        );
-      }
-      continue;
-    }
-    const quantidade = peca.quantidade > 1 ? "2 peças, no mesmo tamanho." : "1 peça.";
-    await enviarPeca(waId, peca, `${peca.nome}. ${quantidade}`);
-  }
+  await enviarKit(waId, "masculino");
+  await enviarKit(waId, "feminino");
   await botoesKit(waId, `Qual opção você deseja para ${aluno(dados)}?`);
   return { passo: "reserva_kit", dados };
 }
 
 export async function perguntarModo(waId: string, dados: Dados): Promise<ResultadoTurno> {
-  await enviarBotoes(waId, "Como prefere escolher os tamanhos?", [
-    { id: MODO_UNICO, titulo: "Um tamanho para tudo" },
-    { id: MODO_PECA, titulo: "Escolher por peça" },
-    { id: MODO_AJUDA, titulo: "Ajuda com medidas" },
-  ]);
+  await enviarBotoes(
+    waId,
+    [
+      "Como prefere escolher os tamanhos?",
+      "",
+      "Em *Escolher por peça* você vê a foto de cada uma e pode deixar de fora a que não precisar.",
+    ].join("\n"),
+    [
+      { id: MODO_UNICO, titulo: "Um tamanho para tudo" },
+      { id: MODO_PECA, titulo: "Escolher por peça" },
+      { id: MODO_AJUDA, titulo: "Ajuda com medidas" },
+    ],
+  );
   return { passo: "reserva_modo", dados };
 }
 
@@ -128,7 +132,10 @@ export async function perguntarPeca(waId: string, dados: Dados): Promise<Resulta
     waId,
     `${foto ? "" : `${titulo}\n`}Qual tamanho para ${aluno(dados)}?`,
     "Escolher tamanho",
-    itensTamanho(peca),
+    [
+      ...itensTamanho(peca),
+      { id: SEM, titulo: "Não quero esta peça", descricao: "Reservar o kit sem ela" },
+    ],
   );
   return { passo: "reserva_tamanho", dados: { ...dados, peca: peca.chave } };
 }
@@ -146,10 +153,40 @@ export async function perguntarAjuda(waId: string, dados: Dados): Promise<Result
   return { passo: "reserva_ajuda", dados };
 }
 
+export async function perguntarEntrega(waId: string, dados: Dados): Promise<ResultadoTurno> {
+  const tamanhos = tamanhosDosDados(dados);
+  const completo = tamanhos ? kitCompleto(tamanhos) : true;
+  await enviarBotoes(
+    waId,
+    [
+      "Como prefere receber?",
+      "",
+      completo
+        ? "O kit completo tem entrega grátis em casa."
+        : `Sem alguma peça do kit, a entrega em casa custa ${freteKitIncompleto()}. O kit completo tem entrega grátis.`,
+      "",
+      "É só uma preferência: dá para mudar depois.",
+    ].join("\n"),
+    [
+      { id: ENTREGA_CASA, titulo: "Receber em casa" },
+      { id: ENTREGA_LOJA, titulo: "Retirar na loja" },
+    ],
+  );
+  return { passo: "reserva_entrega", dados };
+}
+
+/** Resumo para confirmar. Antes dele, garante ao menos uma peça e a forma de receber. */
 export async function revisar(waId: string, dados: Dados): Promise<ResultadoTurno> {
   const kit = kitDosDados(dados);
   const tamanhos = tamanhosDosDados(dados);
   if (!tamanhos) return perguntarModo(waId, dados);
+  if (!temAlgumaPeca(tamanhos)) {
+    await enviarTexto(waId, "Escolha ao menos uma peça para reservar.");
+    return perguntarModo(waId, dados);
+  }
+  const entrega = entregaDosDados(dados);
+  if (!entrega) return perguntarEntrega(waId, dados);
+
   await enviarBotoes(
     waId,
     [
@@ -159,7 +196,9 @@ export async function revisar(waId: string, dados: Dados): Promise<ResultadoTurn
       `Kit ${rotuloKit(kit).toLowerCase()}`,
       resumoTamanhos(kit, tamanhos),
       "",
-      "A pré-reserva é gratuita: não tem pagamento agora e não obriga a compra. Os tamanhos podem mudar até 31 de dezembro.",
+      `Como receber: ${rotuloEntrega(entrega, kitCompleto(tamanhos))}`,
+      "",
+      "A pré-reserva é gratuita: não tem pagamento agora e não obriga a compra. Os tamanhos podem mudar até 31 de dezembro, e a forma de receber, depois também.",
     ].join("\n"),
     [
       { id: CONFIRMA, titulo: "Confirmar" },
@@ -176,17 +215,26 @@ export function seguir(waId: string, dados: Dados, proximo: () => Promise<Result
 
 export async function perguntarCorrecao(waId: string, dados: Dados): Promise<ResultadoTurno> {
   const tamanhos = tamanhosDosDados(dados);
-  const pecas = pecasDoKit(kitDosDados(dados)).map((peca) => ({
-    id: `${COR}${peca.chave}`,
-    titulo: peca.nome,
-    descricao: tamanhos ? `Tamanho atual: ${tamanhos[peca.chave]}` : undefined,
-  }));
+  const entrega = entregaDosDados(dados);
+  const pecas = pecasDoKit(kitDosDados(dados)).map((peca) => {
+    const atual = tamanhos?.[peca.chave];
+    return {
+      id: `${COR}${peca.chave}`,
+      titulo: peca.nome,
+      descricao: atual ? `Tamanho atual: ${atual}` : atual === null ? "Fora da reserva" : undefined,
+    };
+  });
   await enviarLista(waId, "O que você quer corrigir?", "Escolher item", [
     { id: `${COR}escola`, titulo: "Escola", descricao: dadoTexto(dados, "escola") },
     { id: `${COR}aluno`, titulo: "Nome do(a) aluno(a)", descricao: dadoTexto(dados, "aluno") },
     { id: `${COR}kit`, titulo: "Opção do kit", descricao: rotuloKit(kitDosDados(dados)) },
     { id: `${COR}tamanhos`, titulo: "Todos os tamanhos" },
     ...pecas,
+    {
+      id: `${COR}entrega`,
+      titulo: "Como receber",
+      descricao: entrega && tamanhos ? rotuloEntrega(entrega, kitCompleto(tamanhos)) : undefined,
+    },
   ]);
   return { passo: "reserva_corrigir", dados };
 }
@@ -215,6 +263,7 @@ const PERGUNTAS: Record<string, (waId: string, dados: Dados) => Promise<Resultad
   reserva_tamanho_unico: perguntarTamanhoUnico,
   reserva_tamanho: perguntarPeca,
   reserva_ajuda: perguntarAjuda,
+  reserva_entrega: perguntarEntrega,
   reserva_confirma: revisar,
   reserva_corrigir: perguntarCorrecao,
   reserva_outro: perguntarOutro,

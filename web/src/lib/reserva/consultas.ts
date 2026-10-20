@@ -1,6 +1,13 @@
 import { variacoesTelefone } from "@/lib/whatsapp/identidade";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { eTamanhoKit, reservaAberta, type KitGenero, type TamanhosKit } from "./kit";
+import { eEntrega, type Entrega } from "./entrega";
+import {
+  reservaAberta,
+  tamanhosValidos,
+  type KitGenero,
+  type TamanhoKit,
+  type TamanhosKit,
+} from "./kit";
 import { CANAIS_ORIGEM, type CanalOrigem } from "./origem";
 
 export type ReservaLinha = {
@@ -12,6 +19,8 @@ export type ReservaLinha = {
   aluno: string;
   kit: KitGenero;
   tamanhos: TamanhosKit;
+  /** `null` nas reservas feitas antes da pergunta de entrega. */
+  entrega: Entrega | null;
   status: string;
   criadoEm: string;
 };
@@ -24,14 +33,25 @@ type LinhaBanco = {
   escola: string;
   aluno_nome: string;
   kit: KitGenero;
-  tamanho_curta: TamanhosKit["curta"];
-  tamanho_longa: TamanhosKit["longa"];
-  tamanho_inferior: TamanhosKit["inferior"];
-  tamanho_calca: TamanhosKit["calca"];
-  tamanho_blusa: TamanhosKit["blusa"];
+  tamanho_curta: TamanhoKit | null;
+  tamanho_longa: TamanhoKit | null;
+  tamanho_inferior: TamanhoKit | null;
+  tamanho_calca: TamanhoKit | null;
+  tamanho_blusa: TamanhoKit | null;
+  entrega: string | null;
   status: string;
   criado_em: string;
 };
+
+export function colunasTamanho(tamanhos: TamanhosKit) {
+  return {
+    tamanho_curta: tamanhos.curta,
+    tamanho_longa: tamanhos.longa,
+    tamanho_inferior: tamanhos.inferior,
+    tamanho_calca: tamanhos.calca,
+    tamanho_blusa: tamanhos.blusa,
+  };
+}
 
 function paraLinha(row: LinhaBanco): ReservaLinha {
   return {
@@ -49,13 +69,14 @@ function paraLinha(row: LinhaBanco): ReservaLinha {
       calca: row.tamanho_calca,
       blusa: row.tamanho_blusa,
     },
+    entrega: row.entrega && eEntrega(row.entrega) ? row.entrega : null,
     status: row.status,
     criadoEm: row.criado_em,
   };
 }
 
 const COLUNAS =
-  "id, telefone, origem_canal, origem_codigo, escola, aluno_nome, kit, tamanho_curta, tamanho_longa, tamanho_inferior, tamanho_calca, tamanho_blusa, status, criado_em";
+  "id, telefone, origem_canal, origem_codigo, escola, aluno_nome, kit, tamanho_curta, tamanho_longa, tamanho_inferior, tamanho_calca, tamanho_blusa, entrega, status, criado_em";
 
 export function telefonesEquivalentes(bruto: string) {
   return [
@@ -119,25 +140,19 @@ export async function obterReserva(id: string) {
   return data ? paraLinha(data as LinhaBanco) : null;
 }
 
-export async function atualizarTamanhos(id: string, tamanhos: TamanhosKit) {
+export async function atualizarReserva(id: string, tamanhos: TamanhosKit, entrega: Entrega) {
   if (!reservaAberta()) return { erro: "O prazo para mudar tamanho terminou em 31 de dezembro." };
-  if (Object.values(tamanhos).some((tamanho) => !eTamanhoKit(tamanho))) {
-    return { erro: "Escolha um tamanho da grade." };
+  if (!tamanhosValidos(tamanhos) || !eEntrega(entrega)) {
+    return { erro: "Escolha ao menos uma peça, com tamanho da grade." };
   }
 
   const db = createSupabaseAdminClient();
   const { error } = await db
     .from("reserva")
-    .update({
-      tamanho_curta: tamanhos.curta,
-      tamanho_longa: tamanhos.longa,
-      tamanho_inferior: tamanhos.inferior,
-      tamanho_calca: tamanhos.calca,
-      tamanho_blusa: tamanhos.blusa,
-    })
+    .update({ ...colunasTamanho(tamanhos), entrega })
     .eq("id", id)
     .eq("status", "recebida");
 
-  if (error) return { erro: "Não consegui salvar o tamanho." };
+  if (error) return { erro: "Não consegui salvar a reserva." };
   return { ok: true as const };
 }
