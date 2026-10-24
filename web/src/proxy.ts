@@ -12,7 +12,7 @@ import {
 } from "@/lib/supabase/config";
 
 /** Rotas que exigem celular verificado. */
-const PROTEGIDAS = ["/doacao/doar", "/doacao/pedido", "/conta"];
+const PROTEGIDAS = ["/doacao/doar", "/doacao/pedido", "/conta", "/equipe"];
 
 function comCookieIndicacao(request: NextRequest, response: NextResponse) {
   const convite = request.nextUrl.pathname.match(/^\/i\/([a-z0-9]{8})$/);

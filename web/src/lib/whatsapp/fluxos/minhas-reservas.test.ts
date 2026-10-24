@@ -173,7 +173,7 @@ describe("minhas reservas pelo WhatsApp", () => {
   });
 
   it("reserva que a equipe já separou aparece, mas não abre ajuste", async () => {
-    simulado.linhas = [reserva({ status: "separada" })];
+    simulado.linhas = [reserva({ status: "em_producao" })];
     const resposta = await enviar({ escolha: "menu.minhas_reservas" });
     expect(resposta[0].texto).toContain("*Lucas*");
     expect(passo()).toBe("menu");
