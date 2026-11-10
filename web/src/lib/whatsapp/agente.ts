@@ -5,6 +5,8 @@
  * continua em `lib/comandos/*` — daqui só sai conversa.
  */
 
+import { etapasDoTurno } from "@/lib/metrica/etapas";
+import { registrarEtapas } from "@/lib/metrica/registrar";
 import { lerOrigem, origemDireta } from "@/lib/reserva/origem";
 import { carregarConversa, mensagemNova, salvarConversa } from "./conversa";
 import { mostrarBeneficios } from "./fluxos/beneficios";
@@ -12,7 +14,7 @@ import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarMinhasReservas, iniciarMinhasReservas } from "./fluxos/minhas-reservas";
 import { continuarProcuro, iniciarProcuro } from "./fluxos/procuro";
 import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
-import { manterRascunho } from "./fluxos/reserva-estado";
+import { manterRascunho, origemDosDados } from "./fluxos/reserva-estado";
 import { perfilPorWaId } from "./identidade";
 import {
   detectarModelo,
@@ -40,6 +42,14 @@ export async function processarEntrada(entrada: EntradaUsuario) {
   };
 
   const turno = manterRascunho(sessao, await despachar(sessao, entrada));
+  void registrarEtapas({
+    canal: "whatsapp",
+    pessoa: entrada.waId,
+    etapas: etapasDoTurno(turno.passo, turno.dados),
+    origem: turno.passo.startsWith("reserva_")
+      ? origemDosDados(turno.dados)
+      : (lerOrigem(entrada.texto) ?? origemDireta()),
+  });
   await salvarConversa(entrada.waId, {
     perfilId: turno.perfilId !== undefined ? turno.perfilId : sessao.perfilId,
     passo: turno.passo,

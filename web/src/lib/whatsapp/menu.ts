@@ -1,10 +1,14 @@
+import { SITE } from "@/lib/constants";
 import { enviarLista, enviarTexto } from "./enviar";
 import { ID } from "./intencao";
 import type { ResultadoTurno, Sessao } from "./sessao";
 import { urlSite } from "./site";
 
 export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
-  const saudacao = sessao.passo === "inicio" ? "Olá! 😊\n\n" : "";
+  const saudacao =
+    sessao.passo === "inicio"
+      ? `Olá! 😊\n${SITE.credenciamento} de ${SITE.city}.\n\n`
+      : "";
   await enviarLista(
     sessao.waId,
     `${saudacao}Como posso te ajudar hoje?`,

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ESCOLAS_JUNDIAI } from "@/data/escolas";
+import { ESCOLAS_JUNDIAI, fichaEscola } from "@/data/escolas";
 import { pecasDoKit } from "@/lib/reserva/kit";
 import { textoMedidas } from "@/lib/reserva/medidas";
 
@@ -82,7 +82,7 @@ const passo = () => simulado.conversas.get(WA)?.passo;
 async function ateOModo() {
   await enviar({ texto: "reservar" });
   const lista = ultima(await enviar({ texto: ESCOLA }));
-  const opcao = lista.opcoes.find((item) => item.descricao === ESCOLA.slice(0, 72));
+  const opcao = lista.opcoes.find((item) => item.descricao === fichaEscola(ESCOLA)?.bairro);
   await enviar({ escolha: opcao?.id });
   await enviar({ texto: "lucas." });
   return enviar({ escolha: "reserva.kit.masculino" });
@@ -115,11 +115,11 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(inicio[0].texto.split("\n")[0]).toContain("antes de começar as aulas");
     expect(inicio[0].texto).toContain("não obriga a compra");
     expect(inicio[0].texto).toContain("é só deixar de fora");
-    expect(ultima(inicio).texto).toContain("nome da escola do(a) aluno(a)");
+    expect(ultima(inicio).texto).toContain("nome da escola ou do bairro");
 
     const lista = ultima(await enviar({ texto: ESCOLA }));
     expect(lista.tipo).toBe("lista");
-    const opcao = lista.opcoes.find((item) => item.descricao === ESCOLA.slice(0, 72));
+    const opcao = lista.opcoes.find((item) => item.descricao === fichaEscola(ESCOLA)?.bairro);
 
     const nome = await enviar({ escolha: opcao?.id });
     expect(ultima(nome).texto).toBe("Qual é o primeiro nome do(a) aluno(a)?");
@@ -161,6 +161,9 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(fim[0].texto).toContain("Pré-reserva de Lucas confirmada");
     expect(fim[0].texto).toContain("garantido para o começo das aulas");
     expect(fim[0].texto).toContain("/i/abcd1234");
+    expect(fim[0].texto).toContain(
+      "A cada 3 pessoas que reservarem o kit por esse link e comprarem, você ganha uma peça extra.",
+    );
     expect(titulos(ultima(fim))).toEqual(["Adicionar aluno(a)", "Concluir"]);
   });
 

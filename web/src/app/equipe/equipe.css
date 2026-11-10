@@ -118,3 +118,22 @@
   margin-top: 0.8rem;
   color: var(--warn);
 }
+
+.equipe-barra {
+  width: 7rem;
+  height: 0.4rem;
+  margin-top: 0.35rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.equipe-barra span {
+  display: block;
+  height: 100%;
+  background: var(--accent-dark);
+}
+
+.equipe-paginacao b {
+  color: var(--ink);
+}

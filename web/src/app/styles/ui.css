@@ -10,6 +10,11 @@
   padding-bottom: 2.5rem;
 }
 
+/* Telas pensadas para o PC usam a mesma largura do cabeçalho. */
+.uj-shell[data-largo="true"] {
+  max-width: 72rem;
+}
+
 /* Telas com barra fixa no rodapé precisam de respiro extra. */
 .uj-shell[data-barra="true"] {
   padding-bottom: 7rem;
@@ -42,17 +47,14 @@
   min-width: 0;
 }
 
-.uj-brand-badge {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.6rem;
-  background: var(--accent);
-  color: #fff;
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 700;
-  font-size: 0.85rem;
+.uj-brand-logo {
+  width: 4.6rem;
+  height: auto;
+}
+
+.uj-footer-logo {
+  width: 6.5rem;
+  height: auto;
 }
 
 .uj-brand-text {

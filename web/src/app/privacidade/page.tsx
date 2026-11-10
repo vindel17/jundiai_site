@@ -34,6 +34,13 @@ export default function PrivacidadePage() {
             aluno, escola, turma (opcional), e parâmetros de origem de campanha
             (UTM / QR Code).
           </p>
+          <p>
+            Para saber quantas pessoas visitam o site e chegam até a reserva,
+            usamos um cookie anônimo e contamos as etapas do atendimento pelo
+            WhatsApp. Nessa contagem o telefone e o cookie são transformados em
+            um código que não permite chegar de volta à pessoa. Podemos usar
+            também o Google Analytics e o pixel da Meta para medir campanhas.
+          </p>
 
           <h2>3. Finalidades</h2>
           <ul>

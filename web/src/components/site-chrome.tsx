@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { SITE } from "@/lib/constants";
 
@@ -31,8 +32,16 @@ export function SiteFooter() {
     <footer className="site-footer">
       <MosaicStrip />
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-4 py-10 text-sm sm:px-6">
-        <p className="font-medium text-[var(--ink)]">{SITE.name}</p>
+        <Image
+          src="/marca/uniforme-jundiai.png"
+          alt="Uniforme Jundiaí, uniformes escolares"
+          width={1254}
+          height={1254}
+          sizes="120px"
+          className="uj-footer-logo"
+        />
         <p className="text-[var(--muted)]">{SITE.brandLine}.</p>
+        <p>{SITE.credenciamento} de {SITE.city}.</p>
         <p className="text-xs text-[var(--muted)]">
           Não somos o site da Prefeitura, da Secretaria de Educação ou das escolas
           municipais de {SITE.city}.

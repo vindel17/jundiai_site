@@ -1,7 +1,8 @@
 import { executorDoAgente } from "@/lib/comandos/executor";
 import { placarDoacao } from "@/lib/comandos/doacao";
 import { placarIndicacao } from "@/lib/comandos/perfil";
-import { urlIndicacao, origemPublica } from "@/lib/indicacao/regras";
+import { siteUrl } from "@/lib/config-publica";
+import { urlIndicacao } from "@/lib/indicacao/regras";
 import { enviarTexto } from "../enviar";
 import { mostrarMenu } from "../menu";
 import type { ResultadoTurno, Sessao } from "../sessao";
@@ -31,7 +32,7 @@ export async function mostrarBeneficios(sessao: Sessao): Promise<ResultadoTurno>
   const d = doacao.ok ? doacao.dados : null;
   const i = indicacao.ok ? indicacao.dados : null;
   const link = i?.codigo
-    ? urlIndicacao(origemPublica(), i.codigo)
+    ? urlIndicacao(siteUrl(), i.codigo)
     : urlSite("/conta");
 
   const linhas = [

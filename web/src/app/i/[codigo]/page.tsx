@@ -31,12 +31,12 @@ export default async function ConvitePage({
   return (
     <AppShell>
       <main className="uj-page">
-        <span className="uj-kicker">Rede municipal de {SITE.city}</span>
+        <span className="uj-kicker">{SITE.credenciamento}</span>
         <h1 className="uj-page-title">Uma família te chamou</h1>
         <p className="uj-page-lead">
-          Pelo WhatsApp da Uniforme Jundiaí você separa as 6 peças do uniforme,
-          escolhe os tamanhos e não paga agora. Quando o kit estiver pronto, avisamos na
-          mesma conversa e você decide se deseja comprar.
+          A Espaço Livre é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Pelo WhatsApp
+          você separa as 6 peças do uniforme, escolhe os tamanhos e não paga agora. Quando o kit
+          estiver pronto, avisamos na mesma conversa e você decide se deseja comprar.
         </p>
 
         <div className="conta-acoes" style={{ marginTop: "1.2rem" }}>

@@ -4,8 +4,16 @@ export const PERFIS_EQUIPE = ["admin", "producao", "balcao"] as const;
 
 export type PerfilEquipe = (typeof PERFIS_EQUIPE)[number];
 
-/** O que cada tela confere antes de agir. Cancelar fica só com a administração. */
-export const ACOES_EQUIPE = ["ver", "editar", "status", "cancelar", "producao", "avisos"] as const;
+/** O que cada tela confere antes de agir. Cancelar e métricas ficam só com a administração. */
+export const ACOES_EQUIPE = [
+  "ver",
+  "editar",
+  "status",
+  "cancelar",
+  "producao",
+  "avisos",
+  "metricas",
+] as const;
 
 export type AcaoEquipe = (typeof ACOES_EQUIPE)[number];
 

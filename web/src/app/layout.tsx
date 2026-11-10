@@ -1,19 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { AnalyticsScripts } from "@/components/analytics-scripts";
+import { MetricaSite } from "@/components/metrica-site";
+import { siteUrl } from "@/lib/config-publica";
 import { SITE } from "@/lib/constants";
 import "./globals.css";
 
-const display = Fraunces({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
-
-const body = Manrope({
+const sans = Montserrat({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const viewport: Viewport = {
@@ -22,20 +18,28 @@ export const viewport: Viewport = {
   themeColor: "#1e6fd6",
 };
 
+// Enquanto o domínio final não estiver no ar, canônicas e preview social
+// precisam apontar para a origem que realmente responde.
+const origem = siteUrl();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(`https://${SITE.domain}`),
+  metadataBase: new URL(origem),
   title: {
     default: SITE.name,
     template: `%s | ${SITE.name}`,
   },
-  description: `${SITE.brandLine}. Uniformes escolares da rede municipal de ${SITE.city} com preço de inauguração.`,
+  description: `${SITE.brandLine}. ${SITE.credenciamento} de ${SITE.city}.`,
   openGraph: {
     title: SITE.name,
     description: `Monte o pedido do uniforme escolar em ${SITE.city} — condição de lançamento.`,
-    url: `https://${SITE.domain}`,
+    url: origem,
     siteName: SITE.name,
     locale: "pt_BR",
     type: "website",
+  },
+  icons: {
+    icon: "/marca/uniforme-jundiai.png",
+    apple: "/marca/uniforme-jundiai.png",
   },
 };
 
@@ -45,9 +49,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${display.variable} ${body.variable} h-full`}>
+    <html lang="pt-BR" className={`${sans.variable} h-full`}>
       <body className="min-h-full antialiased">
         <AnalyticsScripts />
+        <MetricaSite />
         <a href="#conteudo" className="uj-skip">
           Ir direto ao conteúdo
         </a>

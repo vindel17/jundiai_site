@@ -1,0 +1,378 @@
+/* Reserva do kit 2027. Celular em uma coluna; PC com explicação à esquerda
+   e peças ou formulário à direita. Primitivas (campos, botões) ficam em ui.css e base.css. */
+
+.reserva {
+  display: grid;
+  gap: 1.4rem;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 1.1rem 1rem 2.5rem;
+}
+
+/* ---------- Apresentação ---------- */
+.reserva-intro {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+  align-self: start;
+}
+
+.reserva-intro .uj-kicker {
+  justify-self: start;
+}
+
+.reserva-intro .uj-page-lead {
+  margin: 0;
+}
+
+.reserva-intro .uj-checklist {
+  margin: 0.2rem 0 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--bg-alt);
+}
+
+.reserva-cta {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.reserva-cta .btn-primary,
+.reserva-cta .btn-secondary {
+  width: 100%;
+  min-height: 3.25rem;
+}
+
+.reserva-dica {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ---------- Conteúdo ---------- */
+.reserva-corpo {
+  display: grid;
+  gap: 1.2rem;
+  min-width: 0;
+  align-content: start;
+}
+
+.reserva-titulo-bloco {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Cartão de peça ---------- */
+.reserva-vitrine,
+.reserva-lista {
+  display: grid;
+  gap: 0.7rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reserva-vitrine {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reserva-peca {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(20, 40, 63, 0.05);
+}
+
+.reserva-peca-foto {
+  aspect-ratio: 1;
+  background: #f4f8fd;
+}
+
+.reserva-peca-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.reserva-peca-corpo {
+  display: grid;
+  gap: 0.2rem;
+  align-content: center;
+  min-width: 0;
+  padding: 0.65rem 0.75rem 0.8rem;
+}
+
+.reserva-peca-nome {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.reserva-peca-detalhe {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* Na escolha de tamanho a foto vai ao lado do campo. */
+.reserva-lista .reserva-peca {
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-items: center;
+}
+
+.reserva-lista .reserva-peca-corpo {
+  padding: 0.7rem 0.8rem 0.7rem 0.2rem;
+}
+
+.reserva-lista .uj-field label {
+  margin-bottom: 0.3rem;
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+/* ---------- Formulário ---------- */
+.reserva-form {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
+}
+
+.reserva-bloco {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+  margin: 0;
+  padding: 1.05rem 1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(20, 40, 63, 0.05);
+}
+
+.reserva-passo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.reserva-passo i {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-style: normal;
+}
+
+.reserva-opcoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.reserva-opcao {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border: 2px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.reserva-opcao input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.reserva-opcao .reserva-peca-foto {
+  aspect-ratio: 4 / 3;
+}
+
+.reserva-opcao b {
+  display: block;
+  padding: 0.6rem 0.5rem 0.7rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.reserva-opcao-texto {
+  gap: 0.15rem;
+  padding: 0.75rem 0.5rem 0.8rem;
+  text-align: center;
+}
+
+.reserva-opcao-texto b {
+  padding: 0;
+}
+
+.reserva-opcao-texto small {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.reserva-opcao:has(input:checked) {
+  border-color: var(--accent);
+  box-shadow: 0 10px 28px rgba(30, 111, 214, 0.18);
+}
+
+.reserva-opcao:has(input:checked) b {
+  color: var(--accent);
+}
+
+.reserva-opcao:has(input:focus-visible) {
+  outline: 3px solid color-mix(in oklab, var(--accent) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.reserva-enviar {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.reserva-enviar .btn-primary {
+  width: 100%;
+  min-height: 3.35rem;
+  font-size: 1rem;
+}
+
+.reserva-enviar .reserva-dica {
+  text-align: center;
+}
+
+/* ---------- Kits já separados ---------- */
+.reserva-separados {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.reserva-kits {
+  display: grid;
+  gap: 0.8rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reserva-kit {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--bg-alt);
+}
+
+.reserva-kit-escola {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.reserva-kit dl {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.45rem 0 0;
+  font-size: 0.86rem;
+}
+
+.reserva-kit dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.reserva-kit dt {
+  color: var(--muted);
+}
+
+.reserva-kit dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.reserva-link {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  border: 1px dashed #a9cbf2;
+  border-radius: 0.8rem;
+  background: #f4f8fd;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.reserva-link a {
+  display: block;
+  margin-top: 0.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ---------- Tablet ---------- */
+@media (min-width: 640px) {
+  .reserva {
+    padding-inline: 1.5rem;
+  }
+
+  .reserva-vitrine {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .reserva-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reserva-bloco {
+    padding: 1.3rem 1.4rem 1.5rem;
+  }
+
+  .reserva-kits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- PC ---------- */
+@media (min-width: 1024px) {
+  .reserva {
+    grid-template-columns: minmax(17rem, 21rem) minmax(0, 1fr);
+    gap: 3rem;
+    padding: 2rem 1.5rem 3.5rem;
+  }
+
+  .reserva-intro .uj-page-title {
+    font-size: 2.1rem;
+  }
+
+  .reserva-intro .uj-page-lead {
+    font-size: 1rem;
+  }
+
+  .reserva-opcoes {
+    max-width: 30rem;
+  }
+}

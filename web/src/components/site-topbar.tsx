@@ -1,15 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getWhatsAppUrl, SITE } from "@/lib/constants";
+import { getWhatsAppUrl, MENSAGEM_AJUDA, SITE } from "@/lib/constants";
 import { trackEvent } from "@/lib/utm";
 
 const NAV = [
-  { href: "/doacao/doar", label: "Doar" },
-  { href: "/doacao/receber", label: "Receber" },
+  { href: "/reserva", label: "Reserva Voucher" },
+  { href: "/doacao", label: "Doações" },
   { href: "/comprar", label: "Comprar" },
-  { href: "/etiquetas", label: "Etiquetas" },
   { href: "/conta", label: "Minha conta" },
 ] as const;
 
@@ -26,9 +26,10 @@ const MOSAIC = [
 const SUBTITULOS: readonly (readonly [string, string])[] = [
   ["/conta/avaliar", "Avaliar compra"],
   ["/conta", "Minha conta"],
+  ["/reserva", "Separe sem pagar agora"],
   ["/comprar", "Loja de uniformes"],
   ["/pedido", "Loja de uniformes"],
-  ["/doacao", "Doação de uniformes"],
+  ["/doacao", "Doações"],
   ["/etiquetas", "Etiquetas com o nome do aluno"],
   ["/entrar", "Entrar"],
   ["/i", "Convite"],
@@ -43,9 +44,7 @@ export function WaIcon({ size = 18 }: { size?: number }) {
 }
 
 export function useHelpWhatsApp(message?: string) {
-  const href = getWhatsAppUrl(
-    message ?? `Olá! Quero ajuda com o uniforme escolar em ${SITE.city}.`,
-  );
+  const href = getWhatsAppUrl(message ?? MENSAGEM_AJUDA);
   return { href, enabled: href !== "#" };
 }
 
@@ -66,9 +65,16 @@ export function SiteTopbar() {
     <header className="uj-topbar">
       <div className="uj-topbar-inner">
         <Link href="/" className="uj-brand">
-          <span className="uj-brand-badge">UJ</span>
+          <Image
+            src="/marca/uniforme-jundiai.png"
+            alt="Uniforme Jundiaí, uniformes escolares"
+            width={1254}
+            height={1254}
+            sizes="80px"
+            priority
+            className="uj-brand-logo"
+          />
           <span className="uj-brand-text">
-            <span className="uj-brand-name">{SITE.name}</span>
             <span className="uj-brand-sub">{subtituloDaRota(pathname)}</span>
           </span>
         </Link>

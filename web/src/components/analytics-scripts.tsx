@@ -1,8 +1,9 @@
 import Script from "next/script";
+import { GA_ID, META_PIXEL_ID } from "@/lib/config-publica";
 
 export function AnalyticsScripts() {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
-  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const gaId = GA_ID;
+  const metaPixelId = META_PIXEL_ID;
 
   return (
     <>

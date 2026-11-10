@@ -4,6 +4,8 @@
  * Não mostra preço. A origem chega na primeira mensagem (panfleto, rede ou anúncio).
  */
 
+import { fichaEscola } from "@/data/escolas";
+import { SITE } from "@/lib/constants";
 import { buscarEscolas } from "@/lib/reserva/escolas";
 import { reservaAberta, type KitGenero } from "@/lib/reserva/kit";
 import type { Origem } from "@/lib/reserva/origem";
@@ -92,6 +94,8 @@ export async function iniciarReserva(
     [
       "Com a pré-reserva, você garante que vai encontrar o uniforme no tamanho certo antes de começar as aulas. 🎒",
       "",
+      `${SITE.credenciamento} de ${SITE.city}.`,
+      "",
       "É gratuita: não tem pagamento agora e não obriga a compra.",
       "",
       "O kit tem 6 peças: 2 camisetas manga curta no mesmo tamanho, 1 camiseta manga longa, 1 bermuda ou short-saia, 1 calça e 1 blusa de frio. Se não precisar de alguma, é só deixar de fora.",
@@ -159,7 +163,7 @@ async function passoEscola(sessao: Sessao, entrada: EntradaUsuario): Promise<Res
     busca.escolas.map((nome, i) => ({
       id: `${ESC}${i}`,
       titulo: nome.slice(0, 24),
-      descricao: nome.slice(0, 72),
+      descricao: (fichaEscola(nome)?.bairro ?? nome).slice(0, 72),
     })),
   );
   return { passo: "reserva_escola", dados: { ...sessao.dados, escolas: busca.escolas } };

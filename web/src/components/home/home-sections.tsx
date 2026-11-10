@@ -104,16 +104,3 @@ export function ComprarBloco() {
     </section>
   );
 }
-
-export function EtiquetasNota() {
-  return (
-    <section className="uj-block">
-      <p className="uj-note">
-        Só quer colocar o nome no uniforme?{" "}
-        <Link href="/etiquetas" className="uj-link">
-          Peça as etiquetas com o nome do aluno →
-        </Link>
-      </p>
-    </section>
-  );
-}

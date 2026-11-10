@@ -1,5 +1,5 @@
 import { siteUrl } from "@/lib/config-publica";
-import { urlIndicacao } from "@/lib/indicacao/regras";
+import { textoPremioIndicacao, urlIndicacao } from "@/lib/indicacao/regras";
 import { gravarReserva } from "@/lib/reserva/gravar";
 import { pecasDoKit } from "@/lib/reserva/kit";
 import { enviarTexto } from "../enviar";
@@ -78,7 +78,7 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
       "Seu link para indicar outras famílias:",
       urlIndicacao(siteUrl(), codigoIndicacao),
       "",
-      "Quando 3 famílias comprarem o kit completo por esse link, e você também comprar os kits reservados, você ganha uma camiseta extra por kit.",
+      textoPremioIndicacao(),
     );
   }
   await enviarTexto(sessao.waId, linhas.join("\n"), { preview: true });

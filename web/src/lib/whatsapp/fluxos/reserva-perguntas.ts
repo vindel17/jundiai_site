@@ -54,7 +54,7 @@ function aluno(dados: Dados) {
 export async function perguntarEscola(waId: string, dados: Dados): Promise<ResultadoTurno> {
   await enviarTexto(
     waId,
-    "Digite parte do nome da escola do(a) aluno(a). Eu mostro a lista para você escolher.",
+    "Digite parte do nome da escola ou do bairro do(a) aluno(a). Eu mostro a lista para você escolher.",
   );
   return { passo: "reserva_escola", dados };
 }

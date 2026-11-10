@@ -3,6 +3,7 @@ import {
   autorDoUsuario,
   equipeConfigurada,
   perfisDoUsuario,
+  pode,
   type PerfilEquipe,
 } from "@/lib/reserva/equipe";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -23,4 +24,16 @@ export async function acessoEquipe(destino: string): Promise<AcessoEquipe> {
   const perfis = perfisDoUsuario(user);
   if (perfis.length === 0) return { tipo: "fora" };
   return { tipo: "ok", perfis, autor: autorDoUsuario(user) };
+}
+
+/** Telas de números (alcance, métricas): só a administração entra. */
+export async function acessoMetricas(
+  destino: string,
+): Promise<{ ok: true } | { ok: false; aviso: string }> {
+  const acesso = await acessoEquipe(destino);
+  if (acesso.tipo === "sem-lista") return { ok: false, aviso: "Defina a equipe no ambiente." };
+  if (acesso.tipo === "fora" || !pode(acesso.perfis, "metricas")) {
+    return { ok: false, aviso: "Esta tela é só da administração." };
+  }
+  return { ok: true };
 }

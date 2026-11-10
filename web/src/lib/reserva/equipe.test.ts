@@ -44,6 +44,12 @@ describe("perfis da equipe", () => {
     expect(pode(["producao"], "cancelar")).toBe(false);
   });
 
+  it("métricas de alcance ficam só com a administração", () => {
+    expect(pode(["admin"], "metricas")).toBe(true);
+    expect(pode(["producao"], "metricas")).toBe(false);
+    expect(pode(["balcao"], "metricas")).toBe(false);
+  });
+
   it("balcão consulta e edita tamanho", () => {
     vi.stubEnv("EQUIPE_BALCAO", "5511977770000");
     expect(perfisDoUsuario(usuario({ phone: "5511977770000" }))).toEqual(["balcao"]);

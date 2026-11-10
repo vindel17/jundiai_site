@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { acessoEquipe } from "@/app/equipe/acesso";
+import { NavAdmin } from "@/app/equipe/nav-admin";
 import { Avisos } from "@/app/equipe/reservas/avisos";
 import { lerFiltro } from "@/app/equipe/reservas/filtros";
 import { Lista } from "@/app/equipe/reservas/lista";
-import { rotuloPerfis } from "@/lib/reserva/equipe";
+import { pode, rotuloPerfis } from "@/lib/reserva/equipe";
 
 export const metadata: Metadata = {
   title: "Reservas",
@@ -50,6 +51,7 @@ export default async function ReservasPage({
       {acesso.tipo === "ok" ? (
         <>
           <p className="equipe-lead">Seu acesso: {rotuloPerfis(acesso.perfis)}.</p>
+          {pode(acesso.perfis, "metricas") ? <NavAdmin atual="/equipe/reservas" /> : null}
           <Avisos aviso={bruto} />
           <Lista filtro={filtro} perfis={acesso.perfis} />
         </>

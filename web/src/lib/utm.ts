@@ -1,3 +1,5 @@
+import { registrarEtapaSite } from "@/lib/metrica/cliente";
+
 export type TrackingParams = {
   origem: string;
   utmSource: string;
@@ -51,4 +53,5 @@ export function trackEvent(
   };
   w.gtag?.("event", name, payload);
   w.fbq?.("trackCustom", name, payload);
+  if (name === "click_whatsapp") registrarEtapaSite("clique_whatsapp");
 }

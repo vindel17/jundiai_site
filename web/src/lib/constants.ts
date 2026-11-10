@@ -1,29 +1,26 @@
+import { DOMINIO_PADRAO, whatsappFormatado, whatsappNumero } from "./config-publica";
+
 export const SITE = {
   name: "Uniforme Jundiaí",
   brandLine: "Uma iniciativa da Espaço Livre Uniformes",
+  credenciamento: "Empresa credenciada para o voucher do uniforme escolar",
   city: "Jundiaí",
   state: "SP",
-  domain: "uniformejundiai.com.br",
+  domain: DOMINIO_PADRAO,
   etiquetasPorFilho: 5,
   maxFilhos: 3,
   prazoEstimado: "até 15 dias úteis após a confirmação",
 } as const;
 
+/** Texto padrão de quem chega pelos CTAs de ajuda, sem contexto de funil. */
+export const MENSAGEM_AJUDA = `Olá! Quero ajuda com o uniforme escolar em ${SITE.city}.`;
+
 export function getWhatsAppUrl(message?: string) {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") ?? "";
+  const phone = whatsappNumero();
   if (!phone) return "#";
-  const text = encodeURIComponent(
-    message ??
-      "Olá! Quero saber mais sobre os uniformes escolares do Uniforme Jundiaí.",
-  );
-  return `https://wa.me/${phone}?text=${text}`;
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message ?? MENSAGEM_AJUDA)}`;
 }
 
 export function getWhatsAppDisplay() {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") ?? "";
-  if (phone.length < 12) return "";
-  const ddd = phone.slice(2, 4);
-  const part1 = phone.slice(4, 9);
-  const part2 = phone.slice(9);
-  return `(${ddd}) ${part1}-${part2}`;
+  return whatsappFormatado();
 }

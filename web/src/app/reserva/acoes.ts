@@ -1,0 +1,87 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { registrarEtapas } from "@/lib/metrica/registrar";
+import { eEntrega } from "@/lib/reserva/entrega";
+import { escolaValida } from "@/lib/reserva/escolas";
+import { gravarReserva } from "@/lib/reserva/gravar";
+import { telefonesEquivalentes } from "@/lib/reserva/consultas";
+import {
+  reservaAberta,
+  tamanhosDoFormulario,
+  temAlgumaPeca,
+  type KitGenero,
+} from "@/lib/reserva/kit";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { telefoneCanonico } from "@/lib/whatsapp/identidade";
+
+export type EstadoReserva = { erro?: string };
+
+async function telefoneDaConta(phone: string) {
+  const variantes = telefonesEquivalentes(phone);
+  if (variantes.length === 0) return "";
+
+  const db = createSupabaseAdminClient();
+  const { data } = await db
+    .from("reserva_familia")
+    .select("telefone")
+    .in("telefone", variantes)
+    .limit(1)
+    .maybeSingle();
+  if (data?.telefone) return data.telefone as string;
+
+  return (telefoneCanonico(phone) ?? phone).replace(/\D/g, "");
+}
+
+export async function criarReservaSite(
+  _estado: EstadoReserva,
+  formData: FormData,
+): Promise<EstadoReserva> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.phone) redirect("/entrar?proximo=/reserva");
+  if (!reservaAberta()) return { erro: "O prazo da reserva terminou em 31 de dezembro." };
+
+  const escola = String(formData.get("escola") ?? "");
+  const aluno = String(formData.get("aluno") ?? "").trim().replace(/\s+/g, " ");
+  const kitBruto = String(formData.get("kit") ?? "");
+  const kit: KitGenero | null =
+    kitBruto === "feminino" || kitBruto === "masculino" ? kitBruto : null;
+  const tamanhos = tamanhosDoFormulario(formData);
+  const entrega = String(formData.get("entrega") ?? "");
+
+  if (!escolaValida(escola)) return { erro: "Escolha a escola na lista." };
+  if (aluno.length < 2) return { erro: "Informe o primeiro nome do(a) aluno(a)." };
+  if (!kit) return { erro: "Escolha o kit com bermuda ou com short-saia." };
+  if (!tamanhos) return { erro: "Escolha o tamanho de cada peça." };
+  if (!temAlgumaPeca(tamanhos)) return { erro: "Escolha ao menos uma peça para reservar." };
+  if (!eEntrega(entrega)) return { erro: "Diga se prefere receber em casa ou retirar na loja." };
+
+  const telefone = await telefoneDaConta(user.phone);
+  if (!telefone) return { erro: "Não encontramos o WhatsApp desta conta." };
+
+  try {
+    await gravarReserva({
+      telefone,
+      origem: { canal: "direto", codigo: "site", texto: "Reserva pelo site" },
+      escola,
+      aluno: aluno.slice(0, 40),
+      kit,
+      tamanhos,
+      entrega,
+    });
+  } catch {
+    return { erro: "Não consegui anotar a reserva. Tente de novo." };
+  }
+
+  await registrarEtapas({
+    canal: "site",
+    pessoa: telefone,
+    etapas: ["confirmada"],
+    origem: { canal: "direto", codigo: "site" },
+  });
+  redirect("/reserva?feita=1");
+}

@@ -15,6 +15,7 @@
 @import "./styles/etiquetas-form.css";
 @import "./styles/entrar.css";
 @import "./styles/conta.css";
+@import "./styles/reserva.css";
 @import "./styles/prova-social.css";
 
 :root {
@@ -42,6 +43,6 @@
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--ink);
-  --font-sans: var(--font-body);
-  --font-display: var(--font-display);
+  --font-sans: var(--font-body), "Montserrat", sans-serif;
+  --font-display: var(--font-body), "Montserrat", sans-serif;
 }

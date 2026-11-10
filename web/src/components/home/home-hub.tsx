@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SITE } from "@/lib/constants";
-import { ComoFunciona, ComprarBloco, EtiquetasNota } from "./home-sections";
+import { ComoFunciona, ComprarBloco } from "./home-sections";
 
 export function HomeHub() {
   return (
@@ -8,7 +8,7 @@ export function HomeHub() {
       <section className="home-hero">
         <div className="home-hero-bg" aria-hidden />
         <div className="home-hero-inner">
-          <span className="uj-kicker">Rede municipal de {SITE.city}</span>
+          <span className="uj-kicker">{SITE.credenciamento}</span>
           <h1 className="home-title">
             O uniforme que não serve mais <span>serve para alguém hoje</span>
           </h1>
@@ -50,7 +50,6 @@ export function HomeHub() {
 
       <ComoFunciona />
       <ComprarBloco />
-      <EtiquetasNota />
     </main>
   );
 }

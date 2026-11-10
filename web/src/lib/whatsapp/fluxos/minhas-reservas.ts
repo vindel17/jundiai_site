@@ -18,6 +18,7 @@ import {
   temAlgumaPeca,
   type TamanhosKit,
 } from "@/lib/reserva/kit";
+import { statusEditavel } from "@/lib/reserva/status";
 import { enviarBotoes, enviarLista, enviarTexto } from "../enviar";
 import { mostrarMenu } from "../menu";
 import { dadoTexto, type ResultadoTurno, type Sessao } from "../sessao";
@@ -45,10 +46,10 @@ function resumo(linha: ReservaLinha) {
   ].join("\n");
 }
 
-/** Só a reserva ainda recebida pode mudar; depois disso a equipe já está separando. */
+/** Depois que entra em produção, a reserva aparece mas não muda mais. */
 async function editaveis(waId: string) {
   const { linhas } = await listarReservasDoTelefone(waId);
-  return linhas.filter((linha) => linha.status === "recebida");
+  return linhas.filter((linha) => statusEditavel(linha.status));
 }
 
 async function reservaDaSessao(sessao: Sessao) {
@@ -82,7 +83,7 @@ export async function iniciarMinhasReservas(sessao: Sessao): Promise<ResultadoTu
     );
     return mostrarMenu(sessao);
   }
-  return perguntarQual(sessao, linhas.filter((linha) => linha.status === "recebida"));
+  return perguntarQual(sessao, linhas.filter((linha) => statusEditavel(linha.status)));
 }
 
 async function perguntarQual(sessao: Sessao, linhas: ReservaLinha[]): Promise<ResultadoTurno> {

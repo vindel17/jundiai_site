@@ -11,7 +11,8 @@ import {
 } from "@/components/conta/conta-blocos";
 import { IndicacaoCard } from "@/components/conta/indicacao-card";
 import { nomeDoModelo } from "@/lib/doacao/modelos";
-import { origemPublica, urlIndicacao } from "@/lib/indicacao/regras";
+import { siteUrl } from "@/lib/config-publica";
+import { urlIndicacao } from "@/lib/indicacao/regras";
 import { motivoDoPerfil, rotaInterna } from "@/lib/rotas";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatarCelular } from "@/lib/telefone";
@@ -65,7 +66,7 @@ export default async function ContaPage({
   const { data: indicacaoLinhas } = await supabase.rpc("placar_indicacao");
   const ind = indicacaoLinhas?.[0];
   const hdrs = await headers();
-  const origem = origemPublica(
+  const origem = siteUrl(
     hdrs.get("x-forwarded-host") ?? hdrs.get("host"),
     hdrs.get("x-forwarded-proto"),
   );

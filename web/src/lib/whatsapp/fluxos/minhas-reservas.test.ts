@@ -172,10 +172,16 @@ describe("minhas reservas pelo WhatsApp", () => {
     expect(simulado.atualizar).not.toHaveBeenCalled();
   });
 
-  it("reserva que a equipe já separou aparece, mas não abre ajuste", async () => {
+  it("reserva em produção aparece, mas não abre ajuste", async () => {
     simulado.linhas = [reserva({ status: "em_producao" })];
     const resposta = await enviar({ escolha: "menu.minhas_reservas" });
     expect(resposta[0].texto).toContain("*Lucas*");
     expect(passo()).toBe("menu");
+  });
+
+  it("reserva aceita pela equipe ainda abre ajuste", async () => {
+    simulado.linhas = [reserva({ status: "aceita" })];
+    const resposta = await enviar({ escolha: "menu.minhas_reservas" });
+    expect(ids(ultima(resposta))).toContain("minhas.c.calca");
   });
 });

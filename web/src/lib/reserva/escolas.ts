@@ -1,4 +1,4 @@
-import { ESCOLAS_JUNDIAI } from "@/data/escolas";
+import { ESCOLAS_JUNDIAI, ESCOLAS_VOUCHER } from "@/data/escolas";
 
 function limpar(entrada: string) {
   return entrada
@@ -11,7 +11,10 @@ function limpar(entrada: string) {
 export function buscarEscolas(termo: string, limite = 10) {
   const consulta = limpar(termo);
   if (consulta.length < 2) return { escolas: [] as string[], restantes: 0 };
-  const todas = ESCOLAS_JUNDIAI.filter((nome) => limpar(nome).includes(consulta));
+  const todas = ESCOLAS_VOUCHER.filter(
+    (escola) =>
+      limpar(escola.nome).includes(consulta) || limpar(escola.bairro).includes(consulta),
+  ).map((escola) => escola.nome);
   return {
     escolas: todas.slice(0, limite),
     restantes: Math.max(0, todas.length - limite),
