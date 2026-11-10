@@ -68,7 +68,6 @@ export default async function ReservaPage({
   return (
     <main className="reserva">
       <header className="reserva-intro">
-        <span className="uj-kicker">{SITE.credenciamento}</span>
         <h1 className="uj-page-title">
           {aberta ? "Seu kit separado para quando o voucher liberar" : "O prazo para reservar terminou"}
         </h1>

@@ -57,11 +57,12 @@ function subtituloDaRota(pathname: string) {
 
 export function SiteTopbar() {
   const pathname = usePathname();
+  const mostraSelo = isActive(pathname, "/reserva") || isActive(pathname, "/conta") || pathname === "/entrar";
   const { href, enabled } = useHelpWhatsApp();
 
   return (
     <header className="uj-topbar">
-      <div className="uj-topbar-inner">
+      <div className="uj-topbar-inner" data-credenciamento={mostraSelo || undefined}>
         <Link href="/" className="uj-brand">
           <Image
             src="/marca/uniforme-jundiai.png"
@@ -86,6 +87,17 @@ export function SiteTopbar() {
           >
             <WaIcon size={16} /> Ajuda
           </a>
+        ) : null}
+        {mostraSelo ? (
+          <Image
+            className="uj-topbar-selo"
+            src="/marca/selo-credenciada-jundiai.png"
+            width={640}
+            height={176}
+            alt="Empresa credenciada para o voucher do uniforme escolar da rede municipal de Jundiaí"
+            loading="eager"
+            unoptimized
+          />
         ) : null}
       </div>
       <nav className="uj-nav" aria-label="Seções do site">
