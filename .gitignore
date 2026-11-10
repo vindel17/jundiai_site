@@ -24,3 +24,10 @@ prototipo-uniforme-jundiai_1.html
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Arte gráfica de outros trabalhos (CorelDRAW/placas) e cópia solta da logo.
+# A logo do app vive em web/public/marca.
+*.cdr
+Placa DTF*
+DTF - *
+Logo Colorido de Uniformes Escolares.png
