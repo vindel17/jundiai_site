@@ -410,3 +410,14 @@
   flex-shrink: 0;
 }
 
+
+.gift-badge {
+  display: inline-flex;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid #a9cbf2;
+  border-radius: 999px;
+  background: #dcebfc;
+  color: #174a8f;
+  font-size: 0.86rem;
+  font-weight: 700;
+}

@@ -87,11 +87,6 @@ function checagens(): Checagem[] {
       ok: definida(process.env.NEXT_PUBLIC_META_PIXEL_ID),
       impacto: "sem Meta Pixel: campanhas ficam sem otimização",
     },
-    {
-      nome: "GOOGLE_SHEETS_ID",
-      ok: definida(process.env.GOOGLE_SHEETS_ID),
-      impacto: "os pedidos de etiqueta não são gravados no CRM",
-    },
   ];
 }
 

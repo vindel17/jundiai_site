@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, useState } from "react";
 import { pedirResgate, type EstadoResgate } from "@/app/conta/indicacao-acoes";
 import { formatBRL } from "@/data/catalogo";
@@ -131,12 +130,6 @@ export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
             </button>
           </form>
         )
-      ) : null}
-
-      {placar.indicado && placar.etiquetasDtf > 0 ? (
-        <div className="conta-acoes">
-          <Link href="/etiquetas">Pedir minhas etiquetas</Link>
-        </div>
       ) : null}
     </section>
   );

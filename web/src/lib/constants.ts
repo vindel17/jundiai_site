@@ -7,8 +7,6 @@ export const SITE = {
   city: "Jundiaí",
   state: "SP",
   domain: DOMINIO_PADRAO,
-  etiquetasPorFilho: 5,
-  maxFilhos: 3,
   prazoEstimado: "até 15 dias úteis após a confirmação",
 } as const;
 

@@ -83,8 +83,8 @@ export default function PrivacidadePage() {
           </p>
 
           <p className="mt-10">
-            <Link href="/etiquetas" className="underline underline-offset-2">
-              Voltar para a solicitação de etiquetas
+            <Link href="/reserva" className="underline underline-offset-2">
+              Voltar para a reserva
             </Link>
           </p>
         </article>

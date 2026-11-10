@@ -24,8 +24,7 @@ export function PerfilForm({ proximo }: { proximo?: string }) {
           {estado.etiquetas ? (
             <>
               {" "}
-              Você ganhou <b>1 etiqueta</b> de boas-vindas. Peça em{" "}
-              <Link href="/etiquetas">Etiquetas</Link>.
+              Você ganhou <b>1 etiqueta</b> de boas-vindas.
             </>
           ) : null}
         </p>

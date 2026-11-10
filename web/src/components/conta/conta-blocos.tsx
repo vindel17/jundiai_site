@@ -118,7 +118,6 @@ export function MeuKitCard({ filhos }: { filhos: FilhoResumo[] }) {
       </ul>
       <div className="conta-acoes">
         <Link href="/comprar">Comprar uniforme</Link>
-        <Link href="/etiquetas">Pedir etiquetas</Link>
       </div>
     </section>
   );
