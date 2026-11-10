@@ -2,7 +2,7 @@ import { DOMINIO_PADRAO, whatsappFormatado, whatsappNumero } from "./config-publ
 
 export const SITE = {
   name: "Uniforme Jundiaí",
-  brandLine: "Uma iniciativa da Espaço Livre Uniformes",
+  brandLine: "Uniformes escolares da rede municipal de Jundiaí",
   credenciamento: "Empresa credenciada para o voucher do uniforme escolar",
   city: "Jundiaí",
   state: "SP",

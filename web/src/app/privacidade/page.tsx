@@ -17,14 +17,14 @@ export default function PrivacidadePage() {
           <p className="eyebrow">LGPD</p>
           <h1 className="section-title">Política de privacidade</h1>
           <p className="section-lead">
-            Esta política descreve como a operação {SITE.name} ({SITE.brandLine})
-            trata dados pessoais coletados neste site.
+            Esta política descreve como {SITE.name} trata os dados pessoais
+            coletados neste site.
           </p>
 
           <h2>1. Controlador</h2>
           <p>
-            Os dados são tratados pela Espaço Livre Uniformes, no contexto da
-            operação escolar {SITE.name}, domínio {SITE.domain}.
+            Os dados são tratados por {SITE.name}, operação de uniformes
+            escolares da rede municipal de {SITE.city}, domínio {SITE.domain}.
           </p>
 
           <h2>2. Dados coletados</h2>
@@ -78,8 +78,7 @@ export default function PrivacidadePage() {
 
           <h2>8. Esclarecimento institucional</h2>
           <p>
-            {SITE.name} é uma iniciativa da Espaço Livre Uniformes e{" "}
-            <strong>não</strong> é um canal oficial da Prefeitura de {SITE.city},
+            {SITE.name} <strong>não</strong> é um canal oficial da Prefeitura de {SITE.city},
             da Secretaria de Educação ou das escolas municipais.
           </p>
 

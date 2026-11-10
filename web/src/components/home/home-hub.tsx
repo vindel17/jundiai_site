@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { SITE } from "@/lib/constants";
-import { ComoFunciona, ComprarBloco } from "./home-sections";
+import { getWhatsAppUrl, SITE } from "@/lib/constants";
 
 export function HomeHub() {
+  const whatsapp = getWhatsAppUrl("Quero separar o uniforme do meu filho");
+
   return (
     <main className="home-page">
       <section className="home-hero">
@@ -10,46 +11,42 @@ export function HomeHub() {
         <div className="home-hero-inner">
           <span className="uj-kicker">{SITE.credenciamento}</span>
           <h1 className="home-title">
-            O uniforme que não serve mais <span>serve para alguém hoje</span>
+            Garanta o uniforme <span>antes das aulas</span>
           </h1>
           <p className="home-lead">
-            Todo mundo usa o mesmo uniforme na rede. Aqui, quem tem peça parada
-            encontra quem precisa dela — direto entre famílias, sem taxa.
+            {SITE.name} é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Escolha a
+            escola e o tamanho das peças, sem pagar agora.
           </p>
 
           <div className="home-paths">
-            <Link href="/doacao/doar" className="home-path home-path-primary">
+            <Link href="/reserva" className="home-path home-path-primary">
               <strong>
-                Quero doar
-                <span className="home-tag">Ganhe peça nova</span>
+                Reservar o kit
+                <span className="home-tag">Sem pagar agora</span>
                 <span className="home-path-arrow" aria-hidden>
                   →
                 </span>
               </strong>
               <span>
-                Tire a foto, diga o tamanho e a escola. Duas doações valem uma
-                camiseta nova para o seu filho.
+                A gente separa o kit e avisa quando o voucher abrir. A reserva não
+                obriga a compra.
               </span>
             </Link>
 
-            <Link href="/doacao/receber" className="home-path">
-              <strong>
-                Quero receber
-                <span className="home-path-arrow" aria-hidden>
-                  →
-                </span>
-              </strong>
-              <span>
-                Veja o que já está disponível, filtre pela escola e pelo tamanho
-                ou avise o que você procura.
-              </span>
-            </Link>
+            {whatsapp !== "#" ? (
+              <a href={whatsapp} target="_blank" rel="noreferrer" className="home-path">
+                <strong>
+                  Fazer pelo WhatsApp
+                  <span className="home-path-arrow" aria-hidden>
+                    →
+                  </span>
+                </strong>
+                <span>A mesma reserva, na conversa, com a escola e os tamanhos.</span>
+              </a>
+            ) : null}
           </div>
         </div>
       </section>
-
-      <ComoFunciona />
-      <ComprarBloco />
     </main>
   );
 }

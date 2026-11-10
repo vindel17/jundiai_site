@@ -39,7 +39,7 @@ export function ReservaForm({ fotosKit }: { fotosKit: Partial<Record<KitGenero, 
           <i aria-hidden>1</i> Quem vai usar o uniforme
         </h2>
         <div className="uj-field">
-          <label htmlFor="reserva-escola">Escola da rede</label>
+          <label htmlFor="reserva-escola">Nome da escola</label>
           <select id="reserva-escola" name="escola" required defaultValue="">
             <option value="" disabled>
               Encontre a escola na lista
@@ -52,14 +52,14 @@ export function ReservaForm({ fotosKit }: { fotosKit: Partial<Record<KitGenero, 
           </select>
         </div>
         <div className="uj-field">
-          <label htmlFor="reserva-aluno">Primeiro nome do(a) aluno(a)</label>
+          <label htmlFor="reserva-aluno">Primeiro nome de quem vai usar o uniforme</label>
           <input id="reserva-aluno" name="aluno" required minLength={2} maxLength={40} />
         </div>
       </section>
 
       <section className="reserva-bloco">
         <h2 className="reserva-passo" id="reserva-kit-titulo">
-          <i aria-hidden>2</i> Qual peça de baixo vem no kit?
+          <i aria-hidden>2</i> Você prefere bermuda ou short-saia?
         </h2>
         <div className="reserva-opcoes" role="radiogroup" aria-labelledby="reserva-kit-titulo">
           {OPCOES_KIT.map((opcao) => (
@@ -101,8 +101,9 @@ export function ReservaForm({ fotosKit }: { fotosKit: Partial<Record<KitGenero, 
           ))}
         </ul>
         <p className="reserva-dica">
-          As 2 camisetas manga curta vão no mesmo tamanho. Se não precisar de alguma peça, escolha
-          “Não quero esta peça”. Dá para ajustar até 31 de dezembro.
+          As duas camisetas de manga curta são do mesmo tamanho. Se não precisar de uma peça,
+          escolha “Não quero esta peça”. Antes de comprar, você pode trocar o tamanho se tivermos
+          a peça no tamanho que você precisa.
         </p>
       </section>
 
@@ -123,15 +124,15 @@ export function ReservaForm({ fotosKit }: { fotosKit: Partial<Record<KitGenero, 
             </label>
           ))}
         </div>
-        <p className="reserva-dica">{regraDoFrete()} É só uma preferência: dá para mudar depois.</p>
+        <p className="reserva-dica">{regraDoFrete()} Você pode mudar sua escolha depois.</p>
       </section>
 
       <div className="reserva-enviar">
         {estado.erro ? <p className="entrar-erro">{estado.erro}</p> : null}
         <button className="btn-primary" type="submit" disabled={pendente}>
-          {pendente ? "Separando..." : "Separar o kit, sem pagar"}
+          {pendente ? "Reservando..." : "Confirmar minha reserva"}
         </button>
-        <p className="reserva-dica">Sem pagamento agora e sem obrigação de compra.</p>
+        <p className="reserva-dica">Reservar é de graça. Você decide depois se quer comprar.</p>
       </div>
     </form>
   );

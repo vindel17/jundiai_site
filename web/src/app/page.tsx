@@ -5,7 +5,7 @@ import { SITE } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: SITE.name,
-  description: `Doe, receba ou compre uniforme escolar da rede municipal de ${SITE.city}. Entre famílias, sem taxa.`,
+  description: `Reserve o uniforme escolar de ${SITE.city} no tamanho certo, sem pagar agora. ${SITE.credenciamento}.`,
   alternates: { canonical: "/" },
 };
 

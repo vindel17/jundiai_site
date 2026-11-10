@@ -34,7 +34,7 @@ export default async function ConvitePage({
         <span className="uj-kicker">{SITE.credenciamento}</span>
         <h1 className="uj-page-title">Uma família te chamou</h1>
         <p className="uj-page-lead">
-          A Espaço Livre é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Pelo WhatsApp
+          {SITE.name} é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Pelo WhatsApp
           você separa as 6 peças do uniforme, escolhe os tamanhos e não paga agora. Quando o kit
           estiver pronto, avisamos na mesma conversa e você decide se deseja comprar.
         </p>

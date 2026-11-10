@@ -16,15 +16,15 @@ export default function NaoEncontrado() {
             <Link href="/" className="btn-primary">
               Ir para o início
             </Link>
-            <Link href="/doacao/receber" className="btn-secondary">
-              Ver peças disponíveis
+            <Link href="/reserva" className="btn-secondary">
+              Reservar o uniforme
             </Link>
           </>
         }
       >
         <p>
-          O link pode estar incompleto, ou a peça que você procurava já foi para
-          outra família. Os caminhos do site continuam no menu acima.
+          O link pode estar incompleto. A reserva do uniforme continua no menu
+          acima.
         </p>
       </TelaAviso>
     </AppShell>

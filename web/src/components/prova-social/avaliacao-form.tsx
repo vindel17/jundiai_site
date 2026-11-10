@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { CATALOGO } from "@/data/catalogo";
+import { SITE } from "@/lib/constants";
 import {
   criarAvaliacao,
   type EstadoAvaliacao,
@@ -208,7 +209,7 @@ export function AvaliacaoForm({ modeloPadrao, logado }: Props) {
 
       <label className="ps-check">
         <input type="checkbox" name="confirmouCompra" value="sim" required />
-        <span>Confirmo que já comprei esta peça com a Espaço Livre</span>
+        <span>Confirmo que já comprei esta peça com a {SITE.name}</span>
       </label>
 
       {estado.erro ? (

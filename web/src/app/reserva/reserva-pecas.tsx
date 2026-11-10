@@ -41,9 +41,9 @@ export function CardPeca({
 }
 
 function detalheDaPeca(peca: PecaKit) {
-  if (peca.catalogoId === "bermuda") return "No kit com bermuda";
-  if (peca.catalogoId === "short-saia") return "No kit com short-saia";
-  return peca.quantidade > 1 ? "2 peças, no mesmo tamanho" : "1 peça";
+  if (peca.catalogoId === "bermuda") return "No kit masculino";
+  if (peca.catalogoId === "short-saia") return "No kit feminino";
+  return peca.quantidade > 1 ? "2 camisetas" : "1 peça";
 }
 
 /** As peças do kit, com as duas opções de baixo lado a lado. */

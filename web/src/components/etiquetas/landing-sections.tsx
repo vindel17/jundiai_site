@@ -176,13 +176,12 @@ export function AboutProject() {
           </h2>
           <p className="section-lead">
             O {SITE.name} é o novo jeito de resolver o uniforme escolar da rede
-            municipal: pedido online, atendimento pelo WhatsApp, entrega perto de
-            você e uma rede de doação entre famílias. Toda peça comprada aqui já
-            vai com a etiqueta com o nome do aluno.
+            municipal: reserva do kit, atendimento pelo WhatsApp e entrega perto
+            de você. Toda peça comprada aqui já vai com a etiqueta com o nome do
+            aluno.
           </p>
           <p className="about-credit">
-            Uma iniciativa da <strong>Espaço Livre Uniformes</strong>, criada com
-            carinho para as famílias de {SITE.city}.
+            Feito para as famílias de {SITE.city}.
           </p>
         </div>
       </div>
