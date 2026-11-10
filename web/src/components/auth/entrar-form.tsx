@@ -111,7 +111,7 @@ export function EntrarForm({ proximo }: { proximo: string }) {
   return (
     <form className="entrar-form" onSubmit={pedirCodigo}>
       <div className="uj-field">
-        <label htmlFor="celular">Seu WhatsApp</label>
+        <label htmlFor="celular">Número com DDD</label>
         <input
           id="celular"
           value={celular}
@@ -127,13 +127,8 @@ export function EntrarForm({ proximo }: { proximo: string }) {
       {erro && <p className="entrar-erro">{erro}</p>}
 
       <button type="submit" className="btn-primary" disabled={enviando || !e164}>
-        {enviando ? "Enviando..." : "Receber código no WhatsApp"}
+        {enviando ? "Enviando..." : "Receber código"}
       </button>
-
-      <p className="entrar-nota">
-        Usamos o celular só para confirmar que você é uma pessoa real. Uma conta por
-        número — é assim que a doação alcança mais famílias.
-      </p>
     </form>
   );
 }
