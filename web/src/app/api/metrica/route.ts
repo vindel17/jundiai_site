@@ -9,11 +9,22 @@ import {
   type ParametrosOrigem,
 } from "@/lib/metrica/origem-site";
 import { registrarEtapas } from "@/lib/metrica/registrar";
+import { ipDoCliente } from "@/lib/ip-cliente";
+import { criarLimitador } from "@/lib/limite-taxa";
 
 const COOKIE_VISITANTE = "uj_v";
 const COOKIE_ORIGEM = "uj_o";
 const MEIO_ANO = 180 * 24 * 60 * 60;
 const ROBOS = /bot|crawl|spider|preview|facebookexternalhit|lighthouse|headless|monitor/i;
+/** O corpo real tem uns 150 bytes; acima disso não é o nosso navegador. */
+const CORPO_MAXIMO = 2048;
+
+/**
+ * Sem cookie, cada chamada vira um visitante novo. O limite por IP impede que um
+ * script encha o funil. Folgado de propósito: escolas e redes móveis dividem o
+ * mesmo IP, e contar a menos é melhor que barrar uma família.
+ */
+const limitePorIp = criarLimitador({ max: 60, janelaMs: 10 * 60 * 1000 });
 
 function opcoesCookie(maxAge: number) {
   return {
@@ -41,15 +52,23 @@ function lerParametros(corpo: unknown): ParametrosOrigem {
 
 /**
  * Acesso ao site, sem dado pessoal: um cookie anônimo vira um código no banco.
- * Sempre responde 204; medir nunca atrapalha quem navega.
+ * Responde 204 mesmo quando não grava (medir nunca atrapalha quem navega); só
+ * passa de 60 chamadas em 10 minutos do mesmo IP recebe 429.
  */
 export async function POST(request: NextRequest) {
   const vazio = new NextResponse(null, { status: 204 });
   if (ROBOS.test(request.headers.get("user-agent") ?? "")) return vazio;
+  // O nosso navegador só chama a partir do próprio site.
+  if (request.headers.get("sec-fetch-site") === "cross-site") return vazio;
+
+  const ip = ipDoCliente(request.headers);
+  if (ip && !limitePorIp.permitir(ip)) return new NextResponse(null, { status: 429 });
 
   let corpo: unknown;
   try {
-    corpo = await request.json();
+    const texto = await request.text();
+    if (texto.length > CORPO_MAXIMO) return vazio;
+    corpo = JSON.parse(texto);
   } catch {
     return vazio;
   }
