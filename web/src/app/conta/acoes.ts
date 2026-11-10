@@ -5,7 +5,7 @@ import { executorDoUsuario } from "@/lib/comandos/executor";
 import * as perfil from "@/lib/comandos/perfil";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export type EstadoPerfil = { erro?: string; ok?: boolean; etiquetas?: number };
+export type EstadoPerfil = { erro?: string; ok?: boolean };
 
 export async function salvarPerfil(
   _anterior: EstadoPerfil,
@@ -24,7 +24,7 @@ export async function salvarPerfil(
   if (!resultado.ok) return { erro: resultado.erro };
 
   revalidatePath("/conta");
-  return { ok: true, etiquetas: resultado.dados.etiquetas };
+  return { ok: true };
 }
 
 export async function sair() {

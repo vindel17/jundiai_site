@@ -30,7 +30,5 @@ export function textoConvite(link: string) {
     "O uniforme da rede municipal de Jundiaí.",
     "",
     link,
-    "",
-    "Quem chega por aqui cria conta, coloca o nome do aluno e ganha 1 etiqueta. Na primeira compra, são 5.",
   ].join("\n");
 }

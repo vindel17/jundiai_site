@@ -16,8 +16,6 @@ export type PlacarIndicacao = {
   confirmadoCentavos: number;
   camisetas: number;
   faltamCentavos: number;
-  etiquetasDtf: number;
-  indicado: boolean;
   link: string;
 };
 
@@ -89,12 +87,6 @@ export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
           <b>Camisetas para resgate</b>
           <span>{placar.camisetas}</span>
         </li>
-        {placar.etiquetasDtf > 0 ? (
-          <li>
-            <b>Suas etiquetas DTF</b>
-            <span>{placar.etiquetasDtf}</span>
-          </li>
-        ) : null}
       </ul>
 
       <p className="conta-card-lead">

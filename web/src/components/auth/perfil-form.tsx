@@ -21,12 +21,6 @@ export function PerfilForm({ proximo }: { proximo?: string }) {
         <p>
           Agora dá para anunciar uma peça ou avisar o que você procura — a gente te
           chama assim que aparecer.
-          {estado.etiquetas ? (
-            <>
-              {" "}
-              Você ganhou <b>1 etiqueta</b> de boas-vindas.
-            </>
-          ) : null}
         </p>
         <Link href={destino} className="btn-primary">
           {rotuloDoDestino(destino)}

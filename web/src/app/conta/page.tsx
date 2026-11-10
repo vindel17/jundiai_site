@@ -107,8 +107,6 @@ export default async function ContaPage({
                   confirmadoCentavos: ind.confirmado_centavos ?? 0,
                   camisetas: ind.camisetas ?? 0,
                   faltamCentavos: ind.faltam_centavos ?? 35000,
-                  etiquetasDtf: ind.etiquetas_dtf ?? 0,
-                  indicado: Boolean(ind.indicado),
                   link: urlIndicacao(origem, ind.codigo),
                 }}
               />

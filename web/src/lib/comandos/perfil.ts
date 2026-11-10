@@ -31,7 +31,6 @@ export type PlacarIndicacao = {
   confirmado_centavos: number;
   camisetas: number;
   faltam_centavos: number;
-  etiquetas_dtf: number;
   indicado: boolean;
 };
 
@@ -101,7 +100,6 @@ export async function completarLead(
         tamanho_atual: entrada.tamanho?.trim().slice(0, 10) || null,
       });
       if (error) return errado("Não conseguimos salvar a escola. Tente de novo.");
-      await ex.rpc<number>("liberar_etiqueta_boas_vindas");
     }
   }
 
@@ -111,7 +109,7 @@ export async function completarLead(
 export async function salvarPerfil(
   ex: Executor,
   entrada: EntradaPerfil,
-): Promise<Resultado<{ etiquetas: number }>> {
+): Promise<Resultado> {
   const analise = perfilSchema.safeParse(entrada);
   if (!analise.success) return errado(analise.error.issues[0].message);
 
@@ -133,9 +131,7 @@ export async function salvarPerfil(
 
   if (erroFilho) return errado("Não conseguimos salvar o aluno. Tente de novo.");
 
-  const { dados: etiquetas } = await ex.rpc<number>("liberar_etiqueta_boas_vindas");
-
-  return certo({ etiquetas: etiquetas ?? 0 });
+  return certo(null);
 }
 
 export async function placarIndicacao(
