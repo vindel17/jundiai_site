@@ -20,23 +20,6 @@ export type PatchConversa = {
   dados?: Record<string, unknown>;
 };
 
-const CODIGO_DUPLICADO = "23505";
-
-/**
- * Marca a mensagem como processada. Retorna `false` quando já tinha sido — a
- * Meta reentrega o webhook, e sem isto um retry publicaria o anúncio duas vezes.
- */
-export async function mensagemNova(mensagemId: string, waId: string) {
-  const db = createSupabaseAdminClient();
-  const { error } = await db
-    .from("agente_mensagem")
-    .insert({ id: mensagemId, wa_id: waId });
-
-  if (!error) return true;
-  if (error.code === CODIGO_DUPLICADO) return false;
-  throw new Error(`Falha ao registrar mensagem: ${error.message}`);
-}
-
 export async function carregarConversa(waId: string): Promise<Conversa> {
   const db = createSupabaseAdminClient();
   const { data } = await db
@@ -58,7 +41,6 @@ export async function salvarConversa(waId: string, patch: PatchConversa) {
 
   const linha: Record<string, unknown> = {
     wa_id: waId,
-    ultima_entrada_em: new Date().toISOString(),
   };
   if (patch.perfilId !== undefined) linha.perfil_id = patch.perfilId;
   if (patch.passo !== undefined) linha.passo = patch.passo;

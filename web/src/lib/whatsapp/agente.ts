@@ -8,7 +8,9 @@
 import { etapasDoTurno } from "@/lib/metrica/etapas";
 import { registrarEtapas } from "@/lib/metrica/registrar";
 import { lerOrigem, origemDireta } from "@/lib/reserva/origem";
-import { carregarConversa, mensagemNova, salvarConversa } from "./conversa";
+import { registrarEntrada } from "./atendimento";
+import { carregarConversa, salvarConversa } from "./conversa";
+import { enviarTexto } from "./enviar";
 import { mostrarBeneficios } from "./fluxos/beneficios";
 import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarMinhasReservas, iniciarMinhasReservas } from "./fluxos/minhas-reservas";
@@ -24,6 +26,7 @@ import {
   escolheuMinhasReservas,
   escolheuProcurar,
   escolheuReservar,
+  pediuAtendente,
   querMenu,
 } from "./intencao";
 import { mostrarMenu, responderDoarEmBreve } from "./menu";
@@ -31,7 +34,14 @@ import type { ResultadoTurno, Sessao } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
 
 export async function processarEntrada(entrada: EntradaUsuario) {
-  if (!(await mensagemNova(entrada.mensagemId, entrada.waId))) return;
+  const rota = await registrarEntrada(entrada, pediuAtendente(entrada.escolha, entrada.texto));
+  if (rota === "novo") {
+    await enviarTexto(
+      entrada.waId,
+      "Sua conversa entrou na fila da equipe. Pode deixar sua dúvida por aqui. Se você estava reservando, suas escolhas continuam salvas.",
+    );
+  }
+  if (rota !== "bot") return;
 
   const gravada = await carregarConversa(entrada.waId);
   const sessao: Sessao = {

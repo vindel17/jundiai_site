@@ -11,14 +11,14 @@ function para(numero: string) {
 export async function enviarTexto(
   destino: string,
   texto: string,
-  opcoes?: { preview?: boolean },
+  opcoes?: { preview?: boolean; signal?: AbortSignal },
 ) {
   return enviarMensagem({
     recipient_type: "individual",
     to: para(destino),
     type: "text",
     text: { preview_url: Boolean(opcoes?.preview), body: texto },
-  });
+  }, opcoes?.signal);
 }
 
 export type Botao = { id: string; titulo: string };

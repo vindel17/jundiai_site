@@ -19,6 +19,7 @@ export type EntradaUsuario = {
   escolha: string | null;
   /** Id da mídia na Meta — o download exige token e vem depois. */
   midiaId: string | null;
+  enviadaEm?: string;
 };
 
 type Registro = Record<string, unknown>;
@@ -50,12 +51,16 @@ function normalizar(bruta: Registro, contatos: unknown[]): EntradaUsuario | null
   const waId = texto(bruta.from);
   if (!mensagemId || !waId) return null;
 
+  const segundos = texto(bruta.timestamp);
   const base = {
     mensagemId,
     waId,
     nome: nomeDoContato(contatos, waId),
     escolha: null as string | null,
     midiaId: null as string | null,
+    enviadaEm: /^\d{1,12}$/.test(segundos)
+      ? new Date(Number(segundos) * 1000).toISOString()
+      : undefined,
   };
 
   const tipo = texto(bruta.type);

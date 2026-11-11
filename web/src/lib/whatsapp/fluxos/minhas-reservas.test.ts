@@ -32,7 +32,6 @@ vi.mock("@/lib/whatsapp/enviar", () => {
 });
 
 vi.mock("@/lib/whatsapp/conversa", () => ({
-  mensagemNova: async () => true,
   carregarConversa: async (waId: string) => ({
     waId,
     perfilId: null,
@@ -41,6 +40,10 @@ vi.mock("@/lib/whatsapp/conversa", () => ({
   salvarConversa: async (waId: string, patch: { passo: string; dados: Record<string, unknown> }) => {
     simulado.conversas.set(waId, { passo: patch.passo, dados: patch.dados });
   },
+}));
+
+vi.mock("@/lib/whatsapp/atendimento", () => ({
+  registrarEntrada: async () => "bot",
 }));
 
 vi.mock("@/lib/whatsapp/identidade", () => ({ perfilPorWaId: async () => null }));

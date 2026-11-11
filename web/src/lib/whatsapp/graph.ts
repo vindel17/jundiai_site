@@ -21,13 +21,20 @@ export function whatsappConfigurado(): boolean {
   );
 }
 
-export async function enviarMensagem(payload: Record<string, unknown>) {
+export class ErroRespostaWhatsApp extends Error {
+  constructor(readonly status: number, detalhe: string) {
+    super(`WhatsApp Cloud API ${status}: ${detalhe}`);
+  }
+}
+
+export async function enviarMensagem(payload: Record<string, unknown>, signal?: AbortSignal) {
   const { phoneNumberId, token } = credenciais();
 
   const resposta = await fetch(
     `https://graph.facebook.com/${GRAPH_VERSION}/${phoneNumberId}/messages`,
     {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -38,7 +45,7 @@ export async function enviarMensagem(payload: Record<string, unknown>) {
 
   if (!resposta.ok) {
     const detalhe = await resposta.text();
-    throw new Error(`WhatsApp Cloud API ${resposta.status}: ${detalhe}`);
+    throw new ErroRespostaWhatsApp(resposta.status, detalhe);
   }
 
   return resposta.json();

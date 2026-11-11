@@ -137,3 +137,105 @@
 .equipe-paginacao b {
   color: var(--ink);
 }
+
+.atendimento-layout {
+  display: grid;
+  grid-template-columns: minmax(13rem, 1fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.atendimento-layout h2 {
+  margin-top: 0;
+}
+
+.atendimento-fila,
+.atendimento-mensagens {
+  list-style: none;
+  padding: 0;
+}
+
+.atendimento-fila a {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.atendimento-fila a[aria-current] {
+  border-inline-start: 3px solid var(--accent-dark);
+}
+
+.atendimento-fila a:hover strong {
+  text-decoration: underline;
+}
+
+.atendimento-fila span,
+.atendimento-mensagens small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.atendimento-conversa {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: white;
+}
+
+.atendimento-conversa h3 {
+  margin: 1rem 0 0.5rem;
+}
+
+.atendimento-mensagens {
+  display: grid;
+  gap: 0.65rem;
+  max-height: 27rem;
+  overflow-y: auto;
+  margin: 0 0 1rem;
+}
+
+.atendimento-mensagens li {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  overflow-wrap: anywhere;
+}
+
+.atendimento-mensagens li[data-origem="equipe"] {
+  margin-inline-start: 1rem;
+}
+
+.atendimento-mensagens p {
+  margin: 0.2rem 0 0;
+  white-space: pre-wrap;
+}
+
+.atendimento-resposta {
+  display: grid;
+  justify-items: start;
+  gap: 0.55rem;
+}
+
+.atendimento-resposta textarea {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+
+.atendimento-encerrar {
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 680px) {
+  .atendimento-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

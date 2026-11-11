@@ -13,6 +13,7 @@ export const ACOES_EQUIPE = [
   "producao",
   "avisos",
   "metricas",
+  "atendimento",
 ] as const;
 
 export type AcaoEquipe = (typeof ACOES_EQUIPE)[number];

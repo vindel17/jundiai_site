@@ -10,7 +10,7 @@ import { buscarEscolas } from "@/lib/reserva/escolas";
 import { reservaAberta, type KitGenero } from "@/lib/reserva/kit";
 import type { Origem } from "@/lib/reserva/origem";
 import { enviarBotoes, enviarLista, enviarTexto } from "../enviar";
-import { querMenu } from "../intencao";
+import { querContinuarReserva, querMenu } from "../intencao";
 import { mostrarMenu } from "../menu";
 import { dadoTexto, type ResultadoTurno, type Sessao } from "../sessao";
 import type { EntradaUsuario } from "../tipos";
@@ -112,6 +112,9 @@ export async function continuarReserva(
 ): Promise<ResultadoTurno> {
   if (querMenu(entrada.escolha, entrada.texto)) return mostrarMenu(sessao);
   if (!reservaAberta()) return iniciarReserva(sessao, origemDosDados(sessao.dados));
+  if (querContinuarReserva(entrada.texto) && sessao.passo !== "reserva_retomar") {
+    return repetirPergunta(sessao.waId, sessao.passo, sessao.dados);
+  }
 
   const passo = PASSOS[sessao.passo];
   if (!passo) return iniciarReserva(sessao, origemDosDados(sessao.dados));
@@ -121,7 +124,7 @@ export async function continuarReserva(
 async function passoRetomar(sessao: Sessao, entrada: EntradaUsuario): Promise<ResultadoTurno> {
   const rascunho = lerRascunho(sessao.dados);
   const origem = origemDosDados(sessao.dados);
-  if (entrada.escolha === RETOMAR && rascunho) {
+  if ((entrada.escolha === RETOMAR || querContinuarReserva(entrada.texto)) && rascunho) {
     return repetirPergunta(sessao.waId, rascunho.passo, rascunho.dados);
   }
   if (entrada.escolha === RECOMECAR || !rascunho) {

@@ -13,6 +13,7 @@ const simulado = vi.hoisted(() => ({
   enviadas: [] as Enviada[],
   conversas: new Map<string, { passo: string; dados: Record<string, unknown> }>(),
   gravar: vi.fn(),
+  atendimento: false,
 }));
 
 vi.mock("@/lib/whatsapp/enviar", () => {
@@ -36,7 +37,6 @@ vi.mock("@/lib/whatsapp/enviar", () => {
 });
 
 vi.mock("@/lib/whatsapp/conversa", () => ({
-  mensagemNova: async () => true,
   carregarConversa: async (waId: string) => ({
     waId,
     perfilId: null,
@@ -47,6 +47,15 @@ vi.mock("@/lib/whatsapp/conversa", () => ({
     patch: { passo: string; dados: Record<string, unknown> },
   ) => {
     simulado.conversas.set(waId, { passo: patch.passo, dados: patch.dados });
+  },
+}));
+
+vi.mock("@/lib/whatsapp/atendimento", () => ({
+  registrarEntrada: async (_entrada: unknown, pediuAtendente: boolean) => {
+    if (simulado.atendimento) return "humano";
+    if (!pediuAtendente) return "bot";
+    simulado.atendimento = true;
+    return "novo";
   },
 }));
 
@@ -101,12 +110,30 @@ beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date("2026-10-20T12:00:00-03:00"));
   simulado.conversas.clear();
+  simulado.atendimento = false;
   simulado.gravar.mockReset();
   simulado.gravar.mockResolvedValue({ id: "r1", codigoIndicacao: "abcd1234" });
 });
 
 afterEach(() => {
   vi.useRealTimers();
+});
+
+it("pausa o bot a pedido do cliente e retoma a reserva no passo salvo", async () => {
+  await ateOModo();
+  const antes = simulado.conversas.get(WA);
+
+  expect((await enviar({ texto: "quero falar com um atendente" }))[0]?.texto).toContain("fila da equipe");
+  expect(simulado.conversas.get(WA)).toEqual(antes);
+  expect(await enviar({ texto: "menu" })).toEqual([]);
+  expect(await enviar({ escolha: "reserva.modo.unico" })).toEqual([]);
+  expect(simulado.conversas.get(WA)).toEqual(antes);
+
+  simulado.atendimento = false;
+  expect(ultima(await enviar({ texto: "continuar reserva" })).texto).toContain("Como prefere escolher os tamanhos?");
+  expect(passo()).toBe(antes?.passo);
+  expect(await enviar({ escolha: "reserva.modo.unico" })).not.toEqual([]);
+  expect(passo()).not.toBe(antes?.passo);
 });
 
 describe("pré-reserva pelo WhatsApp", () => {

@@ -7,6 +7,7 @@ export const ID = {
   menuBeneficios: "menu.beneficios",
   menuReservar: "menu.reservar",
   menuMinhasReservas: "menu.minhas_reservas",
+  menuAtendente: "menu.atendente",
   pecaPrefixo: "peca.",
   tamPrefixo: "tam.",
   avisar: "procuro.avisar",
@@ -33,6 +34,13 @@ export function querMenu(escolha: string | null, texto: string) {
   return /^(oi|ola|olaa|hey|eae|e ai|menu|inicio|voltar|oi,?\s*tudo bem\??)$/.test(
     t,
   );
+}
+
+export function pediuAtendente(escolha: string | null, texto: string) {
+  if (escolha === ID.menuAtendente) return true;
+  const limpo = textoLimpo(texto);
+  return /^(atendente|humano|atendimento humano)[.!?]*$/.test(limpo)
+    || /\bfalar com (?:(?:um|uma|o|a) )?(?:atendente|humano|pessoa|equipe)\b/.test(limpo);
 }
 
 export function escolheuComprar(escolha: string | null, texto: string) {
@@ -69,7 +77,12 @@ export function escolheuDoar(escolha: string | null, texto: string) {
 export function escolheuReservar(escolha: string | null, texto: string) {
   if (escolha === ID.menuReservar) return true;
   const t = textoLimpo(texto);
-  return t === "reservar" || t.startsWith("quero reservar") || t.startsWith("reservar uniforme");
+  return t === "reservar" || t.startsWith("quero reservar") || t.startsWith("reservar uniforme")
+    || querContinuarReserva(texto);
+}
+
+export function querContinuarReserva(texto: string) {
+  return /^continuar (?:a |minha )?(?:pre-)?reserva[.!?]*$/.test(textoLimpo(texto));
 }
 
 export function escolheuMinhasReservas(escolha: string | null, texto: string) {

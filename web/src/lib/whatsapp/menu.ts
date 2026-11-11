@@ -44,6 +44,11 @@ export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
         titulo: "Meus benefícios",
         descricao: "Doações concluídas, indicação e camisetas",
       },
+      {
+        id: ID.menuAtendente,
+        titulo: "Falar com atendente",
+        descricao: "Pedir ajuda à equipe da loja",
+      },
     ],
   );
   return { passo: "menu", dados: {} };
