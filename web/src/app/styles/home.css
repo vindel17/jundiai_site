@@ -45,7 +45,7 @@
   color: var(--muted);
 }
 
-/* ---------- Caminhos (doar / receber) ---------- */
+/* ---------- Caminhos da home ---------- */
 .home-paths {
   display: grid;
   gap: 0.7rem;

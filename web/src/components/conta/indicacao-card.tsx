@@ -56,7 +56,7 @@ export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
 
       <div className="indicacao-link">
         <code>{placar.link}</code>
-        <button type="button" className="doacao-reset" onClick={copiar}>
+        <button type="button" className="conta-texto-acao" onClick={copiar}>
           {copiado ? "Copiado" : "Copiar"}
         </button>
       </div>
@@ -98,7 +98,7 @@ export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
 
       {placar.camisetas > 0 ? (
         estado.ok ? (
-          <p className="doacao-ok">
+          <p className="conta-ok">
             Pedido de resgate anotado. Vamos combinar a entrega em casa.
           </p>
         ) : (

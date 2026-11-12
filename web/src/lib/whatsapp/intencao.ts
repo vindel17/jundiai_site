@@ -1,8 +1,6 @@
 import { CATALOGO, TAMANHOS } from "@/data/catalogo";
 
 export const ID = {
-  menuProcurar: "menu.procurar",
-  menuDoar: "menu.doar",
   menuComprar: "menu.comprar",
   menuBeneficios: "menu.beneficios",
   menuReservar: "menu.reservar",
@@ -10,14 +8,8 @@ export const ID = {
   menuAtendente: "menu.atendente",
   pecaPrefixo: "peca.",
   tamPrefixo: "tam.",
-  avisar: "procuro.avisar",
-  comprar: "procuro.comprar",
   compraSite: "compra.site",
   compraOutra: "compra.outra",
-  verTodas: "procuro.ver_todas",
-  verWa: "procuro.ver_wa",
-  pedirPrefixo: "pedir.",
-  verPrefixo: "ver.",
 } as const;
 
 function textoLimpo(entrada: string) {
@@ -54,24 +46,6 @@ export function escolheuComprar(escolha: string | null, texto: string) {
     t.includes("montar pedido") ||
     t.includes("montar meu pedido")
   );
-}
-
-export function escolheuProcurar(escolha: string | null, texto: string) {
-  if (escolha === ID.menuProcurar) return true;
-  const t = textoLimpo(texto);
-  return (
-    t.includes("procurar") ||
-    t.includes("receber") ||
-    t.includes("doacao") ||
-    t === "quero uma peca" ||
-    t === "preciso de uniforme"
-  );
-}
-
-export function escolheuDoar(escolha: string | null, texto: string) {
-  if (escolha === ID.menuDoar) return true;
-  const t = textoLimpo(texto);
-  return t === "doar" || t.startsWith("doar ") || t.startsWith("quero doar");
 }
 
 export function escolheuReservar(escolha: string | null, texto: string) {
@@ -133,10 +107,4 @@ export function detectarTamanho(escolha: string | null, texto: string): string |
   const soNumero = t.replace(/\D/g, "");
   if ((TAMANHOS as readonly string[]).includes(soNumero)) return soNumero;
   return null;
-}
-
-export function idAnuncio(escolha: string | null, prefixo: string) {
-  if (!escolha?.startsWith(prefixo)) return null;
-  const id = escolha.slice(prefixo.length);
-  return /^[0-9a-f-]{36}$/i.test(id) ? id : null;
 }

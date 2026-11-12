@@ -4,18 +4,11 @@
  */
 import { CATALOGO, formatBRL, PROMO_HERO } from "@/data/catalogo";
 import { enviarBotoes, enviarImagem, enviarLista, enviarTexto } from "../enviar";
-import {
-  detectarModelo,
-  escolheuDoar,
-  escolheuProcurar,
-  ID,
-  querMenu,
-} from "../intencao";
-import { mostrarMenu, responderDoarEmBreve } from "../menu";
+import { detectarModelo, ID, querMenu } from "../intencao";
+import { mostrarMenu } from "../menu";
 import type { ResultadoTurno, Sessao } from "../sessao";
 import { urlSite } from "../site";
 import type { EntradaUsuario } from "../tipos";
-import { iniciarProcuro } from "./procuro";
 
 function urlFotoCatalogo(caminho: string) {
   return urlSite(caminho);
@@ -59,8 +52,6 @@ export async function continuarCompra(
   const { escolha, texto } = entrada;
 
   if (querMenu(escolha, texto)) return mostrarMenu(sessao);
-  if (escolheuDoar(escolha, texto)) return responderDoarEmBreve(sessao);
-  if (escolheuProcurar(escolha, texto)) return iniciarProcuro(sessao);
   if (escolha === ID.compraOutra) return iniciarCompra(sessao);
   if (escolha === ID.compraSite) return enviarLinkCompra(sessao);
 
@@ -106,7 +97,6 @@ async function mostrarPecaCatalogo(
   await enviarBotoes(sessao.waId, "Como prefere seguir?", [
     { id: ID.compraSite, titulo: "Montar no site" },
     { id: ID.compraOutra, titulo: "Outra peça" },
-    { id: ID.menuProcurar, titulo: "Procurar doação" },
   ]);
 
   return { passo: "compra_vitrine", dados: { modelo: modeloId } };

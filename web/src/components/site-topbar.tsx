@@ -27,7 +27,6 @@ const SUBTITULOS: readonly (readonly [string, string])[] = [
   ["/reserva", "Separe sem pagar agora"],
   ["/comprar", "Loja de uniformes"],
   ["/pedido", "Loja de uniformes"],
-  ["/doacao", "Doações"],
   ["/entrar", "Entrar"],
   ["/i", "Convite"],
 ] as const;

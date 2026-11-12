@@ -14,7 +14,6 @@ import { enviarTexto } from "./enviar";
 import { mostrarBeneficios } from "./fluxos/beneficios";
 import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarMinhasReservas, iniciarMinhasReservas } from "./fluxos/minhas-reservas";
-import { continuarProcuro, iniciarProcuro } from "./fluxos/procuro";
 import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
 import { manterRascunho, origemDosDados } from "./fluxos/reserva-estado";
 import { perfilPorWaId } from "./identidade";
@@ -22,14 +21,12 @@ import {
   detectarModelo,
   escolheuBeneficios,
   escolheuComprar,
-  escolheuDoar,
   escolheuMinhasReservas,
-  escolheuProcurar,
   escolheuReservar,
   pediuAtendente,
   querMenu,
 } from "./intencao";
-import { mostrarMenu, responderDoarEmBreve } from "./menu";
+import { mostrarMenu } from "./menu";
 import type { ResultadoTurno, Sessao } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
 
@@ -96,23 +93,17 @@ async function despachar(
     return iniciarReserva(sessao, origem);
   }
 
-  if (sessao.passo.startsWith("procuro_")) {
-    return continuarProcuro(sessao, entrada);
-  }
-
   if (sessao.passo.startsWith("compra_")) {
     return continuarCompra(sessao, entrada);
   }
 
-  if (escolheuDoar(escolha, texto)) return responderDoarEmBreve(sessao);
-  if (escolheuProcurar(escolha, texto)) return iniciarProcuro(sessao);
   if (escolheuComprar(escolha, texto)) {
     return iniciarCompra(sessao, detectarModelo(escolha, texto));
   }
   if (escolheuBeneficios(escolha, texto)) return mostrarBeneficios(sessao);
 
   const modelo = detectarModelo(escolha, texto);
-  if (modelo) return iniciarProcuro(sessao, modelo);
+  if (modelo) return iniciarCompra(sessao, modelo);
 
   return mostrarMenu(sessao);
 }

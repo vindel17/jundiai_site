@@ -6,7 +6,11 @@ const nextConfig: NextConfig = {
 
   /** Links antigos do funil de etiquetas (anúncios, QR Code) levam à reserva, o caminho público atual. */
   async redirects() {
-    return [{ source: "/etiquetas/:path*", destination: "/reserva", permanent: false }];
+    return [
+      { source: "/etiquetas/:path*", destination: "/reserva", permanent: false },
+      { source: "/doacao", destination: "/reserva", permanent: false },
+      { source: "/doacao/:path*", destination: "/reserva", permanent: false },
+    ];
   },
 };
 
