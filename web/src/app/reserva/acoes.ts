@@ -1,13 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { codigoDoCookie } from "@/app/conta/indicacao-acoes";
+import { COOKIE_INDICACAO } from "@/lib/indicacao/regras";
 import { registrarEtapas } from "@/lib/metrica/registrar";
 import { obterReserva, reservaDoTelefone, telefonesEquivalentes } from "@/lib/reserva/consultas";
 import { eEntrega } from "@/lib/reserva/entrega";
 import { escolaValida } from "@/lib/reserva/escolas";
 import { gravarReserva } from "@/lib/reserva/gravar";
 import { aplicarMudancaStatus } from "@/lib/reserva/mudanca";
+import { origemDaReservaSite } from "@/lib/reserva/origem";
 import { familiaPodeExcluir } from "@/lib/reserva/status";
 import {
   reservaAberta,
@@ -66,10 +70,12 @@ export async function criarReservaSite(
   const telefone = await telefoneDaConta(user.phone);
   if (!telefone) return { erro: "Não encontramos o WhatsApp desta conta." };
 
+  const origem = origemDaReservaSite(await conviteDeOutraFamilia(telefone));
+
   try {
     await gravarReserva({
       telefone,
-      origem: { canal: "direto", codigo: "site", texto: "Reserva pelo site" },
+      origem,
       escola,
       aluno: aluno.slice(0, 40),
       kit,
@@ -80,13 +86,32 @@ export async function criarReservaSite(
     return { erro: "Não consegui anotar a reserva. Tente de novo." };
   }
 
+  const jar = await cookies();
+  jar.delete({ name: COOKIE_INDICACAO, path: "/" });
+
   await registrarEtapas({
     canal: "site",
     pessoa: telefone,
     etapas: ["confirmada"],
-    origem: { canal: "direto", codigo: "site" },
+    origem,
   });
   redirect("/reserva?feita=1");
+}
+
+/** O cookie do convite só vale quando o código é de outra família. */
+async function conviteDeOutraFamilia(telefone: string) {
+  const codigo = await codigoDoCookie();
+  if (!codigo) return "";
+
+  const variantes = telefonesEquivalentes(telefone);
+  const db = createSupabaseAdminClient();
+  const [familia, perfil] = await Promise.all([
+    db.from("reserva_familia").select("telefone").eq("codigo_indicacao", codigo).maybeSingle(),
+    db.from("perfil").select("telefone").eq("codigo_indicacao", codigo).maybeSingle(),
+  ]);
+  const dono = String(familia.data?.telefone ?? perfil.data?.telefone ?? "");
+  if (dono && telefonesEquivalentes(dono).some((item) => variantes.includes(item))) return "";
+  return codigo;
 }
 
 export type EstadoExclusao = { erro?: string };

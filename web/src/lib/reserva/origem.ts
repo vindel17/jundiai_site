@@ -1,3 +1,5 @@
+import { CODIGO_INDICACAO } from "@/lib/indicacao/regras";
+
 export const CANAIS_ORIGEM = [
   "panfleto",
   "social",
@@ -28,6 +30,14 @@ export function rotuloCanal(canal: CanalOrigem) {
 
 export function origemDireta(): Origem {
   return { canal: "direto", codigo: "", texto: "" };
+}
+
+/** Reserva pelo site herda o convite guardado no cookie. Sem convite, segue direto. */
+export function origemDaReservaSite(codigo: string): Origem {
+  if (CODIGO_INDICACAO.test(codigo)) {
+    return { canal: "indicacao", codigo, texto: "Reserva pelo site" };
+  }
+  return { canal: "direto", codigo: "site", texto: "Reserva pelo site" };
 }
 
 function limpar(entrada: string) {

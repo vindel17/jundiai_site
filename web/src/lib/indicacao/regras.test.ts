@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { origemDaReservaSite } from "@/lib/reserva/origem";
 import {
   faltamParaProximaCamiseta,
   passoDoTrio,
@@ -23,6 +24,19 @@ describe("peças extras da indicação", () => {
     expect(textoPremioIndicacao()).toBe(
       "A cada 3 famílias que reservarem por este link e comprarem o kit, você ganha uma camiseta extra.",
     );
+  });
+
+  it("leva o convite para a reserva feita pelo site", () => {
+    expect(origemDaReservaSite("abcd1234")).toEqual({
+      canal: "indicacao",
+      codigo: "abcd1234",
+      texto: "Reserva pelo site",
+    });
+    expect(origemDaReservaSite("")).toEqual({
+      canal: "direto",
+      codigo: "site",
+      texto: "Reserva pelo site",
+    });
   });
 
   it("mostra quantas famílias faltam para a próxima camiseta", () => {

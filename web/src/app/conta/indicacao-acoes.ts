@@ -27,8 +27,8 @@ export async function vincularIndicacaoDoCookie() {
     await supabase.rpc("vincular_indicacao", { p_codigo: codigo });
   }
 
-  const jar = await cookies();
-  jar.delete({ name: COOKIE_INDICACAO, path: "/" });
+  // O cookie fica até a reserva no site. O login não pode apagá-lo antes,
+  // senão a indicação se perde quando a pessoa escolhe o site em vez do WhatsApp.
   revalidatePath("/conta");
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { SITE, getWhatsAppUrl } from "@/lib/constants";
@@ -34,15 +35,18 @@ export default async function ConvitePage({
         <span className="uj-kicker">{SITE.credenciamento}</span>
         <h1 className="uj-page-title">Uma família te chamou</h1>
         <p className="uj-page-lead">
-          {SITE.name} é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Pelo WhatsApp
-          você separa as 6 peças do uniforme, escolhe os tamanhos e não paga agora. Quando o kit
-          estiver pronto, avisamos na mesma conversa e você decide se deseja comprar.
+          {SITE.name} é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Separe as
+          peças, escolha os tamanhos e não pague agora. Quando o kit estiver pronto,
+          avisamos no WhatsApp e você decide se deseja comprar.
         </p>
 
         <div className="conta-acoes" style={{ marginTop: "1.2rem" }}>
           <a className="btn-primary" href={entrar}>
             Reservar no WhatsApp
           </a>
+          <Link href="/reserva" className="btn-secondary">
+            Reservar pelo site
+          </Link>
         </div>
       </main>
     </AppShell>

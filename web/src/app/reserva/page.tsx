@@ -3,9 +3,15 @@ import Link from "next/link";
 import { ReservaForm } from "@/app/reserva/reserva-form";
 import { VitrinePecas } from "@/app/reserva/reserva-pecas";
 import { KitsSeparados } from "@/app/reserva/reserva-separados";
+import { codigoDoCookie } from "@/app/conta/indicacao-acoes";
 import { getWhatsAppUrl, SITE } from "@/lib/constants";
 import { siteUrl } from "@/lib/config-publica";
-import { PESSOAS_POR_PECA_EXTRA, urlIndicacao } from "@/lib/indicacao/regras";
+import {
+  PESSOAS_POR_PECA_EXTRA,
+  textoConvite,
+  textoPremioIndicacao,
+  urlIndicacao,
+} from "@/lib/indicacao/regras";
 import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
 import { fotoDoKit } from "@/lib/reserva/fotos";
 import { reservaAberta } from "@/lib/reserva/kit";
@@ -49,8 +55,13 @@ export default async function ReservaPage({
     data: { user },
   } = await supabase.auth.getUser();
   const aberta = reservaAberta();
+  const convite = await codigoDoCookie();
   const whatsapp = getWhatsAppUrl(
-    aberta ? "Quero reservar o uniforme escolar" : "Tenho uma dúvida sobre o uniforme escolar",
+    aberta
+      ? convite
+        ? `Vim pela indicacao ${convite}`
+        : "Quero reservar o uniforme escolar"
+      : "Tenho uma dúvida sobre o uniforme escolar",
   );
 
   let linhas: Awaited<ReturnType<typeof listarReservasDoTelefone>>["linhas"] = [];
@@ -119,6 +130,9 @@ export default async function ReservaPage({
           <div className="uj-success" role="status">
             <h2>Reserva feita!</h2>
             <p>Em janeiro, a gente avisa pelo WhatsApp quando você puder usar o voucher.</p>
+            {codigo ? (
+              <LinkDaReserva codigo={codigo} />
+            ) : null}
           </div>
         ) : null}
 
@@ -145,5 +159,27 @@ export default async function ReservaPage({
         )}
       </div>
     </main>
+  );
+}
+
+function LinkDaReserva({ codigo }: { codigo: string }) {
+  const link = urlIndicacao(siteUrl(), codigo);
+  return (
+    <>
+      <p>Este é o seu link. {textoPremioIndicacao()}</p>
+      <p className="reserva-link">
+        <a href={link}>{link}</a>
+      </p>
+      <div className="conta-acoes">
+        <a
+          className="btn-primary"
+          href={`https://wa.me/?text=${encodeURIComponent(textoConvite(link))}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Mandar meu link no WhatsApp
+        </a>
+      </div>
+    </>
   );
 }
