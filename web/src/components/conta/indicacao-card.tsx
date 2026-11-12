@@ -1,36 +1,48 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { pedirResgate, type EstadoResgate } from "@/app/conta/indicacao-acoes";
-import { formatBRL } from "@/data/catalogo";
+import { useState } from "react";
 import {
-  FAIXA_CAMISETA_CENTAVOS,
+  faltamParaProximaCamiseta,
+  passoDoTrio,
+  PESSOAS_POR_PECA_EXTRA,
   textoConvite,
 } from "@/lib/indicacao/regras";
 
-export type PlacarIndicacao = {
-  codigo: string;
-  acessos: number;
-  cadastros: number;
-  pendenteCentavos: number;
-  confirmadoCentavos: number;
-  camisetas: number;
-  faltamCentavos: number;
+export type PlacarReserva = {
   link: string;
+  reservaram: number;
+  ultimaEm: string | null;
 };
 
-const INICIAL: EstadoResgate = {};
+function dataPorExtenso(iso: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "numeric",
+    month: "long",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(iso));
+}
 
-export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
+function fraseDoPlacar(reservaram: number) {
+  if (reservaram === 0) {
+    return "Nenhuma família reservou pelo seu link ainda. A primeira já conta.";
+  }
+
+  const familias =
+    reservaram === 1
+      ? "1 família já reservou pelo seu link."
+      : `${reservaram} famílias já reservaram pelo seu link.`;
+  const faltam = faltamParaProximaCamiseta(reservaram);
+  if (reservaram % PESSOAS_POR_PECA_EXTRA === 0) {
+    return `${familias} Trio fechado: a camiseta extra sai quando elas comprarem o kit. Faltam mais ${faltam} para outra.`;
+  }
+  const falta = faltam === 1 ? "Falta 1 família" : `Faltam ${faltam} famílias`;
+  return `${familias} ${falta} para a sua camiseta extra.`;
+}
+
+export function IndicacaoCard({ placar }: { placar: PlacarReserva }) {
   const [copiado, setCopiado] = useState(false);
-  const [estado, acao, pendente] = useActionState(pedirResgate, INICIAL);
-  const progresso = Math.min(
-    100,
-    Math.round(
-      ((FAIXA_CAMISETA_CENTAVOS - placar.faltamCentavos) / FAIXA_CAMISETA_CENTAVOS) *
-        100,
-    ),
-  );
+  const passo = passoDoTrio(placar.reservaram);
+  const progresso = Math.round((passo / PESSOAS_POR_PECA_EXTRA) * 100);
   const waShare = `https://wa.me/?text=${encodeURIComponent(textoConvite(placar.link))}`;
 
   async function copiar() {
@@ -44,14 +56,11 @@ export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
   }
 
   return (
-    <section className="conta-card" aria-labelledby="conta-indicacao">
-      <div className="conta-card-head">
-        <h2 id="conta-indicacao">Compartilhe e Ganhe</h2>
-      </div>
+    <section className="conta-card indicacao-destaque" aria-labelledby="conta-indicacao">
+      <h2 id="conta-indicacao">Ganhe uma camiseta extra</h2>
       <p className="conta-card-lead">
-        Família nova que chegar por este link, criar conta e comprar soma no seu
-        placar. A cada {formatBRL(FAIXA_CAMISETA_CENTAVOS)} confirmados você pede
-        uma camiseta, entregue em casa.
+        Mande este link. A cada {PESSOAS_POR_PECA_EXTRA} famílias que reservarem o
+        uniforme por ele e comprarem o kit, a camiseta é sua.
       </p>
 
       <div className="indicacao-link">
@@ -61,68 +70,28 @@ export function IndicacaoCard({ placar }: { placar: PlacarIndicacao }) {
         </button>
       </div>
       <div className="conta-acoes">
-        <a href={waShare} target="_blank" rel="noreferrer">
+        <a className="btn-primary" href={waShare} target="_blank" rel="noreferrer">
           Mandar no WhatsApp
         </a>
       </div>
 
-      <ul className="conta-lista">
-        <li>
-          <b>Acessos ao link</b>
-          <span>{placar.acessos}</span>
-        </li>
-        <li>
-          <b>Contas criadas</b>
-          <span>{placar.cadastros}</span>
-        </li>
-        <li>
-          <b>Confirmado</b>
-          <span>{formatBRL(placar.confirmadoCentavos)}</span>
-        </li>
-        <li>
-          <b>Aguardando 7 dias</b>
-          <span>{formatBRL(placar.pendenteCentavos)}</span>
-        </li>
-        <li>
-          <b>Camisetas para resgate</b>
-          <span>{placar.camisetas}</span>
-        </li>
-      </ul>
-
-      <p className="conta-card-lead">
-        Faltam {formatBRL(placar.faltamCentavos)} para a próxima camiseta.
+      <p className="indicacao-passo">{fraseDoPlacar(placar.reservaram)}</p>
+      {placar.ultimaEm ? (
+        <p className="indicacao-meta">A última reserva foi em {dataPorExtenso(placar.ultimaEm)}.</p>
+      ) : null}
+      <p className="indicacao-meta">
+        {passo} de {PESSOAS_POR_PECA_EXTRA} para a próxima camiseta
       </p>
-      <div className="indicacao-barra" aria-hidden>
+      <div
+        className="indicacao-barra"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={PESSOAS_POR_PECA_EXTRA}
+        aria-valuenow={passo}
+        aria-label="Famílias do trio atual"
+      >
         <i style={{ width: `${progresso}%` }} />
       </div>
-
-      {placar.camisetas > 0 ? (
-        estado.ok ? (
-          <p className="conta-ok">
-            Pedido de resgate anotado. Vamos combinar a entrega em casa.
-          </p>
-        ) : (
-          <form className="uj-form" action={acao} style={{ marginTop: "0.9rem" }}>
-            <div className="uj-field">
-              <label htmlFor="resgate-endereco">
-                Endereço para entregar a camiseta
-              </label>
-              <textarea
-                id="resgate-endereco"
-                name="endereco"
-                rows={3}
-                required
-                minLength={10}
-                placeholder="Rua, número, bairro, Jundiaí"
-              />
-            </div>
-            {estado.erro ? <p className="entrar-erro">{estado.erro}</p> : null}
-            <button type="submit" className="btn-primary" disabled={pendente}>
-              {pendente ? "Enviando..." : "Pedir resgate"}
-            </button>
-          </form>
-        )
-      ) : null}
     </section>
   );
 }

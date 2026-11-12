@@ -1,11 +1,14 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { registrarEtapas } from "@/lib/metrica/registrar";
+import { obterReserva, reservaDoTelefone, telefonesEquivalentes } from "@/lib/reserva/consultas";
 import { eEntrega } from "@/lib/reserva/entrega";
 import { escolaValida } from "@/lib/reserva/escolas";
 import { gravarReserva } from "@/lib/reserva/gravar";
-import { telefonesEquivalentes } from "@/lib/reserva/consultas";
+import { aplicarMudancaStatus } from "@/lib/reserva/mudanca";
+import { familiaPodeExcluir } from "@/lib/reserva/status";
 import {
   reservaAberta,
   tamanhosDoFormulario,
@@ -84,4 +87,47 @@ export async function criarReservaSite(
     origem: { canal: "direto", codigo: "site" },
   });
   redirect("/reserva?feita=1");
+}
+
+export type EstadoExclusao = { erro?: string };
+
+const ID_RESERVA = /^[0-9a-f-]{36}$/i;
+
+/** Cancela a reserva desta conta. Ela sai da página e fica cancelada para a equipe. */
+export async function excluirReserva(
+  _estado: EstadoExclusao,
+  formData: FormData,
+): Promise<EstadoExclusao> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.phone) redirect("/entrar?proximo=/conta");
+
+  const id = String(formData.get("id") ?? "");
+  if (!ID_RESERVA.test(id)) return { erro: "Reserva inválida." };
+
+  const reserva = await obterReserva(id);
+  if (!reserva || !reservaDoTelefone(reserva.telefone, user.phone)) {
+    return { erro: "Não encontrei essa reserva nesta conta." };
+  }
+  if (!familiaPodeExcluir(reserva.status)) {
+    return { erro: "Essa reserva já entrou em produção. Para cancelar, fale com a equipe." };
+  }
+
+  try {
+    const resultado = await aplicarMudancaStatus(
+      [id],
+      "cancelada",
+      "família",
+      "Excluiu a reserva pelo site.",
+    );
+    if (!resultado[0]?.mudou) return { erro: "Não consegui excluir a reserva. Tente de novo." };
+  } catch {
+    return { erro: "Não consegui excluir a reserva. Tente de novo." };
+  }
+
+  revalidatePath("/conta");
+  revalidatePath("/reserva");
+  return {};
 }

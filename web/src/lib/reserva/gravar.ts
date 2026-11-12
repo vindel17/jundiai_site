@@ -3,7 +3,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { eEntrega, type Entrega } from "./entrega";
 import { escolaValida } from "./escolas";
 import { tamanhosValidos, type KitGenero, type TamanhosKit } from "./kit";
-import { colunasTamanho } from "./consultas";
+import { colunasTamanho, telefonesEquivalentes } from "./consultas";
 import { type CanalOrigem, type Origem } from "./origem";
 
 const DUPLICADO = "23505";
@@ -74,18 +74,45 @@ async function garantirFamilia(numero: string) {
   throw new Error("Não gerou o link de indicação.");
 }
 
+/** O link da conta e o link da reserva apontam para a mesma família. */
+async function telefoneDaFamilia(codigo: string) {
+  const db = createSupabaseAdminClient();
+  const direta = await db
+    .from("reserva_familia")
+    .select("telefone")
+    .eq("codigo_indicacao", codigo)
+    .maybeSingle();
+  if (direta.data?.telefone) return direta.data.telefone as string;
+
+  const perfil = await db
+    .from("perfil")
+    .select("telefone")
+    .eq("codigo_indicacao", codigo)
+    .maybeSingle();
+  const fone = (perfil.data?.telefone as string | undefined) ?? "";
+  const variantes = telefonesEquivalentes(fone);
+  if (variantes.length === 0) return null;
+
+  const existente = await db
+    .from("reserva_familia")
+    .select("telefone")
+    .in("telefone", variantes)
+    .limit(1)
+    .maybeSingle();
+  if (existente.data?.telefone) return existente.data.telefone as string;
+  return garantirFamilia(variantes[0]);
+}
+
 async function padrinho(origem: Origem, numero: string) {
   if (origem.canal !== "indicacao" || !/^[a-z0-9]{8}$/.test(origem.codigo)) {
     return null;
   }
-  const db = createSupabaseAdminClient();
-  const { data } = await db
-    .from("reserva_familia")
-    .select("telefone")
-    .eq("codigo_indicacao", origem.codigo)
-    .maybeSingle();
-  const telefonePadrinho = (data?.telefone as string | undefined) ?? null;
-  if (!telefonePadrinho || telefonePadrinho === numero) return null;
+  const telefonePadrinho = await telefoneDaFamilia(origem.codigo);
+  if (!telefonePadrinho) return null;
+  const mesmo = telefonesEquivalentes(telefonePadrinho).some((telefone) =>
+    telefonesEquivalentes(numero).includes(telefone),
+  );
+  if (mesmo) return null;
   return telefonePadrinho;
 }
 

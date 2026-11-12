@@ -106,6 +106,17 @@ export function telefonesEquivalentes(bruto: string) {
   ];
 }
 
+/** O mesmo celular, com ou sem o nono dígito. */
+export function reservaDoTelefone(reservaTelefone: string, contaTelefone: string) {
+  const conta = new Set(telefonesEquivalentes(contaTelefone));
+  return telefonesEquivalentes(reservaTelefone).some((telefone) => conta.has(telefone));
+}
+
+/** A família não vê reserva que ela mesma excluiu. */
+export function reservasAtivas(linhas: ReservaLinha[]) {
+  return linhas.filter((linha) => linha.status !== "cancelada");
+}
+
 export async function listarReservasDoTelefone(bruto: string) {
   const telefones = telefonesEquivalentes(bruto);
   if (telefones.length === 0) return { linhas: [] as ReservaLinha[], codigo: "" };

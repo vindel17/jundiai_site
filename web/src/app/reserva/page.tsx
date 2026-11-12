@@ -6,7 +6,7 @@ import { KitsSeparados } from "@/app/reserva/reserva-separados";
 import { getWhatsAppUrl, SITE } from "@/lib/constants";
 import { siteUrl } from "@/lib/config-publica";
 import { PESSOAS_POR_PECA_EXTRA, urlIndicacao } from "@/lib/indicacao/regras";
-import { listarReservasDoTelefone } from "@/lib/reserva/consultas";
+import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
 import { fotoDoKit } from "@/lib/reserva/fotos";
 import { reservaAberta } from "@/lib/reserva/kit";
 import { adminConfigurado } from "@/lib/supabase/admin";
@@ -58,7 +58,7 @@ export default async function ReservaPage({
   if (user?.phone && adminConfigurado()) {
     try {
       const minhas = await listarReservasDoTelefone(user.phone);
-      linhas = minhas.linhas;
+      linhas = reservasAtivas(minhas.linhas);
       codigo = minhas.codigo;
     } catch {
       linhas = [];

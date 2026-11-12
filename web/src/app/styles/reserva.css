@@ -329,6 +329,33 @@
   color: var(--accent);
 }
 
+.reserva-excluir-form {
+  margin-top: 0.7rem;
+}
+
+.reserva-excluir {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--pop-red);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reserva-excluir:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.reserva-excluir-nota {
+  margin: 0.7rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
 /* ---------- Tablet ---------- */
 @media (min-width: 640px) {
   .reserva {

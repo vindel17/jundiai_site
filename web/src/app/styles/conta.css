@@ -14,6 +14,36 @@
   box-shadow: 0 8px 24px rgba(20, 40, 63, 0.05);
 }
 
+.indicacao-destaque {
+  border-color: #a9cbf2;
+  background: linear-gradient(180deg, #f4f8fd 0%, var(--surface) 8.5rem);
+}
+
+.indicacao-destaque h2 {
+  font-size: 1.35rem;
+}
+
+.indicacao-passo {
+  margin: 0.95rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.indicacao-meta {
+  margin: 0.3rem 0 0;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.indicacao-destaque .btn-primary {
+  min-height: 2.6rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+}
+
 .conta-card-head {
   display: flex;
   align-items: center;

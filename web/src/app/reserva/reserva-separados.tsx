@@ -1,6 +1,8 @@
+import { ExcluirReserva } from "@/app/reserva/excluir-reserva";
 import { textoPremioIndicacao } from "@/lib/indicacao/regras";
 import { rotuloEntrega } from "@/lib/reserva/entrega";
 import { kitCompleto, pecasDoKit, rotuloKit, rotuloTamanho } from "@/lib/reserva/kit";
+import { familiaPodeExcluir } from "@/lib/reserva/status";
 import type { listarReservasDoTelefone } from "@/lib/reserva/consultas";
 
 type Linhas = Awaited<ReturnType<typeof listarReservasDoTelefone>>["linhas"];
@@ -33,6 +35,13 @@ export function KitsSeparados({ linhas, link }: { linhas: Linhas; link: string }
                 </div>
               ) : null}
             </dl>
+            {familiaPodeExcluir(linha.status) ? (
+              <ExcluirReserva id={linha.id} aluno={linha.aluno} />
+            ) : linha.status === "cancelada" ? null : (
+              <p className="reserva-excluir-nota">
+                Esta reserva já entrou em produção. Para cancelar, fale com a equipe.
+              </p>
+            )}
           </li>
         ))}
       </ul>

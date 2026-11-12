@@ -8,7 +8,8 @@ import { IndicacaoCard } from "@/components/conta/indicacao-card";
 import { VincularIndicacaoAoMontar } from "@/components/conta/vincular-indicacao";
 import { siteUrl } from "@/lib/config-publica";
 import { urlIndicacao } from "@/lib/indicacao/regras";
-import { listarReservasDoTelefone } from "@/lib/reserva/consultas";
+import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
+import { placarDaIndicacao } from "@/lib/reserva/indicacao";
 import { adminConfigurado } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatarCelular } from "@/lib/telefone";
@@ -31,7 +32,7 @@ export default async function ContaPage() {
   if (user?.phone && adminConfigurado()) {
     try {
       const minhas = await listarReservasDoTelefone(user.phone);
-      linhas = minhas.linhas;
+      linhas = reservasAtivas(minhas.linhas);
       codigo = minhas.codigo;
     } catch {
       linhas = [];
@@ -39,7 +40,16 @@ export default async function ContaPage() {
   }
 
   const { data: indicacaoLinhas } = await supabase.rpc("placar_indicacao");
-  const ind = indicacaoLinhas?.[0];
+  const codigoPerfil = (indicacaoLinhas?.[0]?.codigo as string | undefined) ?? "";
+  const codigoLink = codigo || codigoPerfil;
+  let indicados = { familias: 0, ultimaEm: null as string | null };
+  if (user?.phone && codigoLink && adminConfigurado()) {
+    try {
+      indicados = await placarDaIndicacao(user.phone, [codigo, codigoPerfil]);
+    } catch {
+      indicados = { familias: 0, ultimaEm: null };
+    }
+  }
   const hdrs = await headers();
   const origem = siteUrl(
     hdrs.get("x-forwarded-host") ?? hdrs.get("host"),
@@ -59,7 +69,7 @@ export default async function ContaPage() {
 
       <div className="conta-blocos">
         {linhas.length > 0 ? (
-          <KitsSeparados linhas={linhas} link={codigo ? urlIndicacao(origem, codigo) : ""} />
+          <KitsSeparados linhas={linhas} link="" />
         ) : (
           <section className="conta-card" aria-labelledby="conta-reserva">
             <h2 id="conta-reserva">Reserva do uniforme</h2>
@@ -72,21 +82,16 @@ export default async function ContaPage() {
             </div>
           </section>
         )}
-        <AvaliarCompraCard />
-        {ind?.codigo ? (
+        {codigoLink ? (
           <IndicacaoCard
             placar={{
-              codigo: ind.codigo,
-              acessos: ind.acessos ?? 0,
-              cadastros: ind.cadastros ?? 0,
-              pendenteCentavos: ind.pendente_centavos ?? 0,
-              confirmadoCentavos: ind.confirmado_centavos ?? 0,
-              camisetas: ind.camisetas ?? 0,
-              faltamCentavos: ind.faltam_centavos ?? 35000,
-              link: urlIndicacao(origem, ind.codigo),
+              link: urlIndicacao(origem, codigoLink),
+              reservaram: indicados.familias,
+              ultimaEm: indicados.ultimaEm,
             }}
           />
         ) : null}
+        <AvaliarCompraCard />
       </div>
 
       <form action={sair} className="conta-sair">

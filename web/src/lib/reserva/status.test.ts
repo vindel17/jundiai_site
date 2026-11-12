@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { podeMudarStatus, reservaEditavel, STATUS_RESERVA } from "./status";
+import { familiaPodeExcluir, podeMudarStatus, reservaEditavel, STATUS_RESERVA } from "./status";
 
 const ANTES_DO_PRAZO = new Date("2026-10-20T12:00:00-03:00");
 const DEPOIS_DO_PRAZO = new Date("2027-01-02T12:00:00-03:00");
@@ -30,5 +30,13 @@ describe("status da reserva", () => {
 
   it("trava tudo depois de 31/12", () => {
     expect(reservaEditavel("recebida", DEPOIS_DO_PRAZO)).toBe(false);
+  });
+
+  it("deixa a família excluir só antes da produção", () => {
+    expect(familiaPodeExcluir("recebida")).toBe(true);
+    expect(familiaPodeExcluir("aceita")).toBe(true);
+    expect(familiaPodeExcluir("em_producao")).toBe(false);
+    expect(familiaPodeExcluir("kit_pronto")).toBe(false);
+    expect(familiaPodeExcluir("cancelada")).toBe(false);
   });
 });

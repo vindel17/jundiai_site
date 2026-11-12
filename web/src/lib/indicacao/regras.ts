@@ -22,12 +22,27 @@ export function pecasExtrasPorIndicacao(pessoasQueReservaramECompraram: number) 
 }
 
 export function textoPremioIndicacao() {
-  return `A cada ${PESSOAS_POR_PECA_EXTRA} pessoas que reservarem o kit por esse link e comprarem, você ganha uma peça extra.`;
+  return `A cada ${PESSOAS_POR_PECA_EXTRA} famílias que reservarem por este link e comprarem o kit, você ganha uma camiseta extra.`;
+}
+
+/** Quantas famílias ainda faltam para fechar o próximo trio. */
+export function faltamParaProximaCamiseta(familias: number) {
+  const pessoas = Math.max(0, Math.floor(familias));
+  const resto = pessoas % PESSOAS_POR_PECA_EXTRA;
+  return resto === 0 ? PESSOAS_POR_PECA_EXTRA : PESSOAS_POR_PECA_EXTRA - resto;
+}
+
+/** Posição dentro do trio atual. Um trio recém-fechado aparece completo. */
+export function passoDoTrio(familias: number) {
+  const pessoas = Math.max(0, Math.floor(familias));
+  const resto = pessoas % PESSOAS_POR_PECA_EXTRA;
+  if (pessoas > 0 && resto === 0) return PESSOAS_POR_PECA_EXTRA;
+  return resto;
 }
 
 export function textoConvite(link: string) {
   return [
-    "O uniforme da rede municipal de Jundiaí.",
+    "Reserve o uniforme escolar de Jundiaí sem pagar agora. Eu já separei o meu:",
     "",
     link,
   ].join("\n");

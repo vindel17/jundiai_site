@@ -189,7 +189,7 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(fim[0].texto).toContain("garantido para o começo das aulas");
     expect(fim[0].texto).toContain("/i/abcd1234");
     expect(fim[0].texto).toContain(
-      "A cada 3 pessoas que reservarem o kit por esse link e comprarem, você ganha uma peça extra.",
+      "A cada 3 famílias que reservarem por este link e comprarem o kit, você ganha uma camiseta extra.",
     );
     expect(titulos(ultima(fim))).toEqual(["Adicionar aluno(a)", "Concluir"]);
   });

@@ -51,6 +51,11 @@ export function statusEditavel(status: StatusReserva) {
   return STATUS_EDITAVEIS.includes(status);
 }
 
+/** A família exclui a reserva enquanto ela ainda não entrou em produção. */
+export function familiaPodeExcluir(status: StatusReserva) {
+  return status === "recebida" || status === "aceita";
+}
+
 /** Tamanho e entrega mudam até 31/12 e enquanto a reserva não entrou em produção. */
 export function reservaEditavel(status: StatusReserva, agora = new Date()) {
   return reservaAberta(agora) && statusEditavel(status);

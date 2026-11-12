@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { pecasExtrasPorIndicacao, textoPremioIndicacao } from "./regras";
+import {
+  faltamParaProximaCamiseta,
+  passoDoTrio,
+  pecasExtrasPorIndicacao,
+  textoPremioIndicacao,
+} from "./regras";
 
 describe("peças extras da indicação", () => {
   it("não premia antes de 3 pessoas", () => {
@@ -16,7 +21,18 @@ describe("peças extras da indicação", () => {
 
   it("explica a regra no texto do link", () => {
     expect(textoPremioIndicacao()).toBe(
-      "A cada 3 pessoas que reservarem o kit por esse link e comprarem, você ganha uma peça extra.",
+      "A cada 3 famílias que reservarem por este link e comprarem o kit, você ganha uma camiseta extra.",
     );
+  });
+
+  it("mostra quantas famílias faltam para a próxima camiseta", () => {
+    expect(faltamParaProximaCamiseta(0)).toBe(3);
+    expect(faltamParaProximaCamiseta(1)).toBe(2);
+    expect(faltamParaProximaCamiseta(2)).toBe(1);
+    expect(faltamParaProximaCamiseta(3)).toBe(3);
+    expect(passoDoTrio(0)).toBe(0);
+    expect(passoDoTrio(2)).toBe(2);
+    expect(passoDoTrio(3)).toBe(3);
+    expect(passoDoTrio(4)).toBe(1);
   });
 });
