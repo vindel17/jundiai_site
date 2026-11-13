@@ -51,10 +51,15 @@ function aluno(dados: Dados) {
   return dadoTexto(dados, "aluno") || "o(a) aluno(a)";
 }
 
-export async function perguntarEscola(waId: string, dados: Dados): Promise<ResultadoTurno> {
+export async function perguntarEscola(
+  waId: string,
+  dados: Dados,
+  introducao?: string,
+): Promise<ResultadoTurno> {
+  const pergunta = "Qual é a escola da criança? Digite parte do nome da escola ou do bairro.";
   await enviarTexto(
     waId,
-    "Digite parte do nome da escola ou do bairro do(a) aluno(a). Eu mostro a lista para você escolher.",
+    introducao ? `${introducao}\n\n${pergunta}` : pergunta,
   );
   return { passo: "reserva_escola", dados };
 }

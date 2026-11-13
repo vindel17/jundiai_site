@@ -6,11 +6,11 @@ import type { ResultadoTurno, Sessao } from "./sessao";
 export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
   const saudacao =
     sessao.passo === "inicio"
-      ? `Olá! 😊\n${SITE.credenciamento} de ${SITE.city}.\n\n`
+      ? `Olá! Aqui é a ${SITE.name}.\n\n`
       : "";
   await enviarLista(
     sessao.waId,
-    `${saudacao}Como posso te ajudar hoje?`,
+    `${saudacao}Escolha uma opção.`,
     "Ver opções",
     [
       {

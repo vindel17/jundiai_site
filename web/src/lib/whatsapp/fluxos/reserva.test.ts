@@ -138,11 +138,17 @@ it("pausa o bot a pedido do cliente e retoma a reserva no passo salvo", async ()
 
 describe("pré-reserva pelo WhatsApp", () => {
   it("pede escola e nome, mostra os kits e usa o nome informado", async () => {
-    const inicio = await enviar({ texto: "reservar" });
-    expect(inicio[0].texto.split("\n")[0]).toContain("antes de começar as aulas");
-    expect(inicio[0].texto).toContain("não obriga a compra");
-    expect(inicio[0].texto).toContain("é só deixar de fora");
-    expect(ultima(inicio).texto).toContain("nome da escola ou do bairro");
+    const menu = await enviar({ texto: "oi" });
+    expect(menu).toHaveLength(1);
+    expect(menu[0].texto).toBe("Olá! Aqui é a Uniforme Jundiaí.\n\nEscolha uma opção.");
+    expect(ids(menu[0])[0]).toBe("menu.reservar");
+
+    const inicio = await enviar({ escolha: "menu.reservar" });
+    expect(inicio).toHaveLength(1);
+    expect(inicio[0].texto).toContain("sem pagar agora e sem compromisso de compra");
+    expect(inicio[0].texto).toContain("a gente avisa por aqui");
+    expect(inicio[0].texto).not.toContain("6 peças");
+    expect(inicio[0].texto).toContain("nome da escola ou do bairro");
 
     const lista = ultima(await enviar({ texto: ESCOLA }));
     expect(lista.tipo).toBe("lista");

@@ -14,21 +14,24 @@ export function pixelsDaBorda(largura: number, altura: number): number[] {
   return borda;
 }
 
-function mediana(valores: number[]): number {
+export function mediana(valores: number[]): number {
   const ordenados = [...valores].sort((a, b) => a - b);
   return ordenados[Math.floor(ordenados.length / 2)];
 }
 
-/** Distância de cada pixel até a cor do fundo (mediana da borda da foto), de 0 a 255. */
-function distanciaDoFundo({ largura, altura, dados }: Imagem): Uint8Array {
-  const borda = pixelsDaBorda(largura, altura);
-  const fundo = [0, 1, 2].map((c) => mediana(borda.map((i) => dados[i * 4 + c])));
+/** Cor mediana (RGB) dos pixels de índice `indices`. */
+export function corMediana({ dados }: Imagem, indices: number[]): number[] {
+  return [0, 1, 2].map((c) => mediana(indices.map((i) => dados[i * 4 + c])));
+}
+
+/** Distância de cada pixel até `cor`, de 0 a 255. */
+export function distanciaDaCor({ largura, altura, dados }: Imagem, cor: number[]): Uint8Array {
   const maxima = Math.sqrt(3) * 255;
   const distancia = new Uint8Array(largura * altura);
   for (let i = 0; i < distancia.length; i++) {
-    const r = dados[i * 4] - fundo[0];
-    const g = dados[i * 4 + 1] - fundo[1];
-    const b = dados[i * 4 + 2] - fundo[2];
+    const r = dados[i * 4] - cor[0];
+    const g = dados[i * 4 + 1] - cor[1];
+    const b = dados[i * 4 + 2] - cor[2];
     distancia[i] = Math.round((Math.sqrt(r * r + g * g + b * b) / maxima) * 255);
   }
   return distancia;
@@ -91,23 +94,24 @@ function inundar(
   return fim;
 }
 
+/** Numera as manchas a partir de 1 e conta os pixels de cada uma (`tamanhos[0]` não é mancha). */
+export function rotularRegioes({ largura, altura, dados }: Mascara) {
+  const rotulos = new Int32Array(dados.length);
+  const fila = new Int32Array(dados.length);
+  const tamanhos = [0];
+  for (let i = 0; i < dados.length; i++) {
+    if (!dados[i] || rotulos[i]) continue;
+    const rotulo = tamanhos.length;
+    tamanhos.push(inundar(largura, altura, (j) => dados[j] === 1, [i], rotulos, rotulo, fila));
+  }
+  return { rotulos, tamanhos };
+}
+
 /** Fica só com a maior mancha: a camiseta, sem sujeira ou objetos pequenos. */
 function maiorRegiao(peca: Uint8Array, largura: number, altura: number): Uint8Array {
-  const rotulo = new Int32Array(peca.length);
-  const fila = new Int32Array(peca.length);
-  let atual = 0;
-  let melhor = 0;
-  let tamanhoMelhor = 0;
-  for (let i = 0; i < peca.length; i++) {
-    if (!peca[i] || rotulo[i]) continue;
-    atual++;
-    const tamanho = inundar(largura, altura, (j) => peca[j] === 1, [i], rotulo, atual, fila);
-    if (tamanho > tamanhoMelhor) {
-      tamanhoMelhor = tamanho;
-      melhor = atual;
-    }
-  }
-  return Uint8Array.from(rotulo, (r) => (melhor && r === melhor ? 1 : 0));
+  const { rotulos, tamanhos } = rotularRegioes({ largura, altura, dados: peca });
+  const melhor = tamanhos.indexOf(Math.max(...tamanhos));
+  return Uint8Array.from(rotulos, (r) => (melhor && r === melhor ? 1 : 0));
 }
 
 /** Estampas ou etiquetas da cor do fundo viram peça: só é fundo o que encosta na borda. */
@@ -159,10 +163,16 @@ function abrir(peca: Uint8Array, largura: number, altura: number, raio: number):
   return m;
 }
 
-/** Separa a peça do fundo pelo contraste de cor. */
+/** Tira `raio` pixels de toda a beirada da máscara. */
+export function encolher({ largura, altura, dados }: Mascara, raio: number): Mascara {
+  const deitada = passada(dados, largura, altura, raio, true, true);
+  return { largura, altura, dados: passada(deitada, largura, altura, raio, true, false) };
+}
+
+/** Separa a peça do fundo pelo contraste de cor. O fundo é a cor mediana da borda da foto. */
 export function separarPeca(imagem: Imagem): Mascara {
   const { largura, altura } = imagem;
-  const distancia = distanciaDoFundo(imagem);
+  const distancia = distanciaDaCor(imagem, corMediana(imagem, pixelsDaBorda(largura, altura)));
   const limiar = limiarOtsu(distancia);
   let peca: Uint8Array = Uint8Array.from(distancia, (d) => (d > limiar ? 1 : 0));
   peca = abrir(peca, largura, altura, RAIO_LIMPEZA);

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { formaIlustrativa } from "../camiseta";
 import type { Forma } from "../forma";
 import type { Ponto } from "../glb";
+import { contornoCompleto, dentro, sorteio } from "./foto-teste";
 import type { Imagem } from "./mascara";
 import { moldeDaFoto } from "./molde";
 
@@ -10,29 +11,6 @@ const AZUL: [number, number, number] = [30, 45, 110];
 const BRANCO: [number, number, number] = [235, 235, 230];
 
 type Foto = { angulo?: number; margem?: number; peca?: number[]; fundo?: number[]; ruido?: number };
-
-/** Sorteio repetível, para o teste dar sempre o mesmo resultado. */
-function sorteio(semente: number) {
-  let s = semente;
-  return () => {
-    s = (s * 1664525 + 1013904223) % 4294967296;
-    return s / 4294967296;
-  };
-}
-
-function contornoCompleto({ metade }: Forma): Ponto[] {
-  return [...metade, ...metade.slice(1, -1).reverse().map(([x, z]): Ponto => [-x, z])];
-}
-
-function dentro([x, y]: Ponto, poligono: Ponto[]): boolean {
-  let resultado = false;
-  for (let i = 0, j = poligono.length - 1; i < poligono.length; j = i++) {
-    const [xi, yi] = poligono[i];
-    const [xj, yj] = poligono[j];
-    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) resultado = !resultado;
-  }
-  return resultado;
-}
 
 /** Desenha a camiseta, em pixels, como numa foto tirada de cima. */
 function fotografar(

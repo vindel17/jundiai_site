@@ -4,9 +4,9 @@ import type { Imagem } from "@/lib/gabarito/molde/mascara";
 /** Foto reduzida: sobra precisão (cerca de 1 mm por pixel) e o processamento fica rápido. */
 const LADO_MAXIMO = 1000;
 
-/** Desenha a foto no canvas e devolve os pixels para o processamento. */
-export function desenharFoto(canvas: HTMLCanvasElement, foto: ImageBitmap): Imagem {
-  const escala = Math.min(1, LADO_MAXIMO / Math.max(foto.width, foto.height));
+/** Desenha a foto no canvas, com o lado maior até `ladoMaximo`, e devolve os pixels para o processamento. */
+export function desenharFoto(canvas: HTMLCanvasElement, foto: ImageBitmap, ladoMaximo = LADO_MAXIMO): Imagem {
+  const escala = Math.min(1, ladoMaximo / Math.max(foto.width, foto.height));
   canvas.width = Math.round(foto.width * escala);
   canvas.height = Math.round(foto.height * escala);
   const contexto = canvas.getContext("2d", { willReadFrequently: true });

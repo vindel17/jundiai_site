@@ -5,7 +5,6 @@
  */
 
 import { fichaEscola } from "@/data/escolas";
-import { SITE } from "@/lib/constants";
 import { buscarEscolas } from "@/lib/reserva/escolas";
 import { reservaAberta, type KitGenero } from "@/lib/reserva/kit";
 import type { Origem } from "@/lib/reserva/origem";
@@ -89,21 +88,11 @@ export async function iniciarReserva(
     return { passo: "reserva_retomar", dados: comRascunho(guardarOrigem(origem), rascunho) };
   }
 
-  await enviarTexto(
+  return perguntarEscola(
     sessao.waId,
-    [
-      "Com a pré-reserva, você garante que vai encontrar o uniforme no tamanho certo antes de começar as aulas. 🎒",
-      "",
-      `${SITE.credenciamento} de ${SITE.city}.`,
-      "",
-      "É gratuita: não tem pagamento agora e não obriga a compra.",
-      "",
-      "O kit tem 6 peças: 2 camisetas manga curta no mesmo tamanho, 1 camiseta manga longa, 1 bermuda ou short-saia, 1 calça e 1 blusa de frio. Se não precisar de alguma, é só deixar de fora.",
-      "",
-      "Quando seu kit estiver pronto, avisamos nesta conversa e você decide se deseja finalizar a compra.",
-    ].join("\n"),
+    guardarOrigem(origem),
+    "Com a pré-reserva, você escolhe os tamanhos do uniforme sem pagar agora e sem compromisso de compra. Quando o kit estiver pronto, a gente avisa por aqui.",
   );
-  return perguntarEscola(sessao.waId, guardarOrigem(origem));
 }
 
 export async function continuarReserva(
