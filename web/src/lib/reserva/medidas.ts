@@ -65,6 +65,10 @@ const CONFERIDAS: Partial<Record<string, Grade>> = {
   calca: CINTURA,
 };
 
+export function gradeDaPeca(catalogoId: string) {
+  return CONFERIDAS[catalogoId];
+}
+
 function frase(grade: Grade, tamanho: TamanhoKit) {
   const [primeira, segunda] = grade.medidas;
   const [a, b] = grade.valores[tamanho];
@@ -73,7 +77,7 @@ function frase(grade: Grade, tamanho: TamanhoKit) {
 }
 
 export function rotuloMedida(catalogoId: string, tamanho: TamanhoKit) {
-  const grade = CONFERIDAS[catalogoId];
+  const grade = gradeDaPeca(catalogoId);
   return grade ? frase(grade, tamanho) : "";
 }
 
@@ -82,7 +86,7 @@ export function textoMedidas(peca: PecaKit) {
     peca.quantidade > 1
       ? `${peca.nome} (${peca.quantidade} peças, no mesmo tamanho)`
       : peca.nome;
-  const grade = CONFERIDAS[peca.catalogoId];
+  const grade = gradeDaPeca(peca.catalogoId);
   if (!grade) {
     return [
       titulo,

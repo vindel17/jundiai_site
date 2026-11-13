@@ -172,6 +172,10 @@ export default async function ReservaPage({
           <>
             <h2 className="reserva-titulo-bloco">O que vem no kit</h2>
             <VitrinePecas />
+            <nav aria-label="Guias da reserva" className="flex flex-wrap gap-4">
+              <Link className="underline" href="/guia-de-tamanhos">Como escolher o tamanho</Link>
+              <Link className="underline" href="/voucher-uniforme-jundiai">Como funciona o voucher 2027</Link>
+            </nav>
           </>
         )}
       </div>
