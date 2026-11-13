@@ -51,9 +51,9 @@ export function statusEditavel(status: StatusReserva) {
   return STATUS_EDITAVEIS.includes(status);
 }
 
-/** A família exclui a reserva enquanto ela ainda não entrou em produção. */
+/** A família cancela a própria reserva em qualquer etapa, menos se já estiver cancelada. */
 export function familiaPodeExcluir(status: StatusReserva) {
-  return status === "recebida" || status === "aceita";
+  return status !== "cancelada";
 }
 
 /** Tamanho e entrega mudam até 31/12 e enquanto a reserva não entrou em produção. */

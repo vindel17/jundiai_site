@@ -5,6 +5,7 @@ import { consultaDoFiltro, hrefReservas } from "@/app/equipe/reservas/filtros";
 import { MarcarPagina } from "@/app/equipe/reservas/marcar";
 import {
   RESERVAS_POR_PAGINA,
+  STATUS_LISTA_TODAS,
   listarReservas,
   type FiltroReservas,
   type ReservaLinha,
@@ -63,12 +64,13 @@ export async function Lista({
         <label>
           Status
           <select name="status" defaultValue={filtro.status}>
-            <option value="">Todos</option>
+            <option value="">Ativas</option>
             {STATUS_RESERVA.map((status) => (
               <option key={status} value={status}>
                 {rotuloStatus(status)}
               </option>
             ))}
+            <option value={STATUS_LISTA_TODAS}>Todas</option>
           </select>
         </label>
         <label>

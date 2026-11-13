@@ -169,7 +169,7 @@ export async function excluirReserva(
     return { erro: "Não encontrei essa reserva nesta conta." };
   }
   if (!familiaPodeExcluir(reserva.status)) {
-    return { erro: "Essa reserva já entrou em produção. Para cancelar, fale com a equipe." };
+    return { erro: "Essa reserva já está cancelada." };
   }
 
   try {

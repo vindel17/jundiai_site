@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { reservaDoTelefone, reservasAtivas, type ReservaLinha } from "./consultas";
+import { reservaDoTelefone, reservasAtivas, statusDaLista, type ReservaLinha } from "./consultas";
 
 describe("reserva da família", () => {
   it("reconhece o mesmo celular com e sem o nono dígito", () => {
@@ -11,5 +11,13 @@ describe("reserva da família", () => {
   it("esconde a reserva cancelada da página da família", () => {
     const linhas = [{ status: "recebida" }, { status: "cancelada" }] as ReservaLinha[];
     expect(reservasAtivas(linhas).map((linha) => linha.status)).toEqual(["recebida"]);
+  });
+
+  it("esconde canceladas na lista da equipe, salvo filtro explícito", () => {
+    expect(statusDaLista(undefined)).toBe("ativas");
+    expect(statusDaLista("")).toBe("ativas");
+    expect(statusDaLista("aceita")).toBe("aceita");
+    expect(statusDaLista("cancelada")).toBe("cancelada");
+    expect(statusDaLista("todas")).toBe("todas");
   });
 });

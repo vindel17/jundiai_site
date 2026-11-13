@@ -37,11 +37,7 @@ export function KitsSeparados({ linhas, link }: { linhas: Linhas; link: string }
             </dl>
             {familiaPodeExcluir(linha.status) ? (
               <ExcluirReserva id={linha.id} aluno={linha.aluno} />
-            ) : linha.status === "cancelada" ? null : (
-              <p className="reserva-excluir-nota">
-                Esta reserva já entrou em produção. Para cancelar, fale com a equipe.
-              </p>
-            )}
+            ) : null}
           </li>
         ))}
       </ul>

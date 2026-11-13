@@ -19,4 +19,11 @@ describe("filtros da lista", () => {
     expect(hrefReservas(filtro)).toBe("/equipe/reservas?escola=EMEB&pagina=2");
     expect(consultaDoFiltro({ ...filtro, pagina: 1 })).toBe("escola=EMEB");
   });
+
+  it("guarda o filtro que traz as canceladas junto das demais", () => {
+    expect(hrefReservas(lerFiltro({ status: "todas" }))).toBe("/equipe/reservas?status=todas");
+    expect(hrefReservas(lerFiltro({ status: "cancelada" }))).toBe(
+      "/equipe/reservas?status=cancelada",
+    );
+  });
 });

@@ -32,11 +32,9 @@ describe("status da reserva", () => {
     expect(reservaEditavel("recebida", DEPOIS_DO_PRAZO)).toBe(false);
   });
 
-  it("deixa a família excluir só antes da produção", () => {
-    expect(familiaPodeExcluir("recebida")).toBe(true);
-    expect(familiaPodeExcluir("aceita")).toBe(true);
-    expect(familiaPodeExcluir("em_producao")).toBe(false);
-    expect(familiaPodeExcluir("kit_pronto")).toBe(false);
-    expect(familiaPodeExcluir("cancelada")).toBe(false);
+  it("deixa a família excluir em qualquer etapa, menos a já cancelada", () => {
+    for (const status of STATUS_RESERVA) {
+      expect(familiaPodeExcluir(status)).toBe(status !== "cancelada");
+    }
   });
 });

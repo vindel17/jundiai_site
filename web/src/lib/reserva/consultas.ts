@@ -11,6 +11,15 @@ import {
 import { CANAIS_ORIGEM, type CanalOrigem } from "./origem";
 import { eStatusReserva, STATUS_EDITAVEIS, type StatusReserva } from "./status";
 
+/** Sem status no filtro, a lista da equipe esconde as canceladas. */
+export const STATUS_LISTA_TODAS = "todas";
+
+export function statusDaLista(status: string | undefined): "ativas" | "todas" | StatusReserva {
+  if (status === STATUS_LISTA_TODAS) return "todas";
+  if (status && eStatusReserva(status)) return status;
+  return "ativas";
+}
+
 export type ReservaLinha = {
   id: string;
   telefone: string;
@@ -166,7 +175,9 @@ export async function listarReservas(filtro: FiltroReservas) {
   if (filtro.canal && (CANAIS_ORIGEM as readonly string[]).includes(filtro.canal)) {
     consulta = consulta.eq("origem_canal", filtro.canal);
   }
-  if (filtro.status && eStatusReserva(filtro.status)) consulta = consulta.eq("status", filtro.status);
+  const status = statusDaLista(filtro.status);
+  if (status === "ativas") consulta = consulta.neq("status", "cancelada");
+  else if (status !== "todas") consulta = consulta.eq("status", status);
   if (filtro.kit === "masculino" || filtro.kit === "feminino") {
     consulta = consulta.eq("kit", filtro.kit);
   }
