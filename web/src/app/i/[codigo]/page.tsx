@@ -36,8 +36,8 @@ export default async function ConvitePage({
         <h1 className="uj-page-title">Uma família te chamou</h1>
         <p className="uj-page-lead">
           {SITE.name} é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Separe as
-          peças, escolha os tamanhos e não pague agora. Quando o kit estiver pronto,
-          avisamos no WhatsApp e você decide se deseja comprar.
+          peças, escolha os tamanhos e não pague agora. Quando o voucher liberar,
+          avisamos no WhatsApp e você decide se quer comprar.
         </p>
 
         <div className="conta-acoes" style={{ marginTop: "1.2rem" }}>

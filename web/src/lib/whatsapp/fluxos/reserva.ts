@@ -91,7 +91,7 @@ export async function iniciarReserva(
   return perguntarEscola(
     sessao.waId,
     guardarOrigem(origem),
-    "Com a pré-reserva, você escolhe os tamanhos do uniforme sem pagar agora e sem compromisso de compra. Quando o kit estiver pronto, a gente avisa por aqui.",
+    "Quer evitar filas e a correria de procurar uniforme na volta às aulas? Reserve grátis: a gente deixa o kit do aluno separado para quando o voucher liberar. Aí a gente avisa por aqui e você decide se quer comprar.",
   );
 }
 

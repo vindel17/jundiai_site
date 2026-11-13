@@ -56,7 +56,7 @@ export async function perguntarEscola(
   dados: Dados,
   introducao?: string,
 ): Promise<ResultadoTurno> {
-  const pergunta = "Qual é a escola da criança? Digite parte do nome da escola ou do bairro.";
+  const pergunta = "Pra começar, me diga o nome da escola ou o bairro dela.";
   await enviarTexto(
     waId,
     introducao ? `${introducao}\n\n${pergunta}` : pergunta,

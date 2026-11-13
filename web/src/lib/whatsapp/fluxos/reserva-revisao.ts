@@ -68,9 +68,9 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
   const linhas = [
     `Pré-reserva de ${aluno} confirmada! ✅`,
     "",
-    `O uniforme de ${aluno} fica garantido para o começo das aulas.`,
+    `O kit de ${aluno} fica separado para quando o voucher liberar.`,
     "",
-    "Não tem pagamento agora e não obriga a compra. Quando o kit estiver disponível, avisamos nesta conversa.",
+    "Não tem pagamento agora e não obriga a compra. Avisamos nesta conversa e você decide se quer comprar.",
   ];
   if (!sessao.dados.linkEnviado) {
     linhas.push(
@@ -119,7 +119,7 @@ export async function passoOutro(sessao: Sessao, entrada: EntradaUsuario): Promi
   if (entrada.escolha === OUTRO_NAO) {
     await enviarTexto(
       sessao.waId,
-      "Combinado! Quando o kit estiver disponível, avisamos nesta conversa. Para ver ou ajustar, toque em *Minhas reservas* no menu.",
+      "Combinado! Quando o voucher liberar, avisamos nesta conversa. Para ver ou ajustar, toque em *Minhas reservas* no menu.",
     );
     return mostrarMenu(sessao);
   }

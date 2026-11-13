@@ -140,15 +140,18 @@ describe("pré-reserva pelo WhatsApp", () => {
   it("pede escola e nome, mostra os kits e usa o nome informado", async () => {
     const menu = await enviar({ texto: "oi" });
     expect(menu).toHaveLength(1);
-    expect(menu[0].texto).toBe("Olá! Aqui é a Uniforme Jundiaí.\n\nEscolha uma opção.");
+    expect(menu[0].texto).toBe("Oi! Como podemos ajudar?");
     expect(ids(menu[0])[0]).toBe("menu.reservar");
 
     const inicio = await enviar({ escolha: "menu.reservar" });
     expect(inicio).toHaveLength(1);
-    expect(inicio[0].texto).toContain("sem pagar agora e sem compromisso de compra");
+    expect(inicio[0].texto).toContain("evitar filas e a correria");
+    expect(inicio[0].texto).toContain("separado para quando o voucher liberar");
+    expect(inicio[0].texto).not.toContain("já estão prontos");
+    expect(inicio[0].texto).toContain("você decide se quer comprar");
     expect(inicio[0].texto).toContain("a gente avisa por aqui");
     expect(inicio[0].texto).not.toContain("6 peças");
-    expect(inicio[0].texto).toContain("nome da escola ou do bairro");
+    expect(inicio[0].texto).toContain("nome da escola ou o bairro dela");
 
     const lista = ultima(await enviar({ texto: ESCOLA }));
     expect(lista.tipo).toBe("lista");
@@ -192,7 +195,8 @@ describe("pré-reserva pelo WhatsApp", () => {
       }),
     );
     expect(fim[0].texto).toContain("Pré-reserva de Lucas confirmada");
-    expect(fim[0].texto).toContain("garantido para o começo das aulas");
+    expect(fim[0].texto).toContain("separado para quando o voucher liberar");
+    expect(fim[0].texto).toContain("você decide se quer comprar");
     expect(fim[0].texto).toContain("/i/abcd1234");
     expect(fim[0].texto).toContain(
       "A cada 3 famílias que reservarem por este link e comprarem o kit, você ganha uma camiseta extra.",
