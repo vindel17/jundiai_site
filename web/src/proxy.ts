@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { DOMINIO_PADRAO } from "@/lib/config-publica";
 import {
   COOKIE_INDICACAO,
   COOKIE_INDICACAO_DIAS,
@@ -13,6 +14,7 @@ import {
 
 /** Rotas que exigem celular verificado. */
 const PROTEGIDAS = ["/conta", "/equipe"];
+const PAGINAS_PUBLICAS = new Set(["/", "/reserva", "/comprar", "/loja", "/privacidade"]);
 
 function comCookieIndicacao(request: NextRequest, response: NextResponse) {
   const convite = request.nextUrl.pathname.match(/^\/i\/([a-z0-9]{8})$/);
@@ -29,6 +31,16 @@ function comCookieIndicacao(request: NextRequest, response: NextResponse) {
 }
 
 export async function proxy(request: NextRequest) {
+  // A URL antiga ainda recebe webhooks e serve arquivos enviados pelo WhatsApp.
+  const { pathname, search } = request.nextUrl;
+  if (
+    (request.method === "GET" || request.method === "HEAD") &&
+    request.headers.get("host") === "uniforme-jundiai.onrender.com" &&
+    PAGINAS_PUBLICAS.has(pathname)
+  ) {
+    return NextResponse.redirect(`https://${DOMINIO_PADRAO}${pathname}${search}`, 308);
+  }
+
   let response = NextResponse.next({ request });
 
   if (!supabaseConfigurado) return comCookieIndicacao(request, response);
@@ -54,7 +66,6 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
   const precisaEntrar = PROTEGIDAS.some((rota) => pathname.startsWith(rota));
 
   if (!user && precisaEntrar) {
@@ -69,6 +80,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|produtos|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|robots\\.txt$|sitemap\\.xml$|produtos|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

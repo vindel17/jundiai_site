@@ -10,6 +10,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Entrar",
   description: "Entre com um código enviado pelo WhatsApp.",
+  robots: { index: false, follow: false },
 };
 
 export default async function EntrarPage({

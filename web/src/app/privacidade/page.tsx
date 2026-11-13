@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { SiteFooter } from "@/components/site-chrome";
 import { SiteTopbar } from "@/components/site-topbar";
+import { DOMINIO_PADRAO } from "@/lib/config-publica";
 import { SITE } from "@/lib/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Política de privacidade",
+  alternates: { canonical: `https://${DOMINIO_PADRAO}/privacidade` },
 };
 
 export default function PrivacidadePage() {

@@ -5,7 +5,7 @@ import { VitrinePecas } from "@/app/reserva/reserva-pecas";
 import { KitsSeparados } from "@/app/reserva/reserva-separados";
 import { codigoDoCookie } from "@/app/conta/indicacao-acoes";
 import { getWhatsAppUrl, SITE } from "@/lib/constants";
-import { siteUrl } from "@/lib/config-publica";
+import { DOMINIO_PADRAO, siteUrl } from "@/lib/config-publica";
 import {
   PESSOAS_POR_PECA_EXTRA,
   textoConvite,
@@ -21,6 +21,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Reserve o uniforme escolar",
   description: `Evite a correria da volta às aulas em ${SITE.city}. Escolha os tamanhos do uniforme com calma e faça a reserva sem pagar nada agora.`,
+  alternates: { canonical: `https://${DOMINIO_PADRAO}/reserva` },
 };
 
 export const dynamic = "force-dynamic";
