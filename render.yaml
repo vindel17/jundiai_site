@@ -4,7 +4,9 @@ services:
   - type: web
     name: uniforme-jundiai
     runtime: node
-    plan: free
+    plan: 0.5c-512mb
+    domains:
+      - uniformejundiai.com.br
     rootDir: web
     buildCommand: npm install && npm run build
     startCommand: npm start
