@@ -47,10 +47,14 @@ vi.mock("@/lib/whatsapp/atendimento", () => ({
 }));
 
 vi.mock("@/lib/whatsapp/identidade", () => ({ perfilPorWaId: async () => null }));
-vi.mock("@/lib/reserva/consultas", () => ({
-  listarReservasDoTelefone: async () => ({ linhas: simulado.linhas, codigo: "abcd1234" }),
-  atualizarReserva: simulado.atualizar,
-}));
+vi.mock("@/lib/reserva/consultas", async (importarOriginal) => {
+  const atual = await importarOriginal<typeof import("@/lib/reserva/consultas")>();
+  return {
+    ...atual,
+    listarReservasDoTelefone: async () => ({ linhas: simulado.linhas, codigo: "abcd1234" }),
+    atualizarReserva: simulado.atualizar,
+  };
+});
 
 const { processarEntrada } = await import("@/lib/whatsapp/agente");
 
@@ -110,6 +114,14 @@ describe("minhas reservas pelo WhatsApp", () => {
   it("aparece no menu", async () => {
     const menu = ultima(await enviar({ texto: "oi" }));
     expect(ids(menu)).toContain("menu.minhas_reservas");
+  });
+
+  it("não mostra a reserva que a família excluiu no site", async () => {
+    simulado.linhas = [reserva({ status: "cancelada" })];
+    const resposta = await enviar({ escolha: "menu.minhas_reservas" });
+    expect(resposta[0].texto).toContain("Ainda não encontrei pré-reserva");
+    expect(resposta.map((mensagem) => mensagem.texto).join("\n")).not.toContain("Lucas");
+    expect(passo()).toBe("menu");
   });
 
   it("sem reserva no número, aponta para Reservar uniforme", async () => {

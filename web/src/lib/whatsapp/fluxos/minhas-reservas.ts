@@ -6,6 +6,7 @@
 import {
   atualizarReserva,
   listarReservasDoTelefone,
+  reservasAtivas,
   type ReservaLinha,
 } from "@/lib/reserva/consultas";
 import { rotuloEntrega, type Entrega } from "@/lib/reserva/entrega";
@@ -60,7 +61,7 @@ async function reservaDaSessao(sessao: Sessao) {
 export async function iniciarMinhasReservas(sessao: Sessao): Promise<ResultadoTurno> {
   let linhas: ReservaLinha[];
   try {
-    linhas = (await listarReservasDoTelefone(sessao.waId)).linhas;
+    linhas = reservasAtivas((await listarReservasDoTelefone(sessao.waId)).linhas);
   } catch (erro) {
     console.error("[minhas-reservas] falha ao ler", erro);
     await enviarTexto(sessao.waId, "Não consegui abrir suas reservas agora. Tente de novo em instantes.");
