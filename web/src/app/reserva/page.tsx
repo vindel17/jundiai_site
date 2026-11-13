@@ -18,10 +18,28 @@ import { reservaAberta } from "@/lib/reserva/kit";
 import { adminConfigurado } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+const TITULO_RESERVA = "Uniforme escolar da rede municipal de Jundiaí 2027";
+const DESCRICAO_RESERVA = "Veja as peças do kit, escolha os tamanhos e faça a pré-reserva gratuita. Receba pelo WhatsApp o aviso de quando puder usar o voucher.";
+const URL_RESERVA = `https://${DOMINIO_PADRAO}/reserva`;
+
 export const metadata: Metadata = {
-  title: "Reserve o uniforme escolar",
-  description: `Evite a correria da volta às aulas em ${SITE.city}. Escolha os tamanhos do uniforme com calma e faça a reserva sem pagar nada agora.`,
-  alternates: { canonical: `https://${DOMINIO_PADRAO}/reserva` },
+  title: { absolute: TITULO_RESERVA },
+  description: DESCRICAO_RESERVA,
+  alternates: { canonical: URL_RESERVA },
+  openGraph: {
+    title: TITULO_RESERVA,
+    description: DESCRICAO_RESERVA,
+    url: URL_RESERVA,
+    siteName: SITE.name,
+    locale: "pt_BR",
+    type: "website",
+    images: [{
+      url: `https://${DOMINIO_PADRAO}/produtos/kit-masculino.jpg`,
+      width: 1448,
+      height: 1086,
+      alt: "Peças do kit de uniforme escolar com bermuda da rede municipal de Jundiaí",
+    }],
+  },
 };
 
 export const dynamic = "force-dynamic";
@@ -80,13 +98,11 @@ export default async function ReservaPage({
   return (
     <main className="reserva">
       <header className="reserva-intro">
-        <h1 className="uj-page-title">
-          {aberta ? "Seu kit separado para quando o voucher liberar" : "O prazo para reservar terminou"}
-        </h1>
+        <h1 className="uj-page-title">{TITULO_RESERVA}</h1>
         <p className="uj-page-lead">
           {aberta
-            ? "Faça a reserva de graça. Quando o crédito da Prefeitura estiver disponível, a gente avisa pelo WhatsApp."
-            : "Se você já fez a reserva, pode ver os detalhes aqui."}
+            ? "Escolha os tamanhos e faça a pré-reserva gratuita, sem compromisso de compra. Quando você puder usar o voucher da Prefeitura, a gente avisa pelo WhatsApp."
+            : "O prazo para reservar terminou. Se você já fez a reserva, pode ver os detalhes aqui."}
         </p>
         {aberta ? (
           <ul className="uj-checklist">

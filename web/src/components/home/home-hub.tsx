@@ -11,11 +11,11 @@ export function HomeHub() {
         <div className="home-hero-inner">
           <span className="uj-kicker">{SITE.credenciamento}</span>
           <h1 className="home-title">
-            Garanta o uniforme <span>antes das aulas</span>
+            Uniforme escolar <span>em Jundiaí</span>
           </h1>
           <p className="home-lead">
-            {SITE.name} é {SITE.credenciamento.toLowerCase()} de {SITE.city}. Escolha a
-            escola e o tamanho das peças, sem pagar agora.
+            Conheça a Uniforme Jundiaí e reserve o kit da rede municipal. Escolha
+            a escola e os tamanhos das peças, sem pagar agora.
           </p>
 
           <div className="home-paths">

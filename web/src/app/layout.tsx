@@ -18,8 +18,6 @@ export const viewport: Viewport = {
   themeColor: "#1e6fd6",
 };
 
-// Enquanto o domínio final não estiver no ar, canônicas e preview social
-// precisam apontar para a origem que realmente responde.
 const origem = siteUrl();
 
 export const metadata: Metadata = {
@@ -31,7 +29,7 @@ export const metadata: Metadata = {
   description: `${SITE.brandLine}. ${SITE.credenciamento} de ${SITE.city}.`,
   openGraph: {
     title: SITE.name,
-    description: `Monte o pedido do uniforme escolar em ${SITE.city} — condição de lançamento.`,
+    description: `Conheça a Uniforme Jundiaí e reserve o kit da rede municipal sem pagar agora.`,
     url: origem,
     siteName: SITE.name,
     locale: "pt_BR",
