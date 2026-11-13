@@ -91,7 +91,7 @@ export async function iniciarReserva(
   return perguntarEscola(
     sessao.waId,
     guardarOrigem(origem),
-    "Quer evitar filas e a correria de procurar uniforme na volta às aulas? Reserve grátis: a gente deixa o kit do aluno separado para quando o voucher liberar. Aí a gente avisa por aqui e você decide se quer comprar.",
+    "Quer evitar filas e a correria de procurar uniforme na volta às aulas? Reserve grátis: a gente deixa o kit do aluno separado para quando o voucher liberar. Você pode pedir um aviso por aqui e decidir depois se quer comprar.",
   );
 }
 

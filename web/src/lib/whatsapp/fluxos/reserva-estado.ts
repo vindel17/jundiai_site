@@ -13,6 +13,7 @@ export const AJUDA = "reserva.ajuda.";
 export const AJUDA_OUTRA = "reserva.ajuda_outra";
 export const AJUDA_FIM = "reserva.ajuda_fim";
 export const CONFIRMA = "reserva.confirma";
+export const CONFIRMA_COM_AVISO = "reserva.confirma.com_aviso";
 export const CORRIGIR = "reserva.corrigir";
 export const COR = "reserva.cor.";
 export const OUTRO_SIM = "reserva.outro.sim";

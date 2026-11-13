@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { registrarEntregaVoucher } from "@/lib/reserva/aviso-voucher";
 import { processarEntrada } from "@/lib/whatsapp/agente";
 import { FalhaAoRegistrarEntrada } from "@/lib/whatsapp/atendimento";
 import { assinaturaValida, respostaDeVerificacao } from "@/lib/whatsapp/assinatura";
-import { extrairEntradas } from "@/lib/whatsapp/tipos";
+import { extrairEntradas, extrairStatusEntrega } from "@/lib/whatsapp/tipos";
 
 export const runtime = "nodejs";
 
@@ -31,15 +32,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Assinatura inválida" }, { status: 401 });
   }
 
-  let entradas;
+  let payload: unknown;
   try {
-    entradas = extrairEntradas(JSON.parse(corpo));
+    payload = JSON.parse(corpo);
   } catch {
     return NextResponse.json({ recebido: true });
   }
 
   let falhouRegistro = false;
-  for (const entrada of entradas) {
+  for (const evento of extrairStatusEntrega(payload)) {
+    try {
+      await registrarEntregaVoucher(evento);
+    } catch (erro) {
+      falhouRegistro = true;
+      console.error("Falha ao registrar entrega do aviso do voucher", { id: evento.id, erro });
+    }
+  }
+  for (const entrada of extrairEntradas(payload)) {
     try {
       await processarEntrada(entrada);
     } catch (erro) {

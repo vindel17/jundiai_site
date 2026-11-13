@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ReservaForm } from "@/app/reserva/reserva-form";
+import { PreferenciaAvisoVoucher, ReservaForm } from "@/app/reserva/reserva-form";
 import { VitrinePecas } from "@/app/reserva/reserva-pecas";
 import { KitsSeparados } from "@/app/reserva/reserva-separados";
 import { codigoDoCookie } from "@/app/conta/indicacao-acoes";
@@ -12,6 +12,7 @@ import {
   textoPremioIndicacao,
   urlIndicacao,
 } from "@/lib/indicacao/regras";
+import { lerPreferenciaVoucher } from "@/lib/reserva/aviso-voucher";
 import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
 import { fotoDoKit } from "@/lib/reserva/fotos";
 import { reservaAberta } from "@/lib/reserva/kit";
@@ -85,6 +86,7 @@ export default async function ReservaPage({
 
   let linhas: Awaited<ReturnType<typeof listarReservasDoTelefone>>["linhas"] = [];
   let codigo = "";
+  let recebeAviso = false;
   if (user?.phone && adminConfigurado()) {
     try {
       const minhas = await listarReservasDoTelefone(user.phone);
@@ -92,6 +94,9 @@ export default async function ReservaPage({
       codigo = minhas.codigo;
     } catch {
       linhas = [];
+    }
+    if (linhas.length > 0) {
+      recebeAviso = (await lerPreferenciaVoucher(user.phone).catch(() => null)) === true;
     }
   }
 
@@ -101,7 +106,7 @@ export default async function ReservaPage({
         <h1 className="uj-page-title">{TITULO_RESERVA}</h1>
         <p className="uj-page-lead">
           {aberta
-            ? "Escolha os tamanhos e faça a pré-reserva gratuita, sem compromisso de compra. Quando você puder usar o voucher da Prefeitura, a gente avisa pelo WhatsApp."
+            ? "Escolha os tamanhos e faça a pré-reserva gratuita, sem compromisso de compra. Você pode pedir um aviso pelo WhatsApp para saber quando o voucher da Prefeitura liberar."
             : "O prazo para reservar terminou. Se você já fez a reserva, pode ver os detalhes aqui."}
         </p>
         {aberta ? (
@@ -134,19 +139,12 @@ export default async function ReservaPage({
             </p>
           </div>
         ) : null}
-        {!aberta ? (
-          <p className="reserva-dica">
-            Em janeiro, a gente avisa pelo WhatsApp quando você puder usar o voucher
-            (o crédito da Prefeitura para comprar o uniforme).
-          </p>
-        ) : null}
       </header>
 
       <div className="reserva-corpo">
         {feita ? (
           <div className="uj-success" role="status">
             <h2>Reserva feita!</h2>
-            <p>Em janeiro, a gente avisa pelo WhatsApp quando você puder usar o voucher.</p>
             {codigo ? (
               <LinkDaReserva codigo={codigo} />
             ) : null}
@@ -154,6 +152,7 @@ export default async function ReservaPage({
         ) : null}
 
         <KitsSeparados linhas={linhas} link={codigo ? urlIndicacao(siteUrl(), codigo) : ""} />
+        {linhas.length > 0 ? <PreferenciaAvisoVoucher recebeAviso={recebeAviso} /> : null}
 
         {user && aberta ? (
           <>
@@ -166,6 +165,7 @@ export default async function ReservaPage({
             </div>
             <ReservaForm
               fotosKit={{ masculino: fotoDoKit("masculino"), feminino: fotoDoKit("feminino") }}
+              recebeAviso={recebeAviso}
             />
           </>
         ) : (

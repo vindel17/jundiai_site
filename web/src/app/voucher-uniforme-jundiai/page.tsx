@@ -46,8 +46,8 @@ export default function VoucherUniformeJundiaiPage() {
           <h2>Como funciona a pré-reserva na Uniforme Jundiaí?</h2>
           <p>
             A pré-reserva é gratuita. Você informa a escola, escolhe as peças e os tamanhos e
-            confirma pelo site ou pelo WhatsApp. A loja deixa o kit separado e avisa pelo
-            WhatsApp quando o voucher liberar. O cadastro para receber o crédito segue as
+            confirma pelo site ou pelo WhatsApp. A loja deixa o kit separado. Se você pedir,
+            a gente avisa pelo WhatsApp quando o voucher liberar. O cadastro para receber o crédito segue as
             orientações da Prefeitura.
           </p>
           <p><Link className="underline" href="/guia-de-tamanhos">Veja como medir as peças e escolher os tamanhos.</Link></p>

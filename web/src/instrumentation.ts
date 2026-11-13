@@ -73,9 +73,9 @@ function checagens(): Checagem[] {
       impacto: "a Meta não consegue validar o webhook do agente",
     },
     {
-      nome: "WHATSAPP_ALERTA_TEMPLATE",
-      ok: definida(process.env.WHATSAPP_ALERTA_TEMPLATE),
-      impacto: "o aviso 'surgiu a peça' não chega a quem está na fila há mais de 24h",
+      nome: "WHATSAPP_VOUCHER_TEMPLATE",
+      ok: process.env.WHATSAPP_VOUCHER_TEMPLATE?.trim() === "voucher_2027_liberado",
+      impacto: "o envio do aviso do voucher está desativado",
     },
     {
       nome: "NEXT_PUBLIC_GA_ID",

@@ -76,11 +76,16 @@ export async function iniciarMinhasReservas(sessao: Sessao): Promise<ResultadoTu
     return mostrarMenu(sessao);
   }
 
-  for (const linha of linhas) await enviarTexto(sessao.waId, resumo(linha));
+  for (const [indice, linha] of linhas.entries()) {
+    const convite = indice === linhas.length - 1
+      ? "\n\nQuer que a Uniforme Jundiaí avise quando o voucher liberar? Responda *QUERO O AVISO*."
+      : "";
+    await enviarTexto(sessao.waId, resumo(linha) + convite);
+  }
   if (!reservaAberta()) {
     await enviarTexto(
       sessao.waId,
-      "O prazo para ajustar terminou em 31 de dezembro. O aviso de janeiro chega nesta conversa.",
+      "O prazo para ajustar a reserva terminou em 31 de dezembro.",
     );
     return mostrarMenu(sessao);
   }

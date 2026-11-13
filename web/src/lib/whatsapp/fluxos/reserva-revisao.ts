@@ -1,5 +1,6 @@
 import { siteUrl } from "@/lib/config-publica";
 import { textoPremioIndicacao, urlIndicacao } from "@/lib/indicacao/regras";
+import { gravarPreferenciaVoucher } from "@/lib/reserva/aviso-voucher";
 import { gravarReserva } from "@/lib/reserva/gravar";
 import { pecasDoKit } from "@/lib/reserva/kit";
 import { enviarTexto } from "../enviar";
@@ -8,6 +9,7 @@ import { dadoTexto, type ResultadoTurno, type Sessao } from "../sessao";
 import type { EntradaUsuario } from "../tipos";
 import {
   CONFIRMA,
+  CONFIRMA_COM_AVISO,
   COR,
   CORRIGIR,
   MESMA_ESCOLA,
@@ -39,7 +41,9 @@ type Dados = Record<string, unknown>;
 
 export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Promise<ResultadoTurno> {
   if (entrada.escolha === CORRIGIR) return perguntarCorrecao(sessao.waId, sessao.dados);
-  if (entrada.escolha !== CONFIRMA) return revisar(sessao.waId, sessao.dados);
+  if (entrada.escolha !== CONFIRMA && entrada.escolha !== CONFIRMA_COM_AVISO) {
+    return revisar(sessao.waId, sessao.dados);
+  }
 
   const tamanhos = tamanhosDosDados(sessao.dados);
   if (!tamanhos) return perguntarModo(sessao.waId, sessao.dados);
@@ -48,7 +52,11 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
   const aluno = dadoTexto(sessao.dados, "aluno");
 
   let codigoIndicacao: string;
+  let confirmouAviso = false;
   try {
+    if (entrada.escolha === CONFIRMA_COM_AVISO) {
+      confirmouAviso = await gravarPreferenciaVoucher(sessao.waId, true, "whatsapp", entrada.enviadaEm);
+    }
     const gravada = await gravarReserva({
       telefone: sessao.waId,
       origem: origemDosDados(sessao.dados),
@@ -61,7 +69,7 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
     codigoIndicacao = gravada.codigoIndicacao;
   } catch (erro) {
     console.error("[reserva] falha ao gravar", erro);
-    await enviarTexto(sessao.waId, "Não consegui anotar agora. Toque em Confirmar de novo.");
+    await enviarTexto(sessao.waId, "Não consegui anotar agora. Tente confirmar de novo.");
     return revisar(sessao.waId, sessao.dados);
   }
 
@@ -70,8 +78,11 @@ export async function passoConfirma(sessao: Sessao, entrada: EntradaUsuario): Pr
     "",
     `O kit de ${aluno} fica separado para quando o voucher liberar.`,
     "",
-    "Não tem pagamento agora e não obriga a compra. Avisamos nesta conversa e você decide se quer comprar.",
+    "Você decide depois se quer comprar.",
   ];
+  if (confirmouAviso) {
+    linhas.push("", "A gente avisa por aqui quando o voucher liberar. Para cancelar o aviso, mande *PARAR*.");
+  }
   if (!sessao.dados.linkEnviado) {
     linhas.push(
       "",
@@ -119,7 +130,7 @@ export async function passoOutro(sessao: Sessao, entrada: EntradaUsuario): Promi
   if (entrada.escolha === OUTRO_NAO) {
     await enviarTexto(
       sessao.waId,
-      "Combinado! Quando o voucher liberar, avisamos nesta conversa. Para ver ou ajustar, toque em *Minhas reservas* no menu.",
+      "Tudo pronto! Para conferir ou ajustar, toque em *Minhas reservas* no menu.",
     );
     return mostrarMenu(sessao);
   }

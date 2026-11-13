@@ -13,6 +13,7 @@ const simulado = vi.hoisted(() => ({
   enviadas: [] as Enviada[],
   conversas: new Map<string, { passo: string; dados: Record<string, unknown> }>(),
   gravar: vi.fn(),
+  preferenciaVoucher: vi.fn(),
   atendimento: false,
 }));
 
@@ -61,6 +62,9 @@ vi.mock("@/lib/whatsapp/atendimento", () => ({
 
 vi.mock("@/lib/whatsapp/identidade", () => ({ perfilPorWaId: async () => null }));
 vi.mock("@/lib/reserva/gravar", () => ({ gravarReserva: simulado.gravar }));
+vi.mock("@/lib/reserva/aviso-voucher", () => ({
+  gravarPreferenciaVoucher: simulado.preferenciaVoucher,
+}));
 
 const { processarEntrada } = await import("@/lib/whatsapp/agente");
 
@@ -113,6 +117,7 @@ beforeEach(() => {
   simulado.atendimento = false;
   simulado.gravar.mockReset();
   simulado.gravar.mockResolvedValue({ id: "r1", codigoIndicacao: "abcd1234" });
+  simulado.preferenciaVoucher.mockReset();
 });
 
 afterEach(() => {
@@ -148,8 +153,8 @@ describe("pré-reserva pelo WhatsApp", () => {
     expect(inicio[0].texto).toContain("evitar filas e a correria");
     expect(inicio[0].texto).toContain("separado para quando o voucher liberar");
     expect(inicio[0].texto).not.toContain("já estão prontos");
-    expect(inicio[0].texto).toContain("você decide se quer comprar");
-    expect(inicio[0].texto).toContain("a gente avisa por aqui");
+    expect(inicio[0].texto).toContain("decidir depois se quer comprar");
+    expect(inicio[0].texto).toContain("Você pode pedir um aviso por aqui");
     expect(inicio[0].texto).not.toContain("6 peças");
     expect(inicio[0].texto).toContain("nome da escola ou o bairro dela");
 
@@ -196,12 +201,29 @@ describe("pré-reserva pelo WhatsApp", () => {
     );
     expect(fim[0].texto).toContain("Pré-reserva de Lucas confirmada");
     expect(fim[0].texto).toContain("separado para quando o voucher liberar");
-    expect(fim[0].texto).toContain("você decide se quer comprar");
+    expect(fim[0].texto).toContain("Você decide depois se quer comprar");
     expect(fim[0].texto).toContain("/i/abcd1234");
     expect(fim[0].texto).toContain(
       "A cada 3 famílias que reservarem por este link e comprarem o kit, você ganha uma camiseta extra.",
     );
     expect(titulos(ultima(fim))).toEqual(["Adicionar aluno(a)", "Concluir"]);
+    expect(simulado.preferenciaVoucher).not.toHaveBeenCalled();
+  });
+
+  it("registra a escolha pelo aviso e permite cancelar sem mudar a reserva", async () => {
+    simulado.preferenciaVoucher.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    const revisao = ultima(await ateORevisar());
+    expect(titulos(revisao)).toContain("Reservar com aviso");
+    const fim = await enviar({ escolha: "reserva.confirma.com_aviso" });
+    expect(simulado.preferenciaVoucher).toHaveBeenLastCalledWith(WA, true, "whatsapp", undefined);
+    expect(fim[0].texto).toContain("Para cancelar o aviso, mande *PARAR*.");
+    const antes = simulado.conversas.get(WA);
+
+    simulado.atendimento = true;
+    const cancelamento = await enviar({ texto: "parar" });
+    expect(simulado.preferenciaVoucher).toHaveBeenLastCalledWith(WA, false, "whatsapp", undefined);
+    expect(cancelamento[0].texto).toContain("aviso do voucher está desativado");
+    expect(simulado.conversas.get(WA)).toEqual(antes);
   });
 
   it("não confirma se a gravação falhar e permite tentar novamente", async () => {

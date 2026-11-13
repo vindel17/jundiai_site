@@ -105,26 +105,60 @@ function normalizar(bruta: Registro, contatos: unknown[]): EntradaUsuario | null
   return { ...base, tipo: "outro", texto: "" };
 }
 
-export function extrairEntradas(payload: unknown): EntradaUsuario[] {
+function* valoresDoWebhook(payload: unknown) {
   const raiz = objeto(payload);
-  if (!raiz) return [];
-
-  const entradas: EntradaUsuario[] = [];
+  if (!raiz) return;
 
   for (const entryBruta of lista(raiz.entry)) {
     for (const changeBruta of lista(objeto(entryBruta)?.changes)) {
       const valor = objeto(objeto(changeBruta)?.value);
-      if (!valor) continue;
+      if (valor) yield valor;
+    }
+  }
+}
 
-      const contatos = lista(valor.contacts);
-      for (const mensagemBruta of lista(valor.messages)) {
-        const mensagem = objeto(mensagemBruta);
-        if (!mensagem) continue;
-        const normalizada = normalizar(mensagem, contatos);
-        if (normalizada) entradas.push(normalizada);
-      }
+export function extrairEntradas(payload: unknown): EntradaUsuario[] {
+  const entradas: EntradaUsuario[] = [];
+
+  for (const valor of valoresDoWebhook(payload)) {
+    const contatos = lista(valor.contacts);
+    for (const mensagemBruta of lista(valor.messages)) {
+      const mensagem = objeto(mensagemBruta);
+      if (!mensagem) continue;
+      const normalizada = normalizar(mensagem, contatos);
+      if (normalizada) entradas.push(normalizada);
     }
   }
 
   return entradas;
+}
+
+export type StatusEntrega = {
+  numeroId: string;
+  id: string;
+  referencia: string;
+  status: "sent" | "delivered" | "read" | "failed";
+  codigo: number | null;
+};
+
+export function extrairStatusEntrega(payload: unknown): StatusEntrega[] {
+  const eventos: StatusEntrega[] = [];
+  for (const valor of valoresDoWebhook(payload)) {
+    const numeroId = texto(objeto(valor.metadata)?.phone_number_id);
+    for (const bruto of lista(valor.statuses)) {
+      const linha = objeto(bruto);
+      const id = texto(linha?.id);
+      const status = texto(linha?.status);
+      if (!id || (status !== "sent" && status !== "delivered" && status !== "read" && status !== "failed")) continue;
+      const codigo = objeto(lista(linha?.errors)[0])?.code;
+      eventos.push({
+        numeroId,
+        id,
+        referencia: texto(linha?.biz_opaque_callback_data),
+        status,
+        codigo: typeof codigo === "number" ? codigo : null,
+      });
+    }
+  }
+  return eventos;
 }

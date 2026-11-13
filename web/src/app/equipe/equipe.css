@@ -69,6 +69,15 @@
   color: var(--ink);
 }
 
+.equipe-filtros .equipe-confirmacao {
+  display: flex;
+  align-items: center;
+}
+
+.equipe-confirmacao input {
+  min-height: auto;
+}
+
 .equipe-tabela-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);

@@ -41,5 +41,5 @@ services:
         sync: false
       - key: WHATSAPP_OTP_LOCALE
         sync: false
-      - key: WHATSAPP_ALERTA_TEMPLATE
+      - key: WHATSAPP_VOUCHER_TEMPLATE
         sync: false

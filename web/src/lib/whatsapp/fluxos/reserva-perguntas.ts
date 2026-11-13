@@ -23,6 +23,7 @@ import { urlSite } from "../site";
 import {
   AJUDA,
   CONFIRMA,
+  CONFIRMA_COM_AVISO,
   COR,
   CORRIGIR,
   ENTREGA_CASA,
@@ -213,9 +214,12 @@ export async function revisar(waId: string, dados: Dados): Promise<ResultadoTurn
       `Como receber: ${rotuloEntrega(entrega, kitCompleto(tamanhos))}`,
       "",
       "A pré-reserva é gratuita: não tem pagamento agora e não obriga a compra. Os tamanhos podem mudar até 31 de dezembro, e a forma de receber, depois também.",
+      "",
+      "Quer que a Uniforme Jundiaí avise você por aqui quando o voucher liberar?",
     ].join("\n"),
     [
-      { id: CONFIRMA, titulo: "Confirmar" },
+      { id: CONFIRMA_COM_AVISO, titulo: "Reservar com aviso" },
+      { id: CONFIRMA, titulo: "Só reservar" },
       { id: CORRIGIR, titulo: "Corrigir" },
     ],
   );

@@ -8,7 +8,9 @@
 import { etapasDoTurno } from "@/lib/metrica/etapas";
 import { registrarEtapas } from "@/lib/metrica/registrar";
 import { lerOrigem, origemDireta } from "@/lib/reserva/origem";
-import { registrarEntrada } from "./atendimento";
+import { gravarPreferenciaVoucher } from "@/lib/reserva/aviso-voucher";
+import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
+import { FalhaAoRegistrarEntrada, registrarEntrada } from "./atendimento";
 import { carregarConversa, salvarConversa } from "./conversa";
 import { enviarTexto } from "./enviar";
 import { mostrarBeneficios } from "./fluxos/beneficios";
@@ -31,7 +33,29 @@ import type { ResultadoTurno, Sessao } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
 
 export async function processarEntrada(entrada: EntradaUsuario) {
+  const comando = entrada.tipo === "texto" ? entrada.texto.trim().toUpperCase() : "";
+  const pediuAviso = /^QUERO O AVISO[.!]?$/.test(comando);
+  const pediuParar = /^PARAR[.!]?$/.test(comando);
+  let respostaAviso: string | null = null;
+  if (pediuAviso || pediuParar) {
+    try {
+      if (pediuAviso && reservasAtivas((await listarReservasDoTelefone(entrada.waId)).linhas).length === 0) {
+        respostaAviso = "Faça sua pré-reserva primeiro. No menu, toque em *Reservar uniforme*.";
+      } else {
+        const aceita = await gravarPreferenciaVoucher(entrada.waId, pediuAviso, "whatsapp", entrada.enviadaEm);
+        respostaAviso = aceita
+          ? "Combinado! Vamos avisar por aqui quando o voucher liberar. Para cancelar o aviso, mande *PARAR*."
+          : "O aviso do voucher está desativado. Para voltar a receber, mande *QUERO O AVISO*.";
+      }
+    } catch (erro) {
+      throw new FalhaAoRegistrarEntrada("Não consegui registrar a preferência do voucher.", { cause: erro });
+    }
+  }
   const rota = await registrarEntrada(entrada, pediuAtendente(entrada.escolha, entrada.texto));
+  if (respostaAviso) {
+    if (rota !== "duplicada") await enviarTexto(entrada.waId, respostaAviso);
+    return;
+  }
   if (rota === "novo") {
     await enviarTexto(
       entrada.waId,

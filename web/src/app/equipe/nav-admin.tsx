@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const TELAS = [
   { href: "/equipe/reservas", rotulo: "Reservas" },
+  { href: "/equipe/avisos", rotulo: "Aviso do voucher" },
   { href: "/equipe/atendimento", rotulo: "Atendimento" },
   { href: "/equipe/escolas", rotulo: "Alcance por escola" },
   { href: "/equipe/metricas", rotulo: "Métricas" },

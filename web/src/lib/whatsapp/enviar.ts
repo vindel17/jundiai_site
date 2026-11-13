@@ -97,12 +97,14 @@ export async function enviarTemplate(
   destino: string,
   nome: string,
   parametros: string[],
+  opcoes?: { idioma?: string; referencia?: string; signal?: AbortSignal },
 ) {
-  const idioma = process.env.WHATSAPP_OTP_LOCALE ?? "pt_BR";
+  const idioma = opcoes?.idioma ?? process.env.WHATSAPP_OTP_LOCALE ?? "pt_BR";
   return enviarMensagem({
     recipient_type: "individual",
     to: para(destino),
     type: "template",
+    ...(opcoes?.referencia ? { biz_opaque_callback_data: opcoes.referencia } : {}),
     template: {
       name: nome,
       language: { code: idioma },
@@ -119,5 +121,5 @@ export async function enviarTemplate(
               },
             ],
     },
-  });
+  }, opcoes?.signal);
 }

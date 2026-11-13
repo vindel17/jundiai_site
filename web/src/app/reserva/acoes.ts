@@ -6,7 +6,14 @@ import { redirect } from "next/navigation";
 import { codigoDoCookie } from "@/app/conta/indicacao-acoes";
 import { COOKIE_INDICACAO } from "@/lib/indicacao/regras";
 import { registrarEtapas } from "@/lib/metrica/registrar";
-import { obterReserva, reservaDoTelefone, telefonesEquivalentes } from "@/lib/reserva/consultas";
+import { gravarPreferenciaVoucher } from "@/lib/reserva/aviso-voucher";
+import {
+  listarReservasDoTelefone,
+  obterReserva,
+  reservaDoTelefone,
+  reservasAtivas,
+  telefonesEquivalentes,
+} from "@/lib/reserva/consultas";
 import { eEntrega } from "@/lib/reserva/entrega";
 import { escolaValida } from "@/lib/reserva/escolas";
 import { gravarReserva } from "@/lib/reserva/gravar";
@@ -73,6 +80,9 @@ export async function criarReservaSite(
   const origem = origemDaReservaSite(await conviteDeOutraFamilia(telefone));
 
   try {
+    if (formData.get("avisoVoucher") === "sim") {
+      await gravarPreferenciaVoucher(user.phone, true, "site");
+    }
     await gravarReserva({
       telefone,
       origem,
@@ -96,6 +106,28 @@ export async function criarReservaSite(
     origem,
   });
   redirect("/reserva?feita=1");
+}
+
+export async function mudarAvisoVoucher(
+  _estado: EstadoReserva,
+  formData: FormData,
+): Promise<EstadoReserva> {
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.phone) redirect("/entrar?proximo=/reserva");
+  const escolha = formData.get("avisoVoucher");
+  if (escolha !== "sim" && escolha !== "nao") return { erro: "Escolha uma opção." };
+
+  try {
+    if (escolha === "sim" && reservasAtivas((await listarReservasDoTelefone(user.phone)).linhas).length === 0) {
+      return { erro: "Faça uma pré-reserva para receber o aviso." };
+    }
+    await gravarPreferenciaVoucher(user.phone, escolha === "sim", "site");
+  } catch {
+    return { erro: "Não consegui salvar sua preferência. Tente de novo." };
+  }
+  revalidatePath("/reserva");
+  return {};
 }
 
 /** O cookie do convite só vale quando o código é de outra família. */

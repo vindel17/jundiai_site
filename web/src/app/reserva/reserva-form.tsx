@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useActionState, useState } from "react";
-import { criarReservaSite, type EstadoReserva } from "@/app/reserva/acoes";
+import { criarReservaSite, mudarAvisoVoucher, type EstadoReserva } from "@/app/reserva/acoes";
 import { CardPeca, FotoPeca } from "@/app/reserva/reserva-pecas";
 import { ESCOLAS_JUNDIAI } from "@/data/escolas";
 import { regraDoFrete } from "@/lib/reserva/entrega";
@@ -28,7 +28,13 @@ const OPCOES_ENTREGA = [
 ];
 
 /** `fotosKit` traz a foto do kit inteiro quando ela já está em /public/produtos. */
-export function ReservaForm({ fotosKit }: { fotosKit: Partial<Record<KitGenero, string>> }) {
+export function ReservaForm({
+  fotosKit,
+  recebeAviso,
+}: {
+  fotosKit: Partial<Record<KitGenero, string>>;
+  recebeAviso: boolean;
+}) {
   const [kit, setKit] = useState<KitGenero>("masculino");
   const [estado, acao, pendente] = useActionState(criarReservaSite, INICIAL);
 
@@ -128,12 +134,36 @@ export function ReservaForm({ fotosKit }: { fotosKit: Partial<Record<KitGenero, 
       </section>
 
       <div className="reserva-enviar">
+        {!recebeAviso ? (
+          <label className="reserva-dica">
+            <input type="checkbox" name="avisoVoucher" value="sim" /> Quero que a Uniforme Jundiaí
+            me avise pelo WhatsApp quando o voucher liberar.
+          </label>
+        ) : null}
         {estado.erro ? <p className="entrar-erro">{estado.erro}</p> : null}
         <button className="btn-primary" type="submit" disabled={pendente}>
           {pendente ? "Reservando..." : "Confirmar minha reserva"}
         </button>
         <p className="reserva-dica">Reservar é de graça. Você decide depois se quer comprar.</p>
       </div>
+    </form>
+  );
+}
+
+export function PreferenciaAvisoVoucher({ recebeAviso }: { recebeAviso: boolean }) {
+  const [estado, acao, pendente] = useActionState(mudarAvisoVoucher, INICIAL);
+
+  return (
+    <form action={acao} className="reserva-enviar">
+      <p className="reserva-dica">
+        {recebeAviso
+          ? "A Uniforme Jundiaí vai avisar você pelo WhatsApp quando o voucher liberar."
+          : "Quer que a Uniforme Jundiaí avise você pelo WhatsApp quando o voucher liberar?"}
+      </p>
+      <button className="btn-secondary" name="avisoVoucher" value={recebeAviso ? "nao" : "sim"} disabled={pendente}>
+        {recebeAviso ? "Parar de receber o aviso" : "Quero receber o aviso"}
+      </button>
+      {estado.erro ? <p className="entrar-erro" role="alert">{estado.erro}</p> : null}
     </form>
   );
 }

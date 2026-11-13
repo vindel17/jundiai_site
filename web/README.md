@@ -47,7 +47,7 @@ Sem as variáveis do Google Sheets, as solicitações são gravadas em fallback 
 | `WHATSAPP_WEBHOOK_VERIFY_TOKEN` | Token que você inventa e repete no painel da Meta |
 | `WHATSAPP_APP_SECRET` | App Secret da Meta — valida a assinatura do webhook |
 | `WHATSAPP_AGENTE_ECO` | `1` liga o eco de diagnóstico do webhook (vazio em produção) |
-| `WHATSAPP_ALERTA_TEMPLATE` | Template UTILITY com 2 variáveis (peça, tamanho) para aviso fora da janela 24h |
+| `WHATSAPP_VOUCHER_TEMPLATE` | Nome `voucher_2027_liberado` para ativar o envio do aviso do voucher |
 
 Sem as variáveis do Supabase, o site continua funcionando (venda + etiquetas); só as
 rotas de conta ficam indisponíveis.
@@ -96,9 +96,21 @@ dos fluxos em `whatsapp-agente.md` §7.
    ele toda requisição é recusada com 401.
 4. Mande “oi” para o número: deve chegar o menu. `WHATSAPP_AGENTE_ECO` não é
    mais necessário.
-5. Para avisos quando a pessoa não falou nas últimas 24h, aprove na Meta um
-   template UTILITY com 2 variáveis (peça, tamanho) e coloque o nome em
-   `WHATSAPP_ALERTA_TEMPLATE`.
+
+### Aviso da liberação do voucher de 2027
+
+1. Aplique a migração `0014_aviso_voucher.sql` antes de publicar o site.
+2. O modelo `voucher_2027_liberado` usa português do Brasil e corpo fixo,
+   reproduzido na tela de avisos. Confira a aprovação no Gerenciador do WhatsApp.
+3. Valide o modelo e os estados de entrega com um número autorizado de teste.
+   O texto anuncia a liberação do crédito. Use um ambiente de teste ou aguarde
+   a liberação oficial para usar esse texto em uma mensagem real.
+4. Para habilitar o painel de envio, defina `WHATSAPP_VOUCHER_TEMPLATE=voucher_2027_liberado`.
+   Em `/equipe/avisos`, a administração confere o total e prepara a fila após a
+   liberação oficial. O envio é confirmado por lote. O painel mostra a aceitação
+   pela Meta, a entrega e as falhas. Avisos incertos ficam fora do reenvio.
+5. Reservas antigas entram no público após a família pedir o aviso no site ou
+   mandar `QUERO O AVISO` no WhatsApp. `PARAR` cancela a autorização.
 
 ### Configurar Google Sheets
 
