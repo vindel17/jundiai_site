@@ -4,7 +4,7 @@ import { enviarBotoes, enviarTexto } from "../enviar";
 import { lerBaseBot } from "../ia/base";
 import { completar } from "../ia/claude";
 import { consultarDisponibilidade, registrarAviso } from "../ia/ferramentas";
-import { comHistorico, historicoDe, paraModelo } from "../ia/historico";
+import { comHistorico, historicoDe, paraModelo, type TurnoIa } from "../ia/historico";
 import { instrucoes, SAUDACAO, textoParaFamilia } from "../ia/regras";
 import { ID } from "../intencao";
 import type { ResultadoTurno, Sessao } from "../sessao";
@@ -53,7 +53,7 @@ async function executar(turno: Turno, nome: string, entrada: Record<string, unkn
     }
     return JSON.stringify({
       ok: true,
-      texto: "A equipe foi chamada. Diga em uma frase que alguém da loja vai responder por aqui. Não invente a resposta.",
+      texto: "A equipe foi chamada. Responda só à dúvida. Não diga que alguém vai responder.",
     });
   }
   return JSON.stringify({ ok: false, texto: "Ferramenta desconhecida. Não invente o resultado." });
@@ -111,21 +111,17 @@ export async function continuarIa(
     });
     if (turno.erroFila) throw turno.erroFila;
 
-    const texto = textoParaFamilia(resultado.texto);
-    await enviarTexto(sessao.waId, texto);
-    if (emFila || turno.chamouEquipe) {
+    let texto = textoParaFamilia(resultado.texto);
+    if (!texto && turno.chamouEquipe && !emFila) texto = TEXTO_FILA;
+    if (texto) await enviarTexto(sessao.waId, texto);
+    if (texto && (emFila || turno.chamouEquipe)) {
       await registrarRespostaBot(sessao.waId, texto).catch((erro: unknown) =>
         console.error("Falha ao guardar a resposta da IA na fila", erro),
       );
     }
-    return {
-      passo: PASSO,
-      dados: comHistorico(dados, [
-        ...historico,
-        { papel: "usuario", texto: pergunta },
-        { papel: "loja", texto },
-      ]),
-    };
+    const turnos: TurnoIa[] = [...historico, { papel: "usuario", texto: pergunta }];
+    if (texto) turnos.push({ papel: "loja", texto });
+    return { passo: PASSO, dados: comHistorico(dados, turnos) };
   } catch (erro) {
     console.error("Falha no atendimento por IA", { waId: sessao.waId, erro });
     // Na fila, a mensagem já está com a equipe e o aviso já foi dado.

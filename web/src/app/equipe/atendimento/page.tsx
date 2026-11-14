@@ -6,7 +6,7 @@ import { listarReservasDoTelefone } from "@/lib/reserva/consultas";
 import { pode } from "@/lib/reserva/equipe";
 import { rotuloStatus } from "@/lib/reserva/status";
 import {
-  ATENDIMENTO, ID_ATENDIMENTO, listarAtendimentos, obterAtendimento,
+  ATENDIMENTO, ID_ATENDIMENTO, listarAtendimentos, obterAtendimento, SILENCIO_EQUIPE,
 } from "@/lib/whatsapp/atendimento";
 import { agirNoAtendimento } from "./acoes";
 import { AtualizarFila, BotaoAtendimento } from "./controles";
@@ -117,6 +117,9 @@ export default async function AtendimentoPage({
                 ? (assumidoPorMim ? "Em atendimento com você" : "Com outro atendente")
                 : "Aguardando atendente"}
             </p>
+            {aberto && atendimento.atendente ? (
+              <p className="equipe-lead">Se ninguém responder em {SILENCIO_EQUIPE}, o bot volta a atender a próxima mensagem.</p>
+            ) : null}
             {detalhe.reservas?.linhas.length ? (
               <ul className="equipe-lista">
                 {detalhe.reservas.linhas.map((reserva) => (

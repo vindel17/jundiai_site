@@ -1,3 +1,5 @@
+import { semAvisoDeEquipe } from "./regras";
+
 const HISTORICO = "iaHistorico";
 const MAXIMO = 8;
 
@@ -13,7 +15,7 @@ export function historicoDe(dados: Record<string, unknown>): TurnoIa[] {
     if ((turno.papel !== "usuario" && turno.papel !== "loja") || typeof turno.texto !== "string") {
       return [];
     }
-    const texto = turno.texto.trim();
+    const texto = semAvisoDeEquipe(turno.texto);
     return texto ? [{ papel: turno.papel, texto: texto.slice(0, 500) }] : [];
   }).slice(-MAXIMO);
 }

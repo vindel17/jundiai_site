@@ -44,6 +44,7 @@ export function instrucoes(base: string, emFila = false) {
     "- Não faça a pré-reserva nesta conversa. Quem quiser reservar deve tocar em Reservar uniforme.",
     "- Camiseta sem manga curta ou manga longa: pergunte qual das duas antes de consultar.",
     "- Só registre o aviso depois que a pessoa disser que quer ser avisada.",
+    "- Não escreva que alguém da loja vai responder.",
     "",
     "Fatos oficiais do voucher, consultados até 14 de novembro de 2026:",
     "O Programa Auxílio Uniforme da Prefeitura de Jundiaí prevê um crédito eletrônico, em aplicativo, para as famílias comprarem o uniforme de 2027 em estabelecimentos credenciados. O nome do aplicativo e a data de liberação ainda não foram confirmados. A previsão é atender cerca de 28.250 estudantes da Educação Infantil II (4 e 5 anos) e do Ensino Fundamental I (cerca de 6 a 11 anos). A elegibilidade individual segue a Prefeitura.",
@@ -62,6 +63,16 @@ export function instrucoes(base: string, emFila = false) {
   ].join("\n");
 }
 
+/** Tira o aviso de que a loja vai responder, e deixa o resto da resposta. */
+export function semAvisoDeEquipe(texto: string) {
+  return texto
+    .split(/\n+|(?<=[.!?])\s+/)
+    .filter((frase) => !/responder(?: por)? aqui/i.test(frase))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Frases que afirmam estoque. "Não temos a data" não entra aqui. */
 export function afirmaEstoque(texto: string) {
   return /\b(em estoque|pronta entrega|esgotad[oa]s?|acabou o tamanho|temos sim|n[aã]o temos (?:essa|este|esta|a |o ))\b/i.test(
@@ -70,7 +81,8 @@ export function afirmaEstoque(texto: string) {
 }
 
 export function textoParaFamilia(texto: string) {
-  const limpo = texto.trim().slice(0, 1500);
-  if (!limpo || afirmaEstoque(limpo)) return TEXTO_SEM_CONFIRMACAO;
+  const limpo = semAvisoDeEquipe(texto).slice(0, 1500);
+  if (!limpo) return "";
+  if (afirmaEstoque(limpo)) return TEXTO_SEM_CONFIRMACAO;
   return limpo;
 }

@@ -19,6 +19,10 @@ describe("regras do atendimento", () => {
     expect(afirmaEstoque("A data de liberação ainda não foi confirmada.")).toBe(false);
     expect(textoParaFamilia("Temos sim a camiseta tamanho 8.")).toBe(TEXTO_SEM_CONFIRMACAO);
     expect(textoParaFamilia("A pré-reserva é gratuita.")).toBe("A pré-reserva é gratuita.");
+    expect(textoParaFamilia(
+      "A pré-reserva é gratuita. Alguém da loja vai responder por aqui. Enquanto isso, pode reservar.",
+    )).toBe("A pré-reserva é gratuita. Enquanto isso, pode reservar.");
+    expect(textoParaFamilia("Alguém da loja vai responder por aqui.")).toBe("");
   });
 });
 

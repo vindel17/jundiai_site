@@ -201,13 +201,13 @@ describe("atendimento por IA", () => {
     await enviar({ texto: "atendente" });
     simulado.completar.mockImplementationOnce(async ({ executar }: { executar: Executar }) => {
       await executar("chamar_equipe", { motivo: "horário de domingo" });
-      return { texto: "Vou chamar alguém da loja para responder por aqui.", consultou: false };
+      return { texto: "Não tenho o horário de domingo. Alguém da loja vai responder por aqui.", consultou: false };
     });
     const resposta = await enviar({ texto: "A loja abre domingo?" });
     expect(simulado.abrirFila).toHaveBeenCalledOnce();
     expect(simulado.abrirFila.mock.calls[0][2]).toBe("A loja abre domingo?");
-    expect(resposta[0]?.texto).toBe("Vou chamar alguém da loja para responder por aqui.");
-    expect(simulado.respostasBot).toEqual(["Vou chamar alguém da loja para responder por aqui."]);
+    expect(resposta[0]?.texto).toBe("Não tenho o horário de domingo.");
+    expect(simulado.respostasBot).toEqual(["Não tenho o horário de domingo."]);
     expect(simulado.avisos).toEqual(["A loja abre domingo?"]);
   });
 

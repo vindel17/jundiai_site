@@ -8,6 +8,8 @@ import { dadoTexto } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
 
 export const ATENDIMENTO = "/equipe/atendimento";
+/** Depois deste silêncio, a próxima mensagem da família volta ao bot. A regra igual está no banco. */
+export const SILENCIO_EQUIPE = "2 horas";
 export const TEXTO_FILA =
   "Sua conversa entrou na fila da equipe. Pode deixar sua dúvida por aqui. Se você estava reservando, suas escolhas continuam salvas.";
 const JANELA_ATENDIMENTO_MS = 24 * 60 * 60 * 1000;
