@@ -10,10 +10,11 @@ import { registrarEtapas } from "@/lib/metrica/registrar";
 import { lerOrigem, origemDireta } from "@/lib/reserva/origem";
 import { gravarPreferenciaVoucher } from "@/lib/reserva/aviso-voucher";
 import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
-import { FalhaAoRegistrarEntrada, registrarEntrada } from "./atendimento";
+import { FalhaAoRegistrarEntrada, registrarEntrada, TEXTO_FILA } from "./atendimento";
 import { carregarConversa, salvarConversa } from "./conversa";
 import { enviarTexto } from "./enviar";
 import { mostrarBeneficios } from "./fluxos/beneficios";
+import { continuarIa } from "./fluxos/ia-atendimento";
 import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarMinhasReservas, iniciarMinhasReservas } from "./fluxos/minhas-reservas";
 import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
@@ -23,6 +24,7 @@ import {
   detectarModelo,
   escolheuBeneficios,
   escolheuComprar,
+  escolheuIa,
   escolheuMinhasReservas,
   escolheuReservar,
   pediuAtendente,
@@ -59,7 +61,7 @@ export async function processarEntrada(entrada: EntradaUsuario) {
   if (rota === "novo") {
     await enviarTexto(
       entrada.waId,
-      "Sua conversa entrou na fila da equipe. Pode deixar sua dúvida por aqui. Se você estava reservando, suas escolhas continuam salvas.",
+      TEXTO_FILA,
     );
   }
   if (rota !== "bot") return;
@@ -125,6 +127,10 @@ async function despachar(
     return iniciarCompra(sessao, detectarModelo(escolha, texto));
   }
   if (escolheuBeneficios(escolha, texto)) return mostrarBeneficios(sessao);
+
+  if (escolheuIa(escolha) || sessao.passo.startsWith("ia_")) {
+    return continuarIa(sessao, entrada);
+  }
 
   const modelo = detectarModelo(escolha, texto);
   if (modelo) return iniciarCompra(sessao, modelo);

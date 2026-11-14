@@ -31,7 +31,7 @@ export async function mostrarMenu(sessao: Sessao): Promise<ResultadoTurno> {
       {
         id: ID.menuAtendente,
         titulo: "Falar com atendente",
-        descricao: "Pedir ajuda à equipe da loja",
+        descricao: "Voucher, reserva e dúvidas da loja",
       },
     ],
   );

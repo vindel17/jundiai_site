@@ -78,6 +78,11 @@ function checagens(): Checagem[] {
       impacto: "o envio do aviso do voucher está desativado",
     },
     {
+      nome: "ANTHROPIC_API_KEY",
+      ok: definida(process.env.ANTHROPIC_API_KEY),
+      impacto: "o atendimento por IA no WhatsApp cai direto na fila da equipe",
+    },
+    {
       nome: "NEXT_PUBLIC_GA_ID",
       ok: definida(process.env.NEXT_PUBLIC_GA_ID),
       impacto: "sem Google Analytics: nenhuma conversão é medida",

@@ -6,6 +6,7 @@ export const ID = {
   menuReservar: "menu.reservar",
   menuMinhasReservas: "menu.minhas_reservas",
   menuAtendente: "menu.atendente",
+  iaPessoa: "ia.pessoa",
   pecaPrefixo: "peca.",
   tamPrefixo: "tam.",
   compraSite: "compra.site",
@@ -29,7 +30,8 @@ export function querMenu(escolha: string | null, texto: string) {
 }
 
 export function pediuAtendente(escolha: string | null, texto: string) {
-  if (escolha === ID.menuAtendente) return true;
+  if (escolha === ID.menuAtendente) return false;
+  if (escolha === ID.iaPessoa) return true;
   const limpo = textoLimpo(texto);
   return /^(atendente|humano|atendimento humano)[.!?]*$/.test(limpo)
     || /\bfalar com (?:(?:um|uma|o|a) )?(?:atendente|humano|pessoa|equipe)\b/.test(limpo);
@@ -63,6 +65,10 @@ export function escolheuMinhasReservas(escolha: string | null, texto: string) {
   if (escolha === ID.menuMinhasReservas) return true;
   const t = textoLimpo(texto);
   return /^(ver )?(minhas? reservas?|minha pre-?reserva)$/.test(t) || t.startsWith("ver minha reserva");
+}
+
+export function escolheuIa(escolha: string | null) {
+  return escolha === ID.menuAtendente;
 }
 
 export function escolheuBeneficios(escolha: string | null, texto: string) {

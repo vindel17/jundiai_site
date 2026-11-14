@@ -7,6 +7,8 @@ import { dadoTexto } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
 
 export const ATENDIMENTO = "/equipe/atendimento";
+export const TEXTO_FILA =
+  "Sua conversa entrou na fila da equipe. Pode deixar sua dúvida por aqui. Se você estava reservando, suas escolhas continuam salvas.";
 const JANELA_ATENDIMENTO_MS = 24 * 60 * 60 * 1000;
 export const ID_ATENDIMENTO = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 
@@ -24,6 +26,15 @@ export async function registrarEntrada(entrada: EntradaUsuario, pediuAtendente: 
   });
   if (error) throw new FalhaAoRegistrarEntrada(error.message);
   return data as RotaEntrada;
+}
+
+export async function abrirFila(waId: string, mensagemId: string, texto: string) {
+  const { error } = await createSupabaseAdminClient().rpc("abrir_fila_whatsapp", {
+    p_wa_id: waId,
+    p_id: mensagemId,
+    p_texto: texto.trim() || "[Mensagem sem texto]",
+  });
+  if (error) throw new FalhaAoRegistrarEntrada(error.message);
 }
 
 export type Atendimento = {

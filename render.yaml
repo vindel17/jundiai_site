@@ -43,3 +43,7 @@ services:
         sync: false
       - key: WHATSAPP_VOUCHER_TEMPLATE
         sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TINY_API_TOKEN
+        sync: false

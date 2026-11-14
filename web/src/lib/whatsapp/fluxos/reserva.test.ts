@@ -52,6 +52,8 @@ vi.mock("@/lib/whatsapp/conversa", () => ({
 }));
 
 vi.mock("@/lib/whatsapp/atendimento", () => ({
+  TEXTO_FILA:
+    "Sua conversa entrou na fila da equipe. Pode deixar sua dúvida por aqui. Se você estava reservando, suas escolhas continuam salvas.",
   registrarEntrada: async (_entrada: unknown, pediuAtendente: boolean) => {
     if (simulado.atendimento) return "humano";
     if (!pediuAtendente) return "bot";
