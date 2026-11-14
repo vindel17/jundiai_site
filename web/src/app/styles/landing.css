@@ -57,10 +57,25 @@
   font-size: 1.15rem;
 }
 
+.prose-legal h3 {
+  margin: 1.35rem 0 0.35rem;
+  font-size: 1rem;
+}
+
 .prose-legal p,
 .prose-legal ul {
   color: var(--muted);
   line-height: 1.65;
+}
+
+.prose-legal strong {
+  color: var(--ink);
+}
+
+.prose-legal hr {
+  margin: 2rem 0 1.25rem;
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
 .prose-legal ul {
