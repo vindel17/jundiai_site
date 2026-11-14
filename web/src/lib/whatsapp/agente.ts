@@ -31,6 +31,7 @@ import {
   pediuPessoa,
   querMenu,
 } from "./intencao";
+import { avisarFila } from "./fila-aviso";
 import { mostrarMenu } from "./menu";
 import type { ResultadoTurno, Sessao } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
@@ -62,6 +63,7 @@ export async function processarEntrada(entrada: EntradaUsuario) {
   }
   if (rota === "novo" || (rota === "fila" && pediu)) {
     await enviarTexto(entrada.waId, TEXTO_FILA);
+    if (rota === "novo") await avisarFila(entrada.waId, entrada.texto);
     return;
   }
   if (rota !== "bot" && rota !== "fila") return;

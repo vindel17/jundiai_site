@@ -7,6 +7,7 @@
  */
 
 import { siteUrl, siteUrlConfigurada, whatsappNumero } from "@/lib/config-publica";
+import { telefonesComAcesso } from "@/lib/reserva/equipe";
 
 type Checagem = {
   nome: string;
@@ -76,6 +77,11 @@ function checagens(): Checagem[] {
       nome: "WHATSAPP_VOUCHER_TEMPLATE",
       ok: process.env.WHATSAPP_VOUCHER_TEMPLATE?.trim() === "voucher_2027_liberado",
       impacto: "o envio do aviso do voucher está desativado",
+    },
+    {
+      nome: "EQUIPE_ADMIN",
+      ok: telefonesComAcesso("atendimento").length > 0,
+      impacto: "ninguém recebe o aviso de conversa nova na fila do WhatsApp",
     },
     {
       nome: "ANTHROPIC_API_KEY",

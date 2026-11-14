@@ -78,6 +78,21 @@ export function autorDoUsuario(usuario: User) {
   return digitos(usuario.phone ?? "") || "equipe";
 }
 
+/** Telefones de quem pode executar a ação. E-mail não recebe aviso por WhatsApp. */
+export function telefonesComAcesso(acao: AcaoEquipe) {
+  const vistos = new Set<string>();
+  for (const perfil of PERFIS_EQUIPE) {
+    if (!PERMISSOES[perfil].includes(acao)) continue;
+    for (const item of VARIAVEIS[perfil].flatMap(itens)) {
+      if (item.includes("@")) continue;
+      const numero = item.replace(/\D/g, "");
+      const completo = numero.length <= 11 ? `55${numero}` : numero;
+      if (/^55\d{10,11}$/.test(completo)) vistos.add(completo);
+    }
+  }
+  return [...vistos];
+}
+
 export function pode(perfis: readonly PerfilEquipe[], acao: AcaoEquipe) {
   return perfis.some((perfil) => PERMISSOES[perfil].includes(acao));
 }

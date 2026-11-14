@@ -30,13 +30,15 @@ export async function registrarEntrada(entrada: EntradaUsuario, pediuAtendente: 
   return data as RotaEntrada;
 }
 
+/** `novo`: a conversa acabou de entrar na fila. `aberta`: a fila já existia. */
 export async function abrirFila(waId: string, mensagemId: string, texto: string) {
-  const { error } = await createSupabaseAdminClient().rpc("abrir_fila_whatsapp", {
+  const { data, error } = await createSupabaseAdminClient().rpc("abrir_fila_whatsapp", {
     p_wa_id: waId,
     p_id: mensagemId,
     p_texto: texto.trim() || "[Mensagem sem texto]",
   });
   if (error) throw new FalhaAoRegistrarEntrada(error.message);
+  return data === "novo" ? "novo" : "aberta";
 }
 
 /** O que a IA respondeu enquanto a conversa estava na fila aparece para a equipe. */

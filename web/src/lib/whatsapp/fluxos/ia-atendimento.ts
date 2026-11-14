@@ -1,4 +1,5 @@
 import { abrirFila, registrarRespostaBot, TEXTO_FILA } from "../atendimento";
+import { avisarFila } from "../fila-aviso";
 import { enviarBotoes, enviarTexto } from "../enviar";
 import { lerBaseBot } from "../ia/base";
 import { completar } from "../ia/claude";
@@ -44,7 +45,7 @@ async function executar(turno: Turno, nome: string, entrada: Record<string, unkn
   if (nome === "registrar_aviso") return JSON.stringify(await registrarAviso(turno.waId, entrada));
   if (nome === "chamar_equipe") {
     try {
-      if (!turno.emFila) await abrirFila(turno.waId, turno.mensagemId, turno.pergunta);
+      if (!turno.emFila) await entrarNaFila(turno.waId, turno.mensagemId, turno.pergunta);
       turno.chamouEquipe = true;
     } catch (erro) {
       turno.erroFila = erro;
@@ -58,9 +59,15 @@ async function executar(turno: Turno, nome: string, entrada: Record<string, unkn
   return JSON.stringify({ ok: false, texto: "Ferramenta desconhecida. Não invente o resultado." });
 }
 
+async function entrarNaFila(waId: string, mensagemId: string, texto: string) {
+  const estado = await abrirFila(waId, mensagemId, texto);
+  if (estado === "novo") await avisarFila(waId, texto);
+  return estado;
+}
+
 async function cairNaFila(waId: string, mensagemId: string, pergunta: string) {
   try {
-    await abrirFila(waId, mensagemId, pergunta);
+    await entrarNaFila(waId, mensagemId, pergunta);
     await enviarTexto(waId, TEXTO_FILA);
   } catch (erro) {
     console.error("Falha ao abrir a fila do WhatsApp", erro);

@@ -14,6 +14,7 @@ const simulado = vi.hoisted(() => ({
   completar: vi.fn(),
   abrirFila: vi.fn(),
   respostasBot: [] as string[],
+  avisos: [] as string[],
 }));
 
 vi.mock("@/lib/whatsapp/enviar", () => ({
@@ -64,6 +65,11 @@ vi.mock("@/lib/whatsapp/atendimento", () => ({
 }));
 
 vi.mock("@/lib/whatsapp/identidade", () => ({ perfilPorWaId: async () => null }));
+vi.mock("@/lib/whatsapp/fila-aviso", () => ({
+  avisarFila: async (_waId: string, texto: string) => {
+    simulado.avisos.push(texto);
+  },
+}));
 vi.mock("@/lib/whatsapp/ia/base", () => ({
   lerBaseBot: async () => ({
     texto: "Retirada na loja, de segunda a sexta.",
@@ -106,9 +112,10 @@ beforeEach(() => {
   simulado.conversas.clear();
   simulado.fila = "nenhuma";
   simulado.respostasBot.length = 0;
+  simulado.avisos.length = 0;
   simulado.completar.mockReset();
   simulado.abrirFila.mockReset();
-  simulado.abrirFila.mockResolvedValue(undefined);
+  simulado.abrirFila.mockResolvedValue("novo");
 });
 
 describe("pedido de atendimento", () => {
@@ -201,10 +208,12 @@ describe("atendimento por IA", () => {
     expect(simulado.abrirFila.mock.calls[0][2]).toBe("A loja abre domingo?");
     expect(resposta[0]?.texto).toBe("Vou chamar alguém da loja para responder por aqui.");
     expect(simulado.respostasBot).toEqual(["Vou chamar alguém da loja para responder por aqui."]);
+    expect(simulado.avisos).toEqual(["A loja abre domingo?"]);
   });
 
   it("continua respondendo na fila sem dono, sem repetir que a equipe foi chamada", async () => {
     expect((await enviar({ texto: "quero falar com uma pessoa" }))[0]?.texto).toBe(TEXTO_FILA);
+    expect(simulado.avisos).toEqual(["quero falar com uma pessoa"]);
     expect(simulado.completar).not.toHaveBeenCalled();
 
     simulado.completar.mockResolvedValueOnce({ texto: "A pré-reserva é gratuita.", consultou: false });
@@ -237,6 +246,7 @@ describe("atendimento por IA", () => {
     expect(await enviar({ texto: "Qual o horário?" })).toEqual([]);
     expect(await enviar({ texto: "E no sábado?" })).toEqual([]);
     expect(simulado.abrirFila).not.toHaveBeenCalled();
+    expect(simulado.avisos).toEqual(["quero falar com uma pessoa"]);
   });
 
   it("chama a equipe quando a IA falha", async () => {
@@ -244,5 +254,6 @@ describe("atendimento por IA", () => {
     simulado.completar.mockRejectedValueOnce(new Error("rede"));
     expect((await enviar({ texto: "Qual o horário?" }))[0]?.texto).toBe(TEXTO_FILA);
     expect(simulado.abrirFila).toHaveBeenCalledOnce();
+    expect(simulado.avisos).toEqual(["Qual o horário?"]);
   });
 });
