@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { enviarTexto } from "./enviar";
 import { lerRascunho } from "./fluxos/reserva-estado";
 import { ErroRespostaWhatsApp } from "./graph";
+import { historicoDe } from "./ia/historico";
 import { dadoTexto } from "./sessao";
 import type { EntradaUsuario } from "./tipos";
 
@@ -12,7 +13,8 @@ export const TEXTO_FILA =
 const JANELA_ATENDIMENTO_MS = 24 * 60 * 60 * 1000;
 export const ID_ATENDIMENTO = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 
-type RotaEntrada = "duplicada" | "bot" | "novo" | "humano";
+/** `fila`: equipe chamada e ninguém assumiu. `humano`: alguém da equipe assumiu. */
+type RotaEntrada = "duplicada" | "bot" | "novo" | "fila" | "humano";
 
 export class FalhaAoRegistrarEntrada extends Error {}
 
@@ -37,6 +39,16 @@ export async function abrirFila(waId: string, mensagemId: string, texto: string)
   if (error) throw new FalhaAoRegistrarEntrada(error.message);
 }
 
+/** O que a IA respondeu enquanto a conversa estava na fila aparece para a equipe. */
+export async function registrarRespostaBot(waId: string, texto: string) {
+  const { error } = await createSupabaseAdminClient().rpc("registrar_resposta_bot", {
+    p_wa_id: waId,
+    p_id: randomUUID(),
+    p_texto: texto,
+  });
+  if (error) throw error;
+}
+
 export type Atendimento = {
   id: string;
   wa_id: string;
@@ -47,7 +59,7 @@ export type Atendimento = {
 
 type Mensagem = {
   id: string;
-  origem: "cliente" | "equipe";
+  origem: "cliente" | "equipe" | "bot";
   texto: string;
   estado: "recebida" | "enviando" | "aceita" | "recusada" | "incerta";
   criado_em: string;
@@ -103,6 +115,7 @@ export async function obterAtendimento(id: string) {
     naJanela: agora - Date.parse(conversa.data.ultima_entrada_em) < JANELA_ATENDIMENTO_MS,
     respostaId: randomUUID(),
     rascunho: reserva ? [dadoTexto(reserva, "aluno"), dadoTexto(reserva, "escola")].filter(Boolean).join(" · ") : "",
+    conversaIa: passo.startsWith("ia_") ? historicoDe(dados) : [],
   };
 }
 

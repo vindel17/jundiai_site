@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { acessoEquipe } from "@/app/equipe/acesso";
 import { pode } from "@/lib/reserva/equipe";
 import { ATENDIMENTO, ID_ATENDIMENTO, mudarAtendimento, responderAtendimento } from "@/lib/whatsapp/atendimento";
+import { encaminharParaIa } from "@/lib/whatsapp/ia/encaminhar";
 
 export async function agirNoAtendimento(formData: FormData) {
   const id = String(formData.get("id") ?? "");
@@ -19,6 +20,8 @@ export async function agirNoAtendimento(formData: FormData) {
     if (acao === "assumir" || acao === "encerrar") {
       const mudou = await mudarAtendimento(id, acesso.autor, acao === "encerrar");
       aviso = mudou ? (acao === "encerrar" ? "encerrado" : "assumido") : "indisponivel";
+    } else if (acao === "ia") {
+      aviso = await encaminharParaIa(id, acesso.autor);
     } else if (acao === "responder") {
       const texto = String(formData.get("texto") ?? "").trim();
       const mensagem = String(formData.get("mensagem") ?? "");

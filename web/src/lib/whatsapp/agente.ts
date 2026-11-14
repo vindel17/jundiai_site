@@ -14,7 +14,7 @@ import { FalhaAoRegistrarEntrada, registrarEntrada, TEXTO_FILA } from "./atendim
 import { carregarConversa, salvarConversa } from "./conversa";
 import { enviarTexto } from "./enviar";
 import { mostrarBeneficios } from "./fluxos/beneficios";
-import { continuarIa } from "./fluxos/ia-atendimento";
+import { abrirIa, continuarIa } from "./fluxos/ia-atendimento";
 import { continuarCompra, iniciarCompra } from "./fluxos/compra";
 import { continuarMinhasReservas, iniciarMinhasReservas } from "./fluxos/minhas-reservas";
 import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
@@ -27,7 +27,7 @@ import {
   escolheuIa,
   escolheuMinhasReservas,
   escolheuReservar,
-  pediuAtendente,
+  pediuPessoa,
   querMenu,
 } from "./intencao";
 import { mostrarMenu } from "./menu";
@@ -53,18 +53,16 @@ export async function processarEntrada(entrada: EntradaUsuario) {
       throw new FalhaAoRegistrarEntrada("Não consegui registrar a preferência do voucher.", { cause: erro });
     }
   }
-  const rota = await registrarEntrada(entrada, pediuAtendente(entrada.escolha, entrada.texto));
+  const rota = await registrarEntrada(entrada, pediuPessoa(entrada.escolha, entrada.texto));
   if (respostaAviso) {
     if (rota !== "duplicada") await enviarTexto(entrada.waId, respostaAviso);
     return;
   }
   if (rota === "novo") {
-    await enviarTexto(
-      entrada.waId,
-      TEXTO_FILA,
-    );
+    await enviarTexto(entrada.waId, TEXTO_FILA);
+    return;
   }
-  if (rota !== "bot") return;
+  if (rota !== "bot" && rota !== "fila") return;
 
   const gravada = await carregarConversa(entrada.waId);
   const sessao: Sessao = {
@@ -74,7 +72,10 @@ export async function processarEntrada(entrada: EntradaUsuario) {
     dados: gravada.dados,
   };
 
-  const turno = manterRascunho(sessao, await despachar(sessao, entrada));
+  const turno = manterRascunho(
+    sessao,
+    rota === "fila" ? await continuarIa(sessao, entrada, true) : await despachar(sessao, entrada),
+  );
   void registrarEtapas({
     canal: "whatsapp",
     pessoa: entrada.waId,
@@ -97,6 +98,7 @@ async function despachar(
   const { escolha, texto } = entrada;
 
   if (querMenu(escolha, texto)) return mostrarMenu(sessao);
+  if (escolheuIa(escolha, texto) && !sessao.passo.startsWith("ia_")) return abrirIa(sessao);
 
   if (escolheuMinhasReservas(escolha, texto) && !sessao.passo.startsWith("reserva_")) {
     return iniciarMinhasReservas(sessao);
@@ -128,9 +130,7 @@ async function despachar(
   }
   if (escolheuBeneficios(escolha, texto)) return mostrarBeneficios(sessao);
 
-  if (escolheuIa(escolha) || sessao.passo.startsWith("ia_")) {
-    return continuarIa(sessao, entrada);
-  }
+  if (sessao.passo.startsWith("ia_")) return continuarIa(sessao, entrada);
 
   const modelo = detectarModelo(escolha, texto);
   if (modelo) return iniciarCompra(sessao, modelo);

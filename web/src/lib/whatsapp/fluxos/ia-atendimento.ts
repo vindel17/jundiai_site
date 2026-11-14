@@ -1,57 +1,66 @@
-import { abrirFila, TEXTO_FILA } from "../atendimento";
+import { abrirFila, registrarRespostaBot, TEXTO_FILA } from "../atendimento";
 import { enviarBotoes, enviarTexto } from "../enviar";
-import { ID } from "../intencao";
-import type { ResultadoTurno, Sessao } from "../sessao";
-import type { EntradaUsuario } from "../tipos";
 import { lerBaseBot } from "../ia/base";
 import { completar } from "../ia/claude";
 import { consultarDisponibilidade, registrarAviso } from "../ia/ferramentas";
-import { instrucoes, SAUDACAO, textoParaFamilia } from "../ia/regras";
+import { comHistorico, historicoDe, paraModelo } from "../ia/historico";
+import { instrucoes, SAUDACAO, TEXTO_EQUIPE_CHAMADA, textoParaFamilia } from "../ia/regras";
+import { ID } from "../intencao";
+import type { ResultadoTurno, Sessao } from "../sessao";
+import type { EntradaUsuario } from "../tipos";
 
-const HISTORICO = "iaHistorico";
-const MAXIMO = 8;
+const PASSO = "ia_atendimento";
 
-type Turno = { papel: "usuario" | "loja"; texto: string };
-type MensagemModelo = { role: "user" | "assistant"; content: string };
+type Turno = {
+  waId: string;
+  mensagemId: string;
+  pergunta: string;
+  emFila: boolean;
+  chamouEquipe: boolean;
+  erroFila: unknown;
+};
 
-function historicoDe(dados: Record<string, unknown>): Turno[] {
-  const valor = dados[HISTORICO];
-  if (!Array.isArray(valor)) return [];
-  return valor.flatMap((item) => {
-    if (typeof item !== "object" || item === null) return [];
-    const turno = item as Partial<Turno>;
-    if ((turno.papel !== "usuario" && turno.papel !== "loja") || typeof turno.texto !== "string") {
-      return [];
-    }
-    const texto = turno.texto.trim();
-    return texto ? [{ papel: turno.papel, texto: texto.slice(0, 500) }] : [];
-  }).slice(-MAXIMO);
+/** Dados de outro fluxo não entram no histórico da IA. O rascunho da reserva volta pelo agente. */
+function dadosDaIa(sessao: Sessao) {
+  return sessao.passo.startsWith("ia_") ? sessao.dados : {};
 }
 
-function comHistorico(dados: Record<string, unknown>, turnos: Turno[]) {
-  return { ...dados, [HISTORICO]: turnos.slice(-MAXIMO) };
+export async function abrirIa(sessao: Sessao): Promise<ResultadoTurno> {
+  await enviarBotoes(sessao.waId, SAUDACAO, [
+    { id: ID.menuReservar, titulo: "Reservar uniforme" },
+    { id: ID.iaPessoa, titulo: "Falar com pessoa" },
+  ]);
+  return {
+    passo: PASSO,
+    dados: comHistorico({}, [
+      { papel: "usuario", texto: "Falar com atendente" },
+      { papel: "loja", texto: SAUDACAO },
+    ]),
+  };
 }
 
-function paraModelo(turnos: Turno[], pergunta: string): MensagemModelo[] {
-  const lista: MensagemModelo[] = turnos.map((turno) => ({
-    role: turno.papel === "loja" ? "assistant" : "user",
-    content: turno.texto,
-  }));
-  const ultima = lista[lista.length - 1];
-  if (ultima?.role === "user") ultima.content = `${ultima.content}\n${pergunta}`;
-  else lista.push({ role: "user", content: pergunta });
-  return lista;
-}
-
-async function executar(waId: string, nome: string, entrada: Record<string, unknown>) {
+async function executar(turno: Turno, nome: string, entrada: Record<string, unknown>) {
   if (nome === "consultar_disponibilidade") return JSON.stringify(consultarDisponibilidade(entrada));
-  if (nome === "registrar_aviso") return JSON.stringify(await registrarAviso(waId, entrada));
+  if (nome === "registrar_aviso") return JSON.stringify(await registrarAviso(turno.waId, entrada));
+  if (nome === "chamar_equipe") {
+    try {
+      if (!turno.emFila) await abrirFila(turno.waId, turno.mensagemId, turno.pergunta);
+      turno.chamouEquipe = true;
+    } catch (erro) {
+      turno.erroFila = erro;
+      return JSON.stringify({ ok: false, texto: "Não foi possível chamar a equipe." });
+    }
+    return JSON.stringify({
+      ok: true,
+      texto: "A equipe foi chamada. Diga em uma frase que alguém da loja vai responder por aqui. Não invente a resposta.",
+    });
+  }
   return JSON.stringify({ ok: false, texto: "Ferramenta desconhecida. Não invente o resultado." });
 }
 
-async function cairNaFila(waId: string, entrada: EntradaUsuario) {
+async function cairNaFila(waId: string, mensagemId: string, pergunta: string) {
   try {
-    await abrirFila(waId, entrada.mensagemId, entrada.texto);
+    await abrirFila(waId, mensagemId, pergunta);
     await enviarTexto(waId, TEXTO_FILA);
   } catch (erro) {
     console.error("Falha ao abrir a fila do WhatsApp", erro);
@@ -61,43 +70,51 @@ async function cairNaFila(waId: string, entrada: EntradaUsuario) {
   }
 }
 
-export async function continuarIa(sessao: Sessao, entrada: EntradaUsuario): Promise<ResultadoTurno> {
-  const historico = historicoDe(sessao.dados);
-  if (entrada.escolha === ID.menuAtendente && historico.length === 0) {
-    await enviarBotoes(sessao.waId, SAUDACAO, [
-      { id: ID.menuReservar, titulo: "Reservar uniforme" },
-      { id: ID.iaPessoa, titulo: "Falar com pessoa" },
-    ]);
-    return {
-      passo: "ia_atendimento",
-      dados: comHistorico(sessao.dados, [
-        { papel: "usuario", texto: "Falar com atendente" },
-        { papel: "loja", texto: SAUDACAO },
-      ]),
-    };
-  }
-
+/** `emFila`: a equipe já foi chamada e ninguém assumiu. A IA responde e avisa. */
+export async function continuarIa(
+  sessao: Sessao,
+  entrada: EntradaUsuario,
+  emFila = false,
+): Promise<ResultadoTurno> {
+  const dados = dadosDaIa(sessao);
+  const historico = historicoDe(dados);
   const pergunta = entrada.texto.trim();
   if (!pergunta) {
     await enviarTexto(sessao.waId, "Me conta por escrito o que você precisa.");
-    return { passo: "ia_atendimento", dados: sessao.dados };
+    return { passo: PASSO, dados };
   }
 
+  const turno: Turno = {
+    waId: sessao.waId,
+    mensagemId: entrada.mensagemId,
+    pergunta,
+    emFila,
+    chamouEquipe: false,
+    erroFila: null,
+  };
   try {
     const base = await lerBaseBot().catch((erro: unknown) => {
       console.error("Falha ao ler a base do bot", erro);
       return { texto: "", atualizadoEm: null, autor: "" };
     });
     const resultado = await completar({
-      sistema: instrucoes(base.texto),
+      sistema: instrucoes(base.texto, emFila),
       mensagens: paraModelo(historico, pergunta),
-      executar: (nome, dados) => executar(sessao.waId, nome, dados),
+      executar: (nome, valores) => executar(turno, nome, valores),
     });
-    const texto = textoParaFamilia(resultado.texto);
+    if (turno.erroFila) throw turno.erroFila;
+
+    let texto = textoParaFamilia(resultado.texto);
+    if (emFila && !turno.chamouEquipe) texto = `${texto}\n\n${TEXTO_EQUIPE_CHAMADA}`;
     await enviarTexto(sessao.waId, texto);
+    if (emFila || turno.chamouEquipe) {
+      await registrarRespostaBot(sessao.waId, texto).catch((erro: unknown) =>
+        console.error("Falha ao guardar a resposta da IA na fila", erro),
+      );
+    }
     return {
-      passo: "ia_atendimento",
-      dados: comHistorico(sessao.dados, [
+      passo: PASSO,
+      dados: comHistorico(dados, [
         ...historico,
         { papel: "usuario", texto: pergunta },
         { papel: "loja", texto },
@@ -105,7 +122,7 @@ export async function continuarIa(sessao: Sessao, entrada: EntradaUsuario): Prom
     };
   } catch (erro) {
     console.error("Falha no atendimento por IA", { waId: sessao.waId, erro });
-    await cairNaFila(sessao.waId, entrada);
-    return { passo: "ia_atendimento", dados: sessao.dados };
+    await cairNaFila(sessao.waId, entrada.mensagemId, pergunta);
+    return { passo: PASSO, dados };
   }
 }

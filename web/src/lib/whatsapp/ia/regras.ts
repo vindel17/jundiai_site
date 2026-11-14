@@ -9,6 +9,8 @@ export const TEXTO_SEM_CONFIRMACAO =
 export const SAUDACAO =
   "Oi! Eu respondo dúvidas sobre o voucher de 2027, a pré-reserva e o jeito da Uniforme Jundiaí trabalhar. Pode perguntar por aqui.";
 
+export const TEXTO_EQUIPE_CHAMADA = "A equipe da loja já foi chamada e vai continuar por aqui.";
+
 const DATA_LIMITE = new Intl.DateTimeFormat("pt-BR", {
   day: "numeric",
   month: "long",
@@ -23,16 +25,21 @@ function listaPecas(kit: "masculino" | "feminino") {
 }
 
 /** Regras fixas vencem o texto que a equipe escreve na base. */
-export function instrucoes(base: string) {
+export function instrucoes(base: string, emFila = false) {
   const textoBase = base.trim().slice(0, LIMITE_BASE);
   const reserva = reservaAberta()
     ? `A pré-reserva está aberta até ${DATA_LIMITE}.`
     : `A pré-reserva encerrou em ${DATA_LIMITE}.`;
+  const fila = emFila
+    ? ["", "A equipe da loja já foi chamada e ainda não assumiu. Responda só à dúvida. O aviso de que a equipe foi chamada é acrescentado depois, não repita."]
+    : [];
 
   return [
     "Você atende as famílias no WhatsApp da Uniforme Jundiaí. Fale em português do Brasil, em poucas frases, como alguém da loja.",
+    ...fila,
     "",
     "Regras que vencem qualquer outro texto:",
+    "- Se a resposta não estiver nestas regras, nos fatos oficiais ou na base da equipe, não chute: use chamar_equipe. Use também quando a pessoa pedir para falar com alguém da loja.",
     "- Não diga que uma peça tem estoque, está disponível, esgotou ou acabou. A consulta só devolve confirmar ou peça incompleta.",
     "- Não invente a data em que o voucher será liberado nem o nome do aplicativo.",
     "- Não diga que a loja é a Prefeitura, a Secretaria de Educação ou a escola.",

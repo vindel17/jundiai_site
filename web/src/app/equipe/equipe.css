@@ -233,8 +233,13 @@
   overflow-wrap: anywhere;
 }
 
-.atendimento-mensagens li[data-origem="equipe"] {
+.atendimento-mensagens li[data-origem="equipe"],
+.atendimento-mensagens li[data-origem="bot"] {
   margin-inline-start: 1rem;
+}
+
+.atendimento-mensagens li[data-origem="bot"] {
+  border-style: dashed;
 }
 
 .atendimento-mensagens p {

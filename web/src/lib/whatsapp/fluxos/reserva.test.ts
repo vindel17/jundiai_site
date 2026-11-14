@@ -130,7 +130,7 @@ it("pausa o bot a pedido do cliente e retoma a reserva no passo salvo", async ()
   await ateOModo();
   const antes = simulado.conversas.get(WA);
 
-  expect((await enviar({ texto: "quero falar com um atendente" }))[0]?.texto).toContain("fila da equipe");
+  expect((await enviar({ texto: "quero falar com uma pessoa" }))[0]?.texto).toContain("fila da equipe");
   expect(simulado.conversas.get(WA)).toEqual(antes);
   expect(await enviar({ texto: "menu" })).toEqual([]);
   expect(await enviar({ escolha: "reserva.modo.unico" })).toEqual([]);

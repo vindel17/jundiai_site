@@ -29,12 +29,22 @@ export function querMenu(escolha: string | null, texto: string) {
   );
 }
 
-export function pediuAtendente(escolha: string | null, texto: string) {
-  if (escolha === ID.menuAtendente) return false;
+/** Pedido explícito de uma pessoa: vai direto para a fila da equipe. */
+export function pediuPessoa(escolha: string | null, texto: string) {
   if (escolha === ID.iaPessoa) return true;
+  if (escolha) return false;
   const limpo = textoLimpo(texto);
-  return /^(atendente|humano|atendimento humano)[.!?]*$/.test(limpo)
-    || /\bfalar com (?:(?:um|uma|o|a) )?(?:atendente|humano|pessoa|equipe)\b/.test(limpo);
+  return /^(humano|atendimento humano|uma pessoa|pessoa)[.!?]*$/.test(limpo)
+    || /\bfalar com (?:(?:um|uma|o|a) )?(?:humano|pessoa|alguem|equipe)\b/.test(limpo);
+}
+
+/** Pedido genérico de atendimento abre o Haiku, igual ao botão do menu. */
+export function escolheuIa(escolha: string | null, texto: string) {
+  if (escolha === ID.menuAtendente) return true;
+  if (escolha) return false;
+  const limpo = textoLimpo(texto);
+  return /^(atendente|atendimento)[.!?]*$/.test(limpo)
+    || /\bfalar com (?:(?:um|uma|o|a) )?atendente\b/.test(limpo);
 }
 
 export function escolheuComprar(escolha: string | null, texto: string) {
@@ -65,10 +75,6 @@ export function escolheuMinhasReservas(escolha: string | null, texto: string) {
   if (escolha === ID.menuMinhasReservas) return true;
   const t = textoLimpo(texto);
   return /^(ver )?(minhas? reservas?|minha pre-?reserva)$/.test(t) || t.startsWith("ver minha reserva");
-}
-
-export function escolheuIa(escolha: string | null) {
-  return escolha === ID.menuAtendente;
 }
 
 export function escolheuBeneficios(escolha: string | null, texto: string) {

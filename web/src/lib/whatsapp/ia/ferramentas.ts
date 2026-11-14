@@ -33,6 +33,18 @@ export const ESQUEMA_FERRAMENTAS = [
       required: ["peca", "tamanho"],
     },
   },
+  {
+    name: "chamar_equipe",
+    description:
+      "Chama alguém da equipe da loja para continuar esta conversa. Use quando a resposta não estiver nas regras, nos fatos oficiais ou na base da loja, ou quando a pessoa pedir para falar com alguém.",
+    input_schema: {
+      type: "object",
+      properties: {
+        motivo: { type: "string" },
+      },
+      required: ["motivo"],
+    },
+  },
 ];
 
 function campos(entrada: Record<string, unknown>) {

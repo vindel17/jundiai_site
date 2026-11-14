@@ -20,6 +20,8 @@ const DATA = new Intl.DateTimeFormat("pt-BR", {
 const AVISOS: Record<string, string> = {
   assumido: "Você assumiu a conversa.",
   encerrado: "Atendimento encerrado. O bot pode responder à próxima mensagem da família.",
+  ia: "Conversa encaminhada. A IA respondeu à última mensagem da família.",
+  ia_liberado: "Conversa encaminhada. Como não havia pergunta pendente dentro de 24 horas, a IA responde à próxima mensagem.",
   aceita: "Resposta aceita pelo WhatsApp.",
   recusada: "O WhatsApp recusou a resposta. Confira o histórico antes de tentar novamente.",
   incerta: "O WhatsApp não confirmou o envio. Confira a conversa antes de reenviar.",
@@ -27,6 +29,7 @@ const AVISOS: Record<string, string> = {
   texto: "Digite uma mensagem de até 4.096 caracteres.",
   falha: "A operação não foi confirmada. Confira o histórico antes de tentar novamente.",
 };
+const ORIGENS: Record<string, string> = { cliente: "Cliente", equipe: "Equipe", bot: "IA" };
 const ESTADOS: Record<string, string> = {
   aceita: "Aceita pelo WhatsApp",
   recusada: "Envio recusado",
@@ -125,14 +128,27 @@ export default async function AtendimentoPage({
               </ul>
             ) : null}
             {detalhe.reservas === null ? <p className="equipe-aviso">Não foi possível consultar as reservas.</p> : null}
+            {detalhe.conversaIa.length ? (
+              <details>
+                <summary>Conversa com a IA</summary>
+                <ol className="atendimento-mensagens">
+                  {detalhe.conversaIa.map((turno, indice) => (
+                    <li key={indice} data-origem={turno.papel === "loja" ? "bot" : "cliente"}>
+                      <small>{turno.papel === "loja" ? "IA" : "Cliente"}</small>
+                      <p>{turno.texto}</p>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            ) : null}
             <h3>Mensagens do atendimento</h3>
             {detalhe.rascunho ? <p className="equipe-lead">Reserva em andamento · {detalhe.rascunho}</p> : null}
             <ol className="atendimento-mensagens">
               {detalhe.mensagens.map((mensagem) => (
                 <li key={mensagem.id} data-origem={mensagem.origem}>
                   <small>
-                    {mensagem.origem === "cliente" ? "Cliente" : "Equipe"} · {DATA.format(new Date(mensagem.criado_em))}
-                    {ESTADOS[mensagem.estado] ? ` · ${ESTADOS[mensagem.estado]}` : ""}
+                    {ORIGENS[mensagem.origem]} · {DATA.format(new Date(mensagem.criado_em))}
+                    {mensagem.origem !== "bot" && ESTADOS[mensagem.estado] ? ` · ${ESTADOS[mensagem.estado]}` : ""}
                   </small>
                   <p>{mensagem.texto}</p>
                 </li>
@@ -143,6 +159,13 @@ export default async function AtendimentoPage({
                 <input type="hidden" name="id" value={id} />
                 <input type="hidden" name="acao" value="assumir" />
                 <BotaoAtendimento rotulo="Assumir atendimento" principal />
+              </form>
+            ) : null}
+            {aberto && (!atendimento.atendente || assumidoPorMim) ? (
+              <form action={agirNoAtendimento} className="atendimento-encerrar">
+                <input type="hidden" name="id" value={id} />
+                <input type="hidden" name="acao" value="ia" />
+                <BotaoAtendimento rotulo="Encaminhar para a IA" />
               </form>
             ) : null}
             {assumidoPorMim ? (
