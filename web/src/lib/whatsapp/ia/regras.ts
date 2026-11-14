@@ -9,8 +9,6 @@ export const TEXTO_SEM_CONFIRMACAO =
 export const SAUDACAO =
   "Oi! Eu respondo dúvidas sobre o voucher de 2027, a pré-reserva e o jeito da Uniforme Jundiaí trabalhar. Pode perguntar por aqui.";
 
-export const TEXTO_EQUIPE_CHAMADA = "A equipe da loja já foi chamada e vai continuar por aqui.";
-
 const DATA_LIMITE = new Intl.DateTimeFormat("pt-BR", {
   day: "numeric",
   month: "long",
@@ -31,7 +29,7 @@ export function instrucoes(base: string, emFila = false) {
     ? `A pré-reserva está aberta até ${DATA_LIMITE}.`
     : `A pré-reserva encerrou em ${DATA_LIMITE}.`;
   const fila = emFila
-    ? ["", "A equipe da loja já foi chamada e ainda não assumiu. Responda só à dúvida. O aviso de que a equipe foi chamada é acrescentado depois, não repita."]
+    ? ["", "A conversa já está na fila e ninguém da equipe assumiu. Responda só à dúvida. Não diga que a equipe foi chamada."]
     : [];
 
   return [

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TEXTO_FILA } from "@/lib/whatsapp/atendimento";
 import { escolheuIa, pediuPessoa } from "@/lib/whatsapp/intencao";
-import { TEXTO_EQUIPE_CHAMADA, TEXTO_SEM_CONFIRMACAO } from "@/lib/whatsapp/ia/regras";
+import { TEXTO_SEM_CONFIRMACAO } from "@/lib/whatsapp/ia/regras";
 
 type Enviada = { tipo: string; texto: string; opcoes: { id: string; titulo: string }[] };
 type Executar = (nome: string, entrada: Record<string, unknown>) => Promise<string>;
@@ -157,15 +157,15 @@ describe("atendimento por IA", () => {
     expect(simulado.respostasBot).toEqual(["Vou chamar alguém da loja para responder por aqui."]);
   });
 
-  it("continua respondendo na fila sem dono e avisa que a equipe já foi chamada", async () => {
+  it("continua respondendo na fila sem dono, sem repetir que a equipe foi chamada", async () => {
     expect((await enviar({ texto: "quero falar com uma pessoa" }))[0]?.texto).toBe(TEXTO_FILA);
     expect(simulado.completar).not.toHaveBeenCalled();
 
     simulado.completar.mockResolvedValueOnce({ texto: "A pré-reserva é gratuita.", consultou: false });
     const resposta = await enviar({ texto: "Precisa pagar para reservar?" });
-    expect(sistemaDaChamada()).toContain("já foi chamada");
-    expect(resposta[0]?.texto).toBe(`A pré-reserva é gratuita.\n\n${TEXTO_EQUIPE_CHAMADA}`);
-    expect(simulado.respostasBot).toEqual([resposta[0]?.texto]);
+    expect(sistemaDaChamada()).toContain("Não diga que a equipe foi chamada");
+    expect(resposta[0]?.texto).toBe("A pré-reserva é gratuita.");
+    expect(simulado.respostasBot).toEqual(["A pré-reserva é gratuita."]);
 
     simulado.fila = "assumida";
     expect(await enviar({ texto: "oi" })).toEqual([]);

@@ -4,7 +4,7 @@ import { lerBaseBot } from "../ia/base";
 import { completar } from "../ia/claude";
 import { consultarDisponibilidade, registrarAviso } from "../ia/ferramentas";
 import { comHistorico, historicoDe, paraModelo } from "../ia/historico";
-import { instrucoes, SAUDACAO, TEXTO_EQUIPE_CHAMADA, textoParaFamilia } from "../ia/regras";
+import { instrucoes, SAUDACAO, textoParaFamilia } from "../ia/regras";
 import { ID } from "../intencao";
 import type { ResultadoTurno, Sessao } from "../sessao";
 import type { EntradaUsuario } from "../tipos";
@@ -70,7 +70,7 @@ async function cairNaFila(waId: string, mensagemId: string, pergunta: string) {
   }
 }
 
-/** `emFila`: a equipe já foi chamada e ninguém assumiu. A IA responde e avisa. */
+/** `emFila`: a equipe já foi chamada e ninguém assumiu. A IA responde só à dúvida. */
 export async function continuarIa(
   sessao: Sessao,
   entrada: EntradaUsuario,
@@ -104,8 +104,7 @@ export async function continuarIa(
     });
     if (turno.erroFila) throw turno.erroFila;
 
-    let texto = textoParaFamilia(resultado.texto);
-    if (emFila && !turno.chamouEquipe) texto = `${texto}\n\n${TEXTO_EQUIPE_CHAMADA}`;
+    const texto = textoParaFamilia(resultado.texto);
     await enviarTexto(sessao.waId, texto);
     if (emFila || turno.chamouEquipe) {
       await registrarRespostaBot(sessao.waId, texto).catch((erro: unknown) =>
