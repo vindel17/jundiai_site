@@ -127,6 +127,32 @@ describe("pedido de atendimento", () => {
     expect(pediuPessoa(null, "humano")).toBe(true);
     expect(pediuPessoa("ia.pessoa", "Falar com pessoa")).toBe(true);
     expect(pediuPessoa("menu.atendente", "Falar com atendente")).toBe(false);
+    for (const texto of [
+      "Tem alguém aí?",
+      "falar com vendedor",
+      "atendente por favor",
+      "quero falar com atendente humano",
+      "quero falar com vocês",
+      "preciso de ajuda de uma pessoa",
+      "falar com a loja",
+      "me atende alguém",
+    ]) {
+      expect(pediuPessoa(null, texto)).toBe(true);
+      expect(escolheuIa(null, texto)).toBe(false);
+    }
+    expect(pediuPessoa(null, "A loja abre domingo?")).toBe(false);
+    expect(pediuPessoa(null, "Quando sai o voucher?")).toBe(false);
+  });
+
+  it("manda pedido de pessoa em outras palavras para a fila, sem chamar a IA", async () => {
+    for (const texto of ["Tem alguém aí?", "atendente por favor", "quero falar com atendente humano"]) {
+      simulado.conversas.clear();
+      simulado.fila = "nenhuma";
+      simulado.completar.mockClear();
+      expect((await enviar({ texto })).map((mensagem) => mensagem.texto)).toEqual([TEXTO_FILA]);
+      expect(simulado.fila).toBe("aberta");
+      expect(simulado.completar).not.toHaveBeenCalled();
+    }
   });
 
   it("abre o Haiku pelo botão do menu e pelo texto genérico, sem chamar a fila", async () => {

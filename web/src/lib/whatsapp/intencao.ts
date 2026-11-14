@@ -39,19 +39,27 @@ export function comandoDeMenu(texto: string) {
   );
 }
 
+const PEDIDO_DE_PESSOA = [
+  /^(?:humano|atendimento humano|uma pessoa|pessoa|atendente,? por favor)[.!?]*$/,
+  /\batendente humano\b/,
+  /\bfalar com (?:(?:um|uma|o|a) )?(?:humano|pessoa|alguem|equipe|vendedor|vendedora|voces|loja)\b/,
+  /\balguem ai\b/,
+  /\bme atende(?:m)? alguem\b/,
+  /\bajuda de uma pessoa\b/,
+];
+
 /** Pedido explícito de uma pessoa: vai direto para a fila da equipe. */
 export function pediuPessoa(escolha: string | null, texto: string) {
   if (escolha === ID.iaPessoa) return true;
   if (escolha) return false;
   const limpo = textoLimpo(texto);
-  return /^(humano|atendimento humano|uma pessoa|pessoa)[.!?]*$/.test(limpo)
-    || /\bfalar com (?:(?:um|uma|o|a) )?(?:humano|pessoa|alguem|equipe)\b/.test(limpo);
+  return PEDIDO_DE_PESSOA.some((pedido) => pedido.test(limpo));
 }
 
 /** Pedido genérico de atendimento abre o Haiku, igual ao botão do menu. */
 export function escolheuIa(escolha: string | null, texto: string) {
   if (escolha === ID.menuAtendente) return true;
-  if (escolha) return false;
+  if (escolha || pediuPessoa(null, texto)) return false;
   const limpo = textoLimpo(texto);
   return /^(atendente|atendimento)[.!?]*$/.test(limpo)
     || /\bfalar com (?:(?:um|uma|o|a) )?atendente\b/.test(limpo);
