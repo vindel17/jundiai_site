@@ -6,7 +6,7 @@ import { DOMINIO_PADRAO } from "@/lib/config-publica";
 const TITULO = "Voucher Uniforme Escolar Jundiaí 2027: como funciona, quem tem direito e onde comprar";
 const DESCRICAO = "Entenda o Programa Auxílio Uniforme da Prefeitura de Jundiaí, saiba como funcionará o crédito eletrônico e conheça a possibilidade de reservar os uniformes escolares antecipadamente.";
 const TITULO_SEO = "Voucher Uniforme Jundiaí 2027: Como Funciona e Pré-Reserva";
-const DESCRICAO_SEO = "Saiba como funciona o voucher de uniforme escolar de Jundiaí para 2027, quem será atendido, quando o crédito será liberado e como fazer a pré-reserva.";
+const DESCRICAO_SEO = "Entenda o voucher de uniforme escolar de Jundiaí 2027: público atendido, aplicativo e informações oficiais. Faça sua pré-reserva gratuita na Uniforme Jundiaí.";
 
 const FONTES = [
   {
@@ -41,6 +41,9 @@ export default function VoucherUniformeJundiaiPage() {
             <em>Informações atualizadas em <time dateTime="2026-11-14">14 de novembro de 2026</time>.</em>
           </p>
 
+          <p><Link className="btn-primary" href="/reserva">Fazer pré-reserva gratuita</Link></p>
+          <p>A pré-reserva é opcional e não substitui o cadastro oficial do benefício.</p>
+
           <h2>O que é o voucher de uniforme escolar de Jundiaí?</h2>
           <p>A Prefeitura de Jundiaí está preparando uma mudança no fornecimento de uniformes escolares para o ano letivo de 2027.</p>
           <p>
@@ -71,7 +74,10 @@ export default function VoucherUniformeJundiaiPage() {
           <p>A Prefeitura informou que o benefício será disponibilizado por aplicativo, mas as publicações oficiais consultadas ainda não confirmavam seu nome nem as instruções definitivas de acesso para os responsáveis.</p>
           <p>Assim que essas informações forem divulgadas, esta página poderá ser atualizada.</p>
 
-          <h2>Quais uniformes compõem o kit?</h2>
+          <h2>Qual é o valor do voucher de Jundiaí 2027?</h2>
+          <p>As notícias oficiais listadas nas fontes desta página não informam o valor individual do crédito. Consulte os comunicados da Prefeitura e da escola para confirmar o valor e as regras aplicáveis à sua família.</p>
+
+          <h2>Quais uniformes compõem o kit da Uniforme Jundiaí?</h2>
           <p>Na Uniforme Jundiaí, o kit escolar apresentado para 2027 possui seis peças:</p>
           <ul>
             <li>2 camisetas de manga curta.</li>
@@ -80,7 +86,7 @@ export default function VoucherUniformeJundiaiPage() {
             <li>1 calça.</li>
             <li>1 blusa de frio.</li>
           </ul>
-          <p>Os responsáveis podem consultar as peças e escolher os tamanhos na página de pré-reserva, observadas as especificações e quantidades exigidas pelo programa.</p>
+          <p>Veja as peças na <Link className="underline" href="/reserva">página de pré-reserva</Link> e consulte o <Link className="underline" href="/guia-de-tamanhos">guia de tamanhos dos uniformes</Link> antes de escolher. A composição acima descreve a oferta da Uniforme Jundiaí; a utilização do crédito segue as regras e especificações oficiais do programa.</p>
 
           <h2>Já é possível reservar os uniformes de 2027?</h2>
           <p><strong>Sim. A Uniforme Jundiaí oferece uma pré-reserva gratuita, sem compromisso de compra.</strong></p>
@@ -103,6 +109,8 @@ export default function VoucherUniformeJundiaiPage() {
           <h2>Perguntas frequentes</h2>
           <h3>O voucher poderá ser utilizado em qualquer loja?</h3>
           <p>O crédito deverá ser utilizado nos estabelecimentos que integrarem a rede credenciada do município, conforme as regras oficiais.</p>
+          <h3>A pré-reserva garante o recebimento do voucher?</h3>
+          <p>Não. A pré-reserva é um serviço comercial da Uniforme Jundiaí. A concessão do benefício, o cadastro e a liberação do crédito dependem da Prefeitura, conforme as regras do programa.</p>
           <h3>É obrigatório fazer pré-reserva?</h3>
           <p>Não. A pré-reserva oferecida pela Uniforme Jundiaí é opcional e não faz parte das exigências da Prefeitura para concessão do benefício.</p>
           <h3>Preciso pagar para reservar?</h3>
@@ -111,6 +119,8 @@ export default function VoucherUniformeJundiaiPage() {
           <p>Sim. Na pré-reserva da Uniforme Jundiaí, é possível selecionar os tamanhos das peças individualmente, respeitando a composição do kit.</p>
           <h3>Como saberei quando o voucher for liberado?</h3>
           <p>Acompanhe os comunicados da Prefeitura e as orientações da escola. Você também pode solicitar à Uniforme Jundiaí avisos relacionados à sua pré-reserva.</p>
+
+          <p><Link className="btn-primary" href="/reserva">Escolher tamanhos e fazer pré-reserva gratuita</Link></p>
 
           <h2>Fontes oficiais</h2>
           <p>As informações sobre o programa foram consultadas nas publicações da Prefeitura de Jundiaí:</p>

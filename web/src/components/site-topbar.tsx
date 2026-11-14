@@ -8,6 +8,7 @@ import { trackEvent } from "@/lib/utm";
 
 const NAV = [
   { href: "/reserva", label: "Reserva Voucher" },
+  { href: "/voucher-uniforme-jundiai", label: "Como funciona o voucher?" },
   { href: "/conta", label: "Minha conta" },
 ] as const;
 
