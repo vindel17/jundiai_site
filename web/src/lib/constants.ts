@@ -12,6 +12,8 @@ export const SITE = {
 
 /** Texto padrão de quem chega pelos CTAs de ajuda, sem contexto de funil. */
 export const MENSAGEM_AJUDA = `Olá! Quero ajuda com o uniforme escolar em ${SITE.city}.`;
+/** Texto do botão principal da página inicial. */
+export const MENSAGEM_SEPARAR = "Quero separar o uniforme do meu filho";
 
 export function getWhatsAppUrl(message?: string) {
   const phone = whatsappNumero();

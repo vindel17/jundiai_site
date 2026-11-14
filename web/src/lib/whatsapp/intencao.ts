@@ -1,4 +1,5 @@
 import { CATALOGO, TAMANHOS } from "@/data/catalogo";
+import { MENSAGEM_AJUDA, MENSAGEM_SEPARAR } from "@/lib/constants";
 
 export const ID = {
   menuComprar: "menu.comprar",
@@ -21,11 +22,20 @@ function textoLimpo(entrada: string) {
     .trim();
 }
 
+/** Textos prontos dos botões do site. Quem chega por eles vê o menu, não a IA. */
+const DO_SITE = new Set([MENSAGEM_AJUDA, MENSAGEM_SEPARAR].map(textoLimpo));
+
 export function querMenu(escolha: string | null, texto: string) {
   if (escolha === "menu" || escolha === "voltar") return true;
   const t = textoLimpo(texto);
-  return /^(oi|ola|olaa|hey|eae|e ai|menu|inicio|voltar|oi,?\s*tudo bem\??)$/.test(
-    t,
+  return DO_SITE.has(t)
+    || /^(oi+|ola+|hey|eae|e ai|menu|inicio|voltar|bom dia|boa tarde|boa noite|oi,?\s*tudo bem)[\s.!?]*$/.test(t);
+}
+
+/** Só o nome de uma opção do menu. Pergunta que cita essas palavras fica com a IA. */
+export function comandoDeMenu(texto: string) {
+  return /^(comprar|quero comprar|montar (?:meu )?pedido|(?:ver )?(?:meus )?beneficios|placar)[.!?]*$/.test(
+    textoLimpo(texto),
   );
 }
 

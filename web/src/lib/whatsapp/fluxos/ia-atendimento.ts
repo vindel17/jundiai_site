@@ -121,7 +121,8 @@ export async function continuarIa(
     };
   } catch (erro) {
     console.error("Falha no atendimento por IA", { waId: sessao.waId, erro });
-    await cairNaFila(sessao.waId, entrada.mensagemId, pergunta);
+    // Na fila, a mensagem já está com a equipe e o aviso já foi dado.
+    if (!emFila) await cairNaFila(sessao.waId, entrada.mensagemId, pergunta);
     return { passo: PASSO, dados };
   }
 }

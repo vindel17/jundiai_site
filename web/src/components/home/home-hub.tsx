@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { getWhatsAppUrl, SITE } from "@/lib/constants";
+import { getWhatsAppUrl, MENSAGEM_SEPARAR, SITE } from "@/lib/constants";
 
 export function HomeHub() {
-  const whatsapp = getWhatsAppUrl("Quero separar o uniforme do meu filho");
+  const whatsapp = getWhatsAppUrl(MENSAGEM_SEPARAR);
 
   return (
     <main className="home-page">

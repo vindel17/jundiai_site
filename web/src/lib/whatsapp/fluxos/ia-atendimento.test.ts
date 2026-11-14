@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TEXTO_FILA } from "@/lib/whatsapp/atendimento";
-import { escolheuIa, pediuPessoa } from "@/lib/whatsapp/intencao";
+import { comandoDeMenu, escolheuIa, pediuPessoa } from "@/lib/whatsapp/intencao";
 import { TEXTO_SEM_CONFIRMACAO } from "@/lib/whatsapp/ia/regras";
 
 type Enviada = { tipo: string; texto: string; opcoes: { id: string; titulo: string }[] };
@@ -25,7 +25,9 @@ vi.mock("@/lib/whatsapp/enviar", () => ({
     expect(botoes.every((botao) => botao.titulo.length <= 20)).toBe(true);
     simulado.enviadas.push({ tipo: "botoes", texto, opcoes: botoes });
   },
-  enviarLista: async () => undefined,
+  enviarLista: async (_destino: string, texto: string, _botao: string, itens: Enviada["opcoes"]) => {
+    simulado.enviadas.push({ tipo: "lista", texto, opcoes: itens });
+  },
   enviarImagem: async () => undefined,
   enviarTemplate: async () => undefined,
 }));
@@ -94,6 +96,8 @@ async function enviar(entrada: { texto?: string; escolha?: string }) {
   return [...simulado.enviadas];
 }
 
+const passo = () => simulado.conversas.get(WA)?.passo;
+
 function sistemaDaChamada(indice = 0) {
   return simulado.completar.mock.calls[indice][0].sistema as string;
 }
@@ -129,6 +133,48 @@ describe("pedido de atendimento", () => {
     expect(texto[0]?.texto).toContain("pré-reserva");
     expect(simulado.conversas.get(WA)?.passo).toBe("ia_atendimento");
     expect(simulado.completar).not.toHaveBeenCalled();
+  });
+
+  it("manda para a IA a pergunta que o bot inicial não entende", async () => {
+    simulado.completar.mockResolvedValueOnce({ texto: "A data ainda não foi confirmada.", consultou: false });
+    const resposta = await enviar({ texto: "Quando sai o voucher?" });
+    expect(resposta.map((mensagem) => mensagem.texto)).toEqual(["A data ainda não foi confirmada."]);
+    expect(passo()).toBe("ia_atendimento");
+    expect(simulado.fila).toBe("nenhuma");
+  });
+
+  it("mostra o menu para cumprimento, texto pronto do site e mensagem sem texto", async () => {
+    for (const texto of [
+      "oi",
+      "Bom dia!",
+      "boa tarde",
+      "",
+      "Olá! Quero ajuda com o uniforme escolar em Jundiaí.",
+      "Quero separar o uniforme do meu filho",
+    ]) {
+      simulado.conversas.clear();
+      expect((await enviar({ texto }))[0]?.tipo).toBe("lista");
+      expect(passo()).toBe("menu");
+    }
+    expect(simulado.completar).not.toHaveBeenCalled();
+  });
+
+  it("na IA, pergunta que cita benefício ou uniforme novo não muda de fluxo", async () => {
+    await enviar({ texto: "atendente" });
+    simulado.completar.mockResolvedValue({ texto: "É um programa da Prefeitura.", consultou: false });
+    for (const texto of [
+      "O voucher é um benefício da Prefeitura?",
+      "Meu filho precisa de uniforme novo, como funciona o voucher?",
+    ]) {
+      expect((await enviar({ texto }))[0]?.texto).toBe("É um programa da Prefeitura.");
+      expect(passo()).toBe("ia_atendimento");
+    }
+    expect(simulado.completar).toHaveBeenCalledTimes(2);
+
+    expect(comandoDeMenu("Meus benefícios")).toBe(true);
+    await enviar({ texto: "comprar" });
+    expect(passo()).toBe("compra_peca");
+    expect(simulado.completar).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -170,6 +216,27 @@ describe("atendimento por IA", () => {
     simulado.fila = "assumida";
     expect(await enviar({ texto: "oi" })).toEqual([]);
     expect(simulado.completar).toHaveBeenCalledOnce();
+  });
+
+  it("na fila sem dono, menu e reserva continuam funcionando", async () => {
+    await enviar({ texto: "quero falar com uma pessoa" });
+
+    expect((await enviar({ texto: "menu" }))[0]?.tipo).toBe("lista");
+    await enviar({ escolha: "menu.reservar", texto: "Reservar uniforme" });
+    expect(passo()).toMatch(/^reserva_/);
+    expect(simulado.completar).not.toHaveBeenCalled();
+    expect(simulado.fila).toBe("aberta");
+  });
+
+  it("na fila sem dono, repete o aviso só para quem pede uma pessoa de novo", async () => {
+    await enviar({ texto: "quero falar com uma pessoa" });
+    expect((await enviar({ escolha: "ia.pessoa", texto: "Falar com pessoa" })).map((m) => m.texto)).toEqual([TEXTO_FILA]);
+    expect(simulado.completar).not.toHaveBeenCalled();
+
+    simulado.completar.mockRejectedValue(new Error("rede"));
+    expect(await enviar({ texto: "Qual o horário?" })).toEqual([]);
+    expect(await enviar({ texto: "E no sábado?" })).toEqual([]);
+    expect(simulado.abrirFila).not.toHaveBeenCalled();
   });
 
   it("chama a equipe quando a IA falha", async () => {

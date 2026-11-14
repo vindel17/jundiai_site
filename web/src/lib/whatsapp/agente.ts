@@ -21,6 +21,7 @@ import { continuarReserva, iniciarReserva } from "./fluxos/reserva";
 import { manterRascunho, origemDosDados } from "./fluxos/reserva-estado";
 import { perfilPorWaId } from "./identidade";
 import {
+  comandoDeMenu,
   detectarModelo,
   escolheuBeneficios,
   escolheuComprar,
@@ -53,12 +54,13 @@ export async function processarEntrada(entrada: EntradaUsuario) {
       throw new FalhaAoRegistrarEntrada("Não consegui registrar a preferência do voucher.", { cause: erro });
     }
   }
-  const rota = await registrarEntrada(entrada, pediuPessoa(entrada.escolha, entrada.texto));
+  const pediu = pediuPessoa(entrada.escolha, entrada.texto);
+  const rota = await registrarEntrada(entrada, pediu);
   if (respostaAviso) {
     if (rota !== "duplicada") await enviarTexto(entrada.waId, respostaAviso);
     return;
   }
-  if (rota === "novo") {
+  if (rota === "novo" || (rota === "fila" && pediu)) {
     await enviarTexto(entrada.waId, TEXTO_FILA);
     return;
   }
@@ -72,10 +74,7 @@ export async function processarEntrada(entrada: EntradaUsuario) {
     dados: gravada.dados,
   };
 
-  const turno = manterRascunho(
-    sessao,
-    rota === "fila" ? await continuarIa(sessao, entrada, true) : await despachar(sessao, entrada),
-  );
+  const turno = manterRascunho(sessao, await despachar(sessao, entrada, rota === "fila"));
   void registrarEtapas({
     canal: "whatsapp",
     pessoa: entrada.waId,
@@ -91,14 +90,21 @@ export async function processarEntrada(entrada: EntradaUsuario) {
   });
 }
 
+/**
+ * `emFila`: a equipe foi chamada e ninguém assumiu. Menu, reserva e compra
+ * continuam funcionando; o que sobrar vai para a IA.
+ */
 async function despachar(
   sessao: Sessao,
   entrada: EntradaUsuario,
+  emFila: boolean,
 ): Promise<ResultadoTurno> {
   const { escolha, texto } = entrada;
+  const emIa = sessao.passo.startsWith("ia_");
+  const textoLivre = !escolha && texto.trim() !== "";
 
   if (querMenu(escolha, texto)) return mostrarMenu(sessao);
-  if (escolheuIa(escolha, texto) && !sessao.passo.startsWith("ia_")) return abrirIa(sessao);
+  if (escolheuIa(escolha, texto) && !emIa) return abrirIa(sessao);
 
   if (escolheuMinhasReservas(escolha, texto) && !sessao.passo.startsWith("reserva_")) {
     return iniciarMinhasReservas(sessao);
@@ -125,15 +131,20 @@ async function despachar(
     return continuarCompra(sessao, entrada);
   }
 
+  // Na conversa com a IA, uma pergunta que cita "benefício" ou "uniforme novo" não muda de fluxo.
+  if (emIa && textoLivre && !comandoDeMenu(texto)) return continuarIa(sessao, entrada, emFila);
+
   if (escolheuComprar(escolha, texto)) {
     return iniciarCompra(sessao, detectarModelo(escolha, texto));
   }
   if (escolheuBeneficios(escolha, texto)) return mostrarBeneficios(sessao);
 
-  if (sessao.passo.startsWith("ia_")) return continuarIa(sessao, entrada);
+  if (emIa) return continuarIa(sessao, entrada, emFila);
 
   const modelo = detectarModelo(escolha, texto);
   if (modelo) return iniciarCompra(sessao, modelo);
 
+  // O que o bot inicial não entende vai para a IA, não de volta ao menu.
+  if (textoLivre || emFila) return continuarIa(sessao, entrada, emFila);
   return mostrarMenu(sessao);
 }
