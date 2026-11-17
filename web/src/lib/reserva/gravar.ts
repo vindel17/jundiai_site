@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { atualizarContadorPublico } from "@/lib/reserva/contador-consulta";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { eEntrega, type Entrega } from "./entrega";
 import { escolaValida } from "./escolas";
@@ -167,5 +168,6 @@ export async function gravarReserva(entrada: ReservaNova): Promise<ReservaGravad
     .single();
 
   if (error || !data) throw new Error(error?.message ?? "Não gravei a reserva.");
+  atualizarContadorPublico();
   return { id: data.id as string, codigoIndicacao: codigo };
 }

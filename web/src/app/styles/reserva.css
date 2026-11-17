@@ -17,7 +17,8 @@
   align-self: start;
 }
 
-.reserva-intro .uj-page-lead {
+.reserva-intro .uj-page-lead,
+.reserva-intro .contador-kits {
   margin: 0;
 }
 

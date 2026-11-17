@@ -4,7 +4,7 @@ export const PERFIS_EQUIPE = ["admin", "producao", "balcao"] as const;
 
 export type PerfilEquipe = (typeof PERFIS_EQUIPE)[number];
 
-/** O que cada tela confere antes de agir. Cancelar e métricas ficam só com a administração. */
+/** O que cada tela confere antes de agir. Cancelar, métricas e o contador público ficam só com a administração. */
 export const ACOES_EQUIPE = [
   "ver",
   "editar",
@@ -13,6 +13,7 @@ export const ACOES_EQUIPE = [
   "producao",
   "avisos",
   "metricas",
+  "contador",
   "atendimento",
 ] as const;
 

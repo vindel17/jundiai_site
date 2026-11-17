@@ -230,6 +230,16 @@
   letter-spacing: -0.02em;
 }
 
+.contador-kits {
+  margin: 0.85rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.contador-kits strong {
+  font-variant-numeric: tabular-nums;
+}
+
 .uj-kicker {
   display: inline-flex;
   align-items: center;

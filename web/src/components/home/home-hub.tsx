@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { ContadorKits } from "@/components/contador-kits";
 import { getWhatsAppUrl, MENSAGEM_SEPARAR, SITE } from "@/lib/constants";
 
-export function HomeHub() {
+export function HomeHub({ total }: { total: number }) {
   const whatsapp = getWhatsAppUrl(MENSAGEM_SEPARAR);
 
   return (
@@ -17,6 +18,7 @@ export function HomeHub() {
             Conheça a Uniforme Jundiaí e reserve o kit da rede municipal. Escolha
             a escola e os tamanhos das peças, sem pagar agora.
           </p>
+          <ContadorKits total={total} />
 
           <div className="home-paths">
             <Link href="/reserva" className="home-path home-path-primary">

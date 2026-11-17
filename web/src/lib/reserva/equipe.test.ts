@@ -50,6 +50,12 @@ describe("perfis da equipe", () => {
     expect(pode(["balcao"], "metricas")).toBe(false);
   });
 
+  it("o contador público fica só com a administração", () => {
+    expect(pode(["admin"], "contador")).toBe(true);
+    expect(pode(["producao"], "contador")).toBe(false);
+    expect(pode(["balcao"], "contador")).toBe(false);
+  });
+
   it("balcão consulta e edita tamanho", () => {
     vi.stubEnv("EQUIPE_BALCAO", "5511977770000");
     expect(perfisDoUsuario(usuario({ phone: "5511977770000" }))).toEqual(["balcao"]);

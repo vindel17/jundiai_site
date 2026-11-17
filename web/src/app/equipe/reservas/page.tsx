@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { acessoEquipe } from "@/app/equipe/acesso";
 import { NavAdmin } from "@/app/equipe/nav-admin";
 import { Avisos } from "@/app/equipe/reservas/avisos";
+import { ContadorAdmin } from "@/app/equipe/reservas/contador";
 import { lerFiltro } from "@/app/equipe/reservas/filtros";
 import { Lista } from "@/app/equipe/reservas/lista";
 import { pode, rotuloPerfis } from "@/lib/reserva/equipe";
@@ -24,6 +25,7 @@ export default async function ReservasPage({
     entrega?: string;
     pagina?: string;
     erro?: string;
+    contador?: string;
     mudou?: string;
     pulou?: string;
   }>;
@@ -52,6 +54,7 @@ export default async function ReservasPage({
         <>
           <p className="equipe-lead">Seu acesso: {rotuloPerfis(acesso.perfis)}.</p>
           {pode(acesso.perfis, "metricas") ? <NavAdmin atual="/equipe/reservas" /> : null}
+          {pode(acesso.perfis, "contador") ? <ContadorAdmin resultado={bruto.contador} /> : null}
           <Avisos aviso={bruto} />
           <Lista filtro={filtro} perfis={acesso.perfis} />
         </>

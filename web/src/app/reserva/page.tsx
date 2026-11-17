@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ContadorKits } from "@/components/contador-kits";
 import { PreferenciaAvisoVoucher, ReservaForm } from "@/app/reserva/reserva-form";
 import { VitrinePecas } from "@/app/reserva/reserva-pecas";
 import { KitsSeparados } from "@/app/reserva/reserva-separados";
@@ -13,6 +14,7 @@ import {
   urlIndicacao,
 } from "@/lib/indicacao/regras";
 import { lerPreferenciaVoucher } from "@/lib/reserva/aviso-voucher";
+import { lerContadorPublico } from "@/lib/reserva/contador-publico";
 import { listarReservasDoTelefone, reservasAtivas } from "@/lib/reserva/consultas";
 import { fotoDoKit } from "@/lib/reserva/fotos";
 import { reservaAberta } from "@/lib/reserva/kit";
@@ -60,7 +62,7 @@ const GARANTIAS: { destaque: string; texto: string }[] = [
   },
   {
     destaque: "O uniforme não serviu?",
-    texto: "Depois da compra, você pode pedir a troca ou a devolução.",
+    texto: "Depois da compra, você pode pedir a troca.",
   },
 ];
 
@@ -75,6 +77,7 @@ export default async function ReservaPage({
     data: { user },
   } = await supabase.auth.getUser();
   const aberta = reservaAberta();
+  const total = await lerContadorPublico();
   const convite = await codigoDoCookie();
   const whatsapp = getWhatsAppUrl(
     aberta
@@ -109,6 +112,7 @@ export default async function ReservaPage({
             ? "Escolha os tamanhos e faça a pré-reserva gratuita, sem compromisso de compra. Você pode pedir um aviso pelo WhatsApp para saber quando o voucher da Prefeitura liberar."
             : "O prazo para reservar terminou. Se você já fez a reserva, pode ver os detalhes aqui."}
         </p>
+        <ContadorKits total={total} />
         {aberta ? (
           <ul className="uj-checklist">
             {GARANTIAS.map((item) => (
